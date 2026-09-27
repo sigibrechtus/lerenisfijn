@@ -70,10 +70,11 @@ function shuffle(arr) {
 /* ================= Spraak ================= */
 const hasSpeech = 'speechSynthesis' in window;
 let voice = null;
-let speakToken = 0;
+let speechPrimed = false; // Flag to ensure the "warm-up" happens only once.
 
 function pickVoice() {
   const voices = speechSynthesis.getVoices();
+  if (!voices.length) return;
   const lang = (v) => v.lang.replace('_', '-').toLowerCase();
   voice =
     voices.find((v) => lang(v) === 'nl-be') ||
@@ -82,9 +83,8 @@ function pickVoice() {
 }
 
 if (hasSpeech) {
-  // Try to pick a voice immediately.
   pickVoice();
-  // If voices load later, the 'onvoiceschanged' event will fire and we can re-pick.
+  // This event is crucial for browsers that load voices asynchronously.
   speechSynthesis.onvoiceschanged = pickVoice;
 }
 
@@ -92,23 +92,35 @@ function say(text) {
   return new Promise((resolve) => {
     if (!hasSpeech) return resolve();
 
-    // If a specific voice hasn't been picked, try again now that we're in an event handler.
-    // This is a robust way to handle browsers that populate the voice list late.
-    if (!voice && speechSynthesis.getVoices().length) {
+    // ** THE FIX FOR EDGE STARTS HERE **
+    // This is a workaround for browsers that may not initialize the speech engine
+    // until an explicit action, or that suspend the audio context.
+    if (!speechPrimed) {
+      speechSynthesis.resume(); // Ensure the audio context is not suspended.
+      const u = new SpeechSynthesisUtterance(''); // Speak an empty string to "wake up" the engine.
+      speechSynthesis.speak(u);
+      speechPrimed = true;
+    }
+    // ** THE FIX ENDS HERE **
+
+    // Re-check for voices, as the list might have populated since the initial load.
+    if (!voice) {
       pickVoice();
     }
 
     const u = new SpeechSynthesisUtterance(text);
     if (voice) {
       u.voice = voice;
-      u.lang = voice.lang;
-    } else {
-      // If no specific Dutch voice was found, fall back to the language code.
-      u.lang = 'nl-NL';
     }
+    u.lang = voice ? voice.lang : 'nl-NL';
     u.rate = settings.rate;
-    // Resolve the promise when speech ends or if an error occurs.
-    u.onend = u.onerror = () => resolve();
+    u.onend = u.onerror = (e) => {
+      if (e.type === 'error') console.error('SpeechSynthesis Error:', e.error);
+      resolve();
+    };
+    
+    // Cancel any previous speech and speak the new utterance.
+    speechSynthesis.cancel();
     speechSynthesis.speak(u);
   });
 }
@@ -116,23 +128,18 @@ function say(text) {
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function stopSpeech() {
-  speakToken++;
   if (hasSpeech) speechSynthesis.cancel();
 }
 
 async function speakItem(item, withArticle) {
   if (!hasSpeech) return;
   stopSpeech();
-  const token = speakToken;
-  const alive = () => token === speakToken;
-
+  
   const sayOnce = async () => {
     if (withArticle && item.article) {
       if (settings.separate) {
         await say(item.article);
-        if (!alive()) return;
         await wait(600);
-        if (!alive()) return;
         await say(item.word);
       } else {
         await say(item.full);
@@ -143,9 +150,9 @@ async function speakItem(item, withArticle) {
   };
 
   await sayOnce();
-  if (settings.twice && alive()) {
+  if (settings.twice) {
     await wait(900);
-    if (alive()) await sayOnce();
+    await sayOnce();
   }
 }
 
