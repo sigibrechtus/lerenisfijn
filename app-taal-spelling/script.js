@@ -525,8 +525,8 @@ function next() {
   session.index++;
   if (session.index >= session.queue.length) finish();
   else {
-    resetWriting();
-    showWord();
+      showWord();
+      resetWriting();
   }
 }
 
