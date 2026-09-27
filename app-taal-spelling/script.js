@@ -501,13 +501,17 @@ function overrideAsCorrect() {
   if (session.attempts === 1) session.difficult.delete(item.full);
   registerOutcome(true);
   showAutoResult(true, session.lastRead, item);
+  resetWriting();
 }
 
 function next() {
   stopSpeech();
   session.index++;
   if (session.index >= session.queue.length) finish();
-  else showWord();
+  else {
+    resetWriting();
+    showWord();
+  }
 }
 
 function finish() {
