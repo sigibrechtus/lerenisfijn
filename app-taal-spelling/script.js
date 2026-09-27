@@ -82,17 +82,32 @@ function pickVoice() {
 }
 
 if (hasSpeech) {
+  // Try to pick a voice immediately.
   pickVoice();
+  // If voices load later, the 'onvoiceschanged' event will fire and we can re-pick.
   speechSynthesis.onvoiceschanged = pickVoice;
 }
 
 function say(text) {
   return new Promise((resolve) => {
     if (!hasSpeech) return resolve();
+
+    // If a specific voice hasn't been picked, try again now that we're in an event handler.
+    // This is a robust way to handle browsers that populate the voice list late.
+    if (!voice && speechSynthesis.getVoices().length) {
+      pickVoice();
+    }
+
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = voice ? voice.lang : 'nl-NL';
-    if (voice) u.voice = voice;
+    if (voice) {
+      u.voice = voice;
+      u.lang = voice.lang;
+    } else {
+      // If no specific Dutch voice was found, fall back to the language code.
+      u.lang = 'nl-NL';
+    }
     u.rate = settings.rate;
+    // Resolve the promise when speech ends or if an error occurs.
     u.onend = u.onerror = () => resolve();
     speechSynthesis.speak(u);
   });
@@ -142,7 +157,7 @@ const ctx = pad.getContext('2d');
 let strokes = [];
 let activeStroke = null;
 let inkStart = 0;
-let penSeen = false;   // na eerste Apple Pencil-gebruik worden vingers/handpalm genegeerd
+let penSeen = false;
 let padEnabled = true;
 
 const padSize = () => ({ w: pad.clientWidth, h: pad.clientHeight });
@@ -168,17 +183,14 @@ function setInkStyle() {
 }
 
 function drawGuide(w, h) {
-  // Define proportions for the writing lines
   const topY = h * 0.18;
   const middleY = h * 0.40;
   const baseY = h * 0.64;
   const bottomY = h * 0.86;
 
-  // Draw the central colored band
   ctx.fillStyle = '#eaf4ff';
   ctx.fillRect(0, middleY, w, baseY - middleY);
 
-  // Helper to draw a single line
   const line = (y, color, thickness) => {
     ctx.lineWidth = thickness;
     ctx.strokeStyle = color;
@@ -188,11 +200,10 @@ function drawGuide(w, h) {
     ctx.stroke();
   };
 
-  // Draw the four writing lines
-  line(topY, '#d2dde8', 1);    // Top line for ascenders
-  line(middleY, '#a9c1d9', 1);  // Middle line (x-height)
-  line(baseY, '#5d7a99', 2);    // Baseline (thicker)
-  line(bottomY, '#d2dde8', 1);  // Bottom line for descenders
+  line(topY, '#d2dde8', 1);
+  line(middleY, '#a9c1d9', 1);
+  line(baseY, '#5d7a99', 2);
+  line(bottomY, '#d2dde8', 1);
 }
 
 function drawDot(s) {
@@ -240,7 +251,7 @@ function addPoint(s, p) {
 pad.addEventListener('pointerdown', (e) => {
   if (!padEnabled) return;
   if (e.pointerType === 'pen') penSeen = true;
-  if (penSeen && e.pointerType === 'touch') return; // handpalm negeren
+  if (penSeen && e.pointerType === 'touch') return;
   e.preventDefault();
   pad.setPointerCapture(e.pointerId);
   if (!strokes.length) inkStart = performance.now();
@@ -332,12 +343,6 @@ function levenshtein(a, b) {
   return dp[b.length];
 }
 
-/*
- * Strengheid:
- * 1 Mild    – een van de 5 beste lezingen mag 1 teken afwijken
- * 2 Normaal – een van de 5 beste lezingen moet exact kloppen
- * 3 Streng  – de beste lezing moet exact kloppen
- */
 function evaluate(candidates, target) {
   const t = normalize(target);
   const c = candidates.map(normalize).filter(Boolean);
@@ -402,9 +407,6 @@ function resetWriting() {
   redraw();
   $('result').hidden = true;
   $('write-actions').hidden = false;
-  const btn = $('btn-check');
-  btn.disabled = false;
-  btn.textContent = 'Klaar';
   setWriting(true);
 }
 
@@ -504,22 +506,28 @@ async function check() {
   } catch (err) {
     console.warn('Handschriftherkenning niet beschikbaar:', err);
     showManualResult(item);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Klaar';
   }
 }
 
 function overrideAsCorrect() {
   const item = currentItem();
-  // Alleen deze (verkeerd gelezen) poging telt niet als fout
   if (session.attempts === 1) session.difficult.delete(item.full);
   registerOutcome(true);
   showAutoResult(true, session.lastRead, item);
+  resetWriting();
 }
 
 function next() {
   stopSpeech();
   session.index++;
   if (session.index >= session.queue.length) finish();
-  else showWord();
+  else {
+    resetWriting();
+    showWord();
+  }
 }
 
 function finish() {
