@@ -1,0 +1,67 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { font-family: 'Trebuchet MS', Arial, sans-serif; background: linear-gradient(135deg, #ffe9a8, #ffd3a5); color: #34495e; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; overscroll-behavior: none; }
+button { font-family: inherit; touch-action: manipulation; }
+.scherm { display: none; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+.scherm.actief { display: flex; }
+.verborgen { display: none !important; }
+h1 { margin: 20px 0 14px; font-size: clamp(2rem, 5vw, 3rem); text-align: center; }
+.kaart { background: white; border-radius: 20px; padding: 20px 30px; max-width: 600px; width: 100%; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,.12); text-align: center; font-size: 1.25rem; line-height: 1.5; }
+.kaart b { color: #d35400; }
+.knop { font-size: 1.4rem; font-weight: bold; padding: 16px 40px; border: none; border-radius: 18px; color: white; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,.2); margin: 8px; }
+.knop:active { transform: scale(.96); }
+.knop.klein { font-size: 1.05rem; padding: 12px 22px; }
+.groen { background: #27ae60; } .grijs { background: #7f8c8d; } .blauw { background: #2980b9; } .rood { background: #c0392b; }
+#record { margin-top: 10px; font-size: 1.15rem; color: #555; text-align: center; }
+
+/* Instellingen */
+.instel { text-align: left; }
+.rij { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #eee; }
+.rij:last-child { border-bottom: none; }
+.rij-tekst small { display: block; color: #7f8c8d; font-size: .95rem; }
+.stapper { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.stapper button { width: 52px; height: 52px; border-radius: 50%; border: none; background: #2980b9; color: white; font-size: 1.8rem; font-weight: bold; cursor: pointer; line-height: 1; }
+.stapper button:active { transform: scale(.92); }
+.stapper span { min-width: 56px; text-align: center; font-size: 1.8rem; font-weight: bold; }
+.rij input[type="checkbox"] { width: 36px; height: 36px; accent-color: #27ae60; flex-shrink: 0; }
+#instelMelding { min-height: 1.5em; font-weight: bold; color: #27ae60; }
+
+/* Teller en timer */
+.hoek { position: fixed; top: 14px; z-index: 50; background: white; border-radius: 20px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(0,0,0,.18); text-align: center; min-width: 170px; }
+#tellerVak { left: 14px; } #timerVak { right: 14px; }
+.hoek-label { font-size: .95rem; font-weight: bold; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; }
+#teller { font-size: 3.2rem; font-weight: bold; color: #27ae60; line-height: 1.1; }
+#teller small { font-size: 1.4rem; color: #95a5a6; }
+.doelbalk { height: 10px; background: #ecf0f1; border-radius: 5px; overflow: hidden; margin-top: 6px; }
+#doelVulling { height: 100%; width: 0; background: #27ae60; transition: width .3s; }
+#timer { font-size: 3.8rem; font-weight: bold; color: #2c3e50; line-height: 1.1; font-variant-numeric: tabular-nums; }
+#timerVak.bijna #timer { color: #e74c3c; animation: puls 1s infinite; }
+@keyframes puls { 50% { transform: scale(1.08); } }
+#stopBtn { position: fixed; bottom: 14px; left: 14px; z-index: 50; font-size: 1rem; padding: 8px 16px; border: none; border-radius: 12px; background: white; color: #34495e; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,.15); cursor: pointer; }
+
+/* Speelveld */
+#spel { padding-top: 150px; }
+#doelBereikt { font-size: 1.3rem; font-weight: bold; color: white; background: #27ae60; border-radius: 14px; padding: 8px 20px; margin-bottom: 10px; }
+#opdracht { font-size: 2rem; font-weight: bold; color: #d35400; background: white; border-radius: 20px; padding: 10px 30px; box-shadow: 0 4px 10px rgba(0,0,0,.12); margin-bottom: 16px; }
+#driehoek { position: relative; width: 320px; height: 270px; margin-bottom: 18px; }
+#driehoek svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.bol { position: absolute; width: 90px; height: 90px; border-radius: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; font-size: 2.6rem; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,.25); }
+#top { left: 160px; top: 50px; } #links { left: 70px; top: 215px; } #rechts { left: 250px; top: 215px; }
+.hoofd { background: #3498db; color: white; border: 4px solid #2874a6; }
+.deel { background: #f1c40f; color: #34495e; border: 4px solid #d4ac0d; }
+.leeg { background: #ecf0f1; color: #b0b8bf; border: 4px dashed #95a5a6; }
+.bol.juist { background: #a9dfbf; color: #145a32; border: 4px solid #27ae60; }
+.bol.fout { background: #f5b7b1; color: #78281f; border: 4px solid #c0392b; animation: schud .4s; }
+@keyframes schud { 25% { transform: translate(calc(-50% - 8px), -50%); } 75% { transform: translate(calc(-50% + 8px), -50%); } }
+#pot { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 600px; padding: 15px; background: rgba(255,255,255,.55); border-radius: 18px; }
+.tegel { width: 64px; height: 64px; background: #e74c3c; color: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: bold; cursor: grab; box-shadow: 0 3px 6px rgba(0,0,0,.3); touch-action: none; }
+.tegel.weg { opacity: .3; }
+.kloon { position: fixed; pointer-events: none; z-index: 1000; transform: translate(-50%, -50%) scale(1.15); }
+#melding { min-height: 1.6em; font-size: 1.5rem; font-weight: bold; margin-top: 12px; }
+#melding.goed { color: #27ae60; } #melding.fout { color: #e74c3c; }
+@media (max-width: 600px) {
+    .hoek { min-width: 120px; padding: 8px 12px; }
+    #teller { font-size: 2.2rem; } #timer { font-size: 2.6rem; }
+    #spel { padding-top: 120px; }
+    .tegel { width: 54px; height: 54px; font-size: 1.6rem; }
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Splitsen">
+<title>Splitsen - Tijdrace</title>
+</head>
+<link rel="stylesheet" href="style.css">
+<script defer src="script.js"></script>
+</head>
+<body>
+
+<!-- STARTSCHERM -->
+<section id="start" class="scherm actief">
+    <h1 id="startTitel">Splitsen tot 10</h1>
+    <div id="startTekst" class="kaart"></div>
+    <div>
+        <button id="startBtn" class="knop groen">Start</button>
+        <button id="instelBtn" class="knop blauw">Instellingen</button>
+    </div>
+    <p id="record"></p>
+</section>
+
+<!-- INSTELLINGEN -->
+<section id="instellingen" class="scherm">
+    <h1>Instellingen</h1>
+    <div class="kaart instel">
+        <div class="rij">
+            <div class="rij-tekst">Doel<small>Aantal juiste splitsingen</small></div>
+            <div class="stapper"><button data-veld="doel" data-richting="-1">−</button><span id="waarde-doel"></span><button data-veld="doel" data-richting="1">+</button></div>
+        </div>
+        <div class="rij">
+            <div class="rij-tekst">Speeltijd<small>In minuten</small></div>
+            <div class="stapper"><button data-veld="minuten" data-richting="-1">−</button><span id="waarde-minuten"></span><button data-veld="minuten" data-richting="1">+</button></div>
+        </div>
+        <div class="rij">
+            <div class="rij-tekst">Splitsen tot<small>Grootste hoofdgetal</small></div>
+            <div class="stapper"><button data-veld="max" data-richting="-1">−</button><span id="waarde-max"></span><button data-veld="max" data-richting="1">+</button></div>
+        </div>
+        <label class="rij">
+            <div class="rij-tekst">Splitsingen met 0<small>Bijvoorbeeld 6 = 6 + 0</small></div>
+            <input type="checkbox" id="nulToggle">
+        </label>
+    </div>
+    <p id="instelMelding"></p>
+    <div>
+        <button id="terugBtn" class="knop groen">Klaar</button>
+        <button id="standaardBtn" class="knop grijs klein">Standaardwaarden</button>
+        <button id="recordWisBtn" class="knop rood klein">Beste scores wissen</button>
+    </div>
+</section>
+
+<!-- SPEELSCHERM -->
+<section id="spel" class="scherm">
+    <div id="tellerVak" class="hoek">
+        <div class="hoek-label">Goed</div>
+        <div id="teller">0<small> / 30</small></div>
+        <div class="doelbalk"><div id="doelVulling"></div></div>
+    </div>
+    <div id="timerVak" class="hoek">
+        <div class="hoek-label">Tijd</div>
+        <div id="timer">3:00</div>
+    </div>
+    <button id="stopBtn">Stoppen</button>
+
+    <div id="doelBereikt" class="verborgen">Doel bereikt! Ga zo door!</div>
+    <div id="opdracht">Splits 7</div>
+    <div id="driehoek">
+        <svg viewBox="0 0 320 270">
+            <line x1="160" y1="50" x2="70" y2="215" stroke="#34495e" stroke-width="5"/>
+            <line x1="160" y1="50" x2="250" y2="215" stroke="#34495e" stroke-width="5"/>
+        </svg>
+        <div id="top" class="bol hoofd">7</div>
+        <div id="links" class="bol deel">3</div>
+        <div id="rechts" class="bol leeg">?</div>
+    </div>
+    <div id="pot"></div>
+    <p id="melding"></p>
+</section>
+
+<!-- EINDSCHERM -->
+<section id="einde" class="scherm">
+    <h1 id="eindTitel"></h1>
+    <div id="eindTekst" class="kaart"></div>
+    <div>
+        <button id="opnieuwBtn" class="knop groen">Nog eens</button>
+        <button id="menuBtn" class="knop grijs">Naar start</button>
+    </div>
+</section>
+
+
+
+</body>
+</html>
