@@ -387,6 +387,9 @@ function resetWriting() {
   redraw();
   $('result').hidden = true;
   $('write-actions').hidden = false;
+  const btn = $('btn-check');
+  btn.disabled = false;
+  btn.textContent = 'Klaar';
   setWriting(true);
 }
 
