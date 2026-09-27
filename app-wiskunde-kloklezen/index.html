@@ -5,6 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leer de klok kennen!</title>
 <link rel="stylesheet" href="style.css">
+<style>
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    h1 {
+        font-size: 1.5em;
+        margin: 10px 0;
+    }
+    .instructie {
+        font-size: 0.9em;
+    }
+    #opdracht {
+        font-size: 1.1em;
+        margin: 15px 0;
+    }
+    #klok-container {
+        max-width: 300px;
+        margin: 20px auto;
+    }
+    #legende {
+        flex-direction: column;
+        gap: 10px;
+    }
+    #knoppen {
+        flex-direction: column;
+        gap: 10px;
+    }
+    #knoppen button {
+        width: 100%;
+    }
+}
+</style>
 </head>
 <body>
 <header class="topbar">

@@ -136,7 +136,7 @@ function genereerOefening() {
     if (doelMinuut === 0) {
         tekst = `Zet de klok op ${doelUur} uur`;
     } else if (doelMinuut === 15) {
-        tekst = `Zet de klok op kwart na ${doelUur}`;
+        tekst = `Zet de klok op kwart over ${doelUur}`;
     } else if (doelMinuut === 30) {
         tekst = `Zet de klok op half ${doelUur === 12 ? 1 : doelUur + 1}`;
     } else if (doelMinuut === 45) {
