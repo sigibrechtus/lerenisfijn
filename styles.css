@@ -19,7 +19,7 @@ header { padding: 2.5rem 1.5rem 0.5rem; text-align: center; }
 h1 { margin: 0; font-size: 2.2rem; }
 header p { color: var(--muted); font-size: 1.1rem; }
 
-.grid {
+.grid, .widget-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: 1.25rem;
@@ -28,7 +28,7 @@ header p { color: var(--muted); font-size: 1.1rem; }
   padding: 1.5rem;
 }
 
-.tile {
+.tile, .widget {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -40,7 +40,8 @@ header p { color: var(--muted); font-size: 1.1rem; }
   box-shadow: 0 4px 14px rgba(29, 43, 83, 0.08);
   transition: transform 0.15s, box-shadow 0.15s;
 }
-.tile:hover, .tile:focus-visible {
+.tile:hover, .tile:focus-visible,
+.widget:hover, .widget:focus-visible {
   transform: translateY(-3px);
   box-shadow: 0 10px 24px rgba(29, 43, 83, 0.14);
 }
@@ -54,8 +55,8 @@ header p { color: var(--muted); font-size: 1.1rem; }
   background: var(--c, var(--accent));
 }
 
-.tile h2 { margin: 0.25rem 0 0; font-size: 1.25rem; }
-.tile p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.4; }
+.tile h2, .widget h2 { margin: 0.25rem 0 0; font-size: 1.25rem; }
+.tile p, .widget p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.4; }
 .tile.soon { opacity: 0.55; pointer-events: none; }
 
 footer { text-align: center; color: var(--muted); padding: 2rem; font-size: 0.85rem; }
