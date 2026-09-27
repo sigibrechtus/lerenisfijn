@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leer de klok kennen!</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🕐 Leer de klok kennen! 🕐</h1>
+<p class="instructie">Sleep de wijzers naar de juiste stand om de tijd hierboven te maken.</p>
+
+<div id="opdracht">Zet de klok op 3 uur</div>
+
+<div id="klok-container">
+    <div id="klok"></div>
+    <div id="grote-wijzer" class="wijzer"></div>
+    <div id="kleine-wijzer" class="wijzer"></div>
+    <div id="centrum"></div>
+</div>
+
+<div id="legende">
+    <div class="legende-item"><span class="kleur-vak" style="background:#2980b9;"></span> Grote wijzer = minuten</div>
+    <div class="legende-item"><span class="kleur-vak" style="background:#e74c3c;"></span> Kleine wijzer = uren</div>
+</div>
+
+<div id="knoppen">
+    <button id="controleer-btn">Controleer</button>
+    <button id="nieuwe-opdracht-btn">Nieuwe oefening</button>
+</div>
+
+<div id="feedback"></div>
+
+<script src="script.js" defer></script>
+
+</body>
+</html>
