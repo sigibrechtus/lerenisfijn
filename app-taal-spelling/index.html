@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Themadictee</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ START ============ -->
+  <section id="screen-start" class="screen">
+    <header class="topbar">
+      <a href="../index.html" class="btn btn-ghost">← Home</a>
+      <button id="btn-open-settings" class="btn btn-ghost" type="button">Instellingen</button>
+    </header>
+
+    <h1 id="app-title">OLV SGR L2 - Taal - Spelling - Themadictee 1</h1>
+    <p class="subtitle">Kies een oefening.</p>
+
+    <div class="mode-grid">
+      <button class="mode-card" data-mode="1" type="button">
+        <span class="mode-num">1</span>
+        <strong>Overschrijven</strong>
+        <span>Je ziet en hoort het woord. Schrijf het over.</span>
+      </button>
+      <button class="mode-card" data-mode="2" type="button">
+        <span class="mode-num">2</span>
+        <strong>Kijken en schrijven</strong>
+        <span>Je ziet het woord even. Daarna schrijf je het uit je hoofd.</span>
+      </button>
+      <button class="mode-card" data-mode="3" type="button">
+        <span class="mode-num">3</span>
+        <strong>Dictee</strong>
+        <span>Je hoort het lidwoord én het woord. Schrijf alles op.</span>
+      </button>
+      <button class="mode-card" data-mode="4" type="button">
+        <span class="mode-num">4</span>
+        <strong>Dictee met lidwoord</strong>
+        <span>Je hoort alleen het woord. Denk zelf aan “de” of “het” en schrijf alles op.</span>
+      </button>
+    </div>
+
+    <p class="hint">
+      Schrijf met de Apple Pencil en laat een duidelijke spatie tussen het lidwoord en het woord.
+      Tik daarna op <strong>Klaar</strong>: de app leest je schrift en verbetert het automatisch.
+      Hiervoor is internet nodig.
+    </p>
+  </section>
+
+  <!-- ============ INSTELLINGEN ============ -->
+  <section id="screen-settings" class="screen" hidden>
+    <h2>Instellingen</h2>
+
+    <div class="settings">
+      <div class="setting-row">
+        <div><strong>Spreeksnelheid</strong><small>Lager = trager (1 is normaal)</small></div>
+        <div class="stepper" data-key="rate">
+          <button type="button" data-step="-1" aria-label="Minder">−</button>
+          <output></output>
+          <button type="button" data-step="1" aria-label="Meer">+</button>
+        </div>
+      </div>
+
+      <label class="setting-row">
+        <div><strong>Lidwoord en woord apart</strong><small>“de” … pauze … “tak”</small></div>
+        <input type="checkbox" id="set-separate">
+      </label>
+
+      <label class="setting-row">
+        <div><strong>Woord twee keer zeggen</strong></div>
+        <input type="checkbox" id="set-twice">
+      </label>
+
+      <div class="setting-row">
+        <div><strong>Kijktijd</strong><small>Seconden zichtbaar bij oefening 2</small></div>
+        <div class="stepper" data-key="lookTime">
+          <button type="button" data-step="-1" aria-label="Minder">−</button>
+          <output></output>
+          <button type="button" data-step="1" aria-label="Meer">+</button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div><strong>Strengheid verbetering</strong><small>Streng = spelfouten vallen sneller op</small></div>
+        <div class="stepper" data-key="strict">
+          <button type="button" data-step="-1" aria-label="Minder">−</button>
+          <output></output>
+          <button type="button" data-step="1" aria-label="Meer">+</button>
+        </div>
+      </div>
+
+      <button id="btn-test-voice" class="btn" type="button">Test de stem</button>
+
+      <label class="field">
+        <strong>Titel</strong>
+        <input id="set-title" type="text" autocomplete="off">
+      </label>
+
+      <label class="field">
+        <strong>Woordenlijst</strong>
+        <small>Eén woord per regel, bijvoorbeeld “de tak”, “het net” of “niet”.</small>
+        <textarea id="set-words" rows="10" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button id="btn-settings-done" class="btn btn-primary" type="button">Klaar</button>
+      <button id="btn-settings-reset" class="btn" type="button">Standaardwaarden</button>
+    </div>
+  </section>
+
+  <!-- ============ OEFENEN ============ -->
+  <section id="screen-practice" class="screen" hidden>
+    <header class="topbar">
+      <button id="btn-stop" class="btn btn-ghost" type="button">Stoppen</button>
+      <span id="progress">Woord 1 van 1</span>
+      <span id="stars" class="stars">★ 0</span>
+    </header>
+
+    <div class="prompt">
+      <div id="word-display" class="word-display"></div>
+      <button id="btn-listen" class="btn" type="button">Luister opnieuw</button>
+    </div>
+
+    <div id="pad-wrap" class="canvas-wrap">
+      <canvas id="pad"></canvas>
+    </div>
+
+    <div id="write-actions" class="actions">
+      <button id="btn-undo" class="btn" type="button">Ongedaan maken</button>
+      <button id="btn-clear" class="btn" type="button">Wis alles</button>
+      <button id="btn-check" class="btn btn-primary" type="button">Klaar</button>
+    </div>
+
+    <div id="result" class="result" hidden>
+      <div id="result-auto">
+        <p class="result-line"><small>Ik lees:</small><span id="read-text"></span></p>
+        <p class="result-line"><small>Zo schrijf je het:</small><span id="target-text"></span></p>
+        <div class="actions">
+          <button id="btn-retry" class="btn" type="button">Opnieuw schrijven</button>
+          <button id="btn-next" class="btn" type="button">Verder</button>
+        </div>
+        <button id="btn-override" class="link-btn" type="button">Mijn schrift werd verkeerd gelezen, het was juist</button>
+      </div>
+
+      <div id="result-manual" hidden>
+        <p>Vergelijk zelf: heb je het goed geschreven?</p>
+        <p class="result-line"><small>Zo schrijf je het:</small><span id="manual-target"></span></p>
+        <div class="actions">
+          <button id="btn-self-ok" class="btn btn-ok" type="button">✓ Goed</button>
+          <button id="btn-self-bad" class="btn btn-bad" type="button">✗ Nog oefenen</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EINDE ============ -->
+  <section id="screen-end" class="screen" hidden>
+    <h1>Klaar!</h1>
+    <p id="end-summary" class="subtitle"></p>
+
+    <div id="end-difficult-wrap" class="difficult" hidden>
+      <p>Deze woorden oefen je best nog eens:</p>
+      <ul id="end-difficult"></ul>
+    </div>
+
+    <div class="actions">
+      <button id="btn-practice-difficult" class="btn btn-primary" type="button">Oefen moeilijke woorden</button>
+      <button id="btn-restart" class="btn" type="button">Alles opnieuw</button>
+      <button id="btn-home" class="btn" type="button">Naar start</button>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

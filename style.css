@@ -1,0 +1,61 @@
+:root {
+  --bg: #f4f6fb;
+  --card: #fff;
+  --text: #1d2b53;
+  --muted: #5b6785;
+  --accent: #0a7cff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header { padding: 2.5rem 1.5rem 0.5rem; text-align: center; }
+h1 { margin: 0; font-size: 2.2rem; }
+header p { color: var(--muted); font-size: 1.1rem; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.25rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background: var(--card);
+  border-radius: 18px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 14px rgba(29, 43, 83, 0.08);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.tile:hover, .tile:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(29, 43, 83, 0.14);
+}
+
+.tile-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  display: grid; place-items: center;
+  font-size: 1.5rem; font-weight: 700;
+  color: #fff;
+  background: var(--c, var(--accent));
+}
+
+.tile h2 { margin: 0.25rem 0 0; font-size: 1.25rem; }
+.tile p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.4; }
+.tile.soon { opacity: 0.55; pointer-events: none; }
+
+footer { text-align: center; color: var(--muted); padding: 2rem; font-size: 0.85rem; }
