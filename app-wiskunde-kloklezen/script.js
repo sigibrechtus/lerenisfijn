@@ -1,5 +1,53 @@
 'use strict';
 
+// Add responsive styles for overlay feedback on small screens
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+    @media (max-width: 768px) {
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+        }
+        #opdracht {
+            order: -2;
+            margin-bottom: 15px;
+            text-align: center;
+            width: 100%;
+        }
+        #klok-container {
+            order: -1;
+            margin-bottom: 15px;
+        }
+        #feedback {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1000;
+            min-width: 250px;
+        }
+        #feedback.correct {
+            background: rgba(34, 139, 34, 0.95);
+        }
+        #feedback.fout {
+            background: rgba(178, 34, 34, 0.95);
+        }
+    }
+`;
+document.head.appendChild(styleSheet);
+
 const klok = document.getElementById('klok');
 const grote = document.getElementById('grote-wijzer');
 const kleine = document.getElementById('kleine-wijzer');
@@ -121,6 +169,7 @@ function controleer() {
     if (groteOk && kleineOk) {
         feedbackEl.textContent = '✅ Goed zo!';
         feedbackEl.className = 'correct';
+        setTimeout(genereerOefening, 1000);
     } else {
         feedbackEl.textContent = '❌ Nog niet juist, probeer opnieuw!';
         feedbackEl.className = 'fout';
