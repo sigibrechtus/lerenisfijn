@@ -168,16 +168,31 @@ function setInkStyle() {
 }
 
 function drawGuide(w, h) {
-  ctx.save();
-  ctx.strokeStyle = '#dfe4ee';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([10, 10]);
-  const y = Math.round(h * 0.68);
-  ctx.beginPath();
-  ctx.moveTo(24, y);
-  ctx.lineTo(w - 24, y);
-  ctx.stroke();
-  ctx.restore();
+  // Define proportions for the writing lines
+  const topY = h * 0.18;
+  const middleY = h * 0.40;
+  const baseY = h * 0.64;
+  const bottomY = h * 0.86;
+
+  // Draw the central colored band
+  ctx.fillStyle = '#eaf4ff';
+  ctx.fillRect(0, middleY, w, baseY - middleY);
+
+  // Helper to draw a single line
+  const line = (y, color, thickness) => {
+    ctx.lineWidth = thickness;
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y);
+    ctx.stroke();
+  };
+
+  // Draw the four writing lines
+  line(topY, '#d2dde8', 1);    // Top line for ascenders
+  line(middleY, '#a9c1d9', 1);  // Middle line (x-height)
+  line(baseY, '#5d7a99', 2);    // Baseline (thicker)
+  line(bottomY, '#d2dde8', 1);  // Bottom line for descenders
 }
 
 function drawDot(s) {
@@ -489,9 +504,6 @@ async function check() {
   } catch (err) {
     console.warn('Handschriftherkenning niet beschikbaar:', err);
     showManualResult(item);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Klaar';
   }
 }
 
@@ -501,17 +513,13 @@ function overrideAsCorrect() {
   if (session.attempts === 1) session.difficult.delete(item.full);
   registerOutcome(true);
   showAutoResult(true, session.lastRead, item);
-  resetWriting();
 }
 
 function next() {
   stopSpeech();
   session.index++;
   if (session.index >= session.queue.length) finish();
-  else {
-    resetWriting();
-    showWord();
-  }
+  else showWord();
 }
 
 function finish() {
