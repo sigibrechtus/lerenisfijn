@@ -11,24 +11,37 @@
   const LINE_WIDTH = { pen: 6, hand: 10 };
   const PRAISE = ['Goed zo!', 'Super!', 'Knap gedaan!', 'Prima!', 'Top!', 'Heel goed!'];
 
+  const $ = id => document.getElementById(id);
   const els = {
-    tableButtons: document.getElementById('tableButtons'),
-    selectAll: document.getElementById('selectAll'),
-    selectNone: document.getElementById('selectNone'),
-    settingsHint: document.getElementById('settingsHint'),
-    exercise: document.getElementById('exercise'),
-    factorA: document.getElementById('factorA'),
-    factorB: document.getElementById('factorB'),
-    answerSlot: document.getElementById('answerSlot'),
-    canvasWrap: document.getElementById('canvasWrap'),
-    pad: document.getElementById('pad'),
-    clearBtn: document.getElementById('clearBtn'),
-    undoBtn: document.getElementById('undoBtn'),
-    checkBtn: document.getElementById('checkBtn'),
-    feedback: document.getElementById('feedback'),
-    hint: document.getElementById('hint'),
-    score: document.getElementById('score')
+    tableButtons: $('tableButtons'),
+    selectAll: $('selectAll'),
+    selectNone: $('selectNone'),
+    settingsHint: $('settingsHint'),
+    modeHint: $('modeHint'),
+    exercise: $('exercise'),
+    factorA: $('factorA'),
+    factorB: $('factorB'),
+    answerSlot: $('answerSlot'),
+    canvasWrap: $('canvasWrap'),
+    pad: $('pad'),
+    clearBtn: $('clearBtn'),
+    undoBtn: $('undoBtn'),
+    checkBtn: $('checkBtn'),
+    feedback: $('feedback'),
+    hint: $('hint'),
+    score: $('score')
   };
+
+  // Controle: ontbreekt er een element in index.html?
+  const missing = Object.keys(els).filter(k => !els[k]);
+  if (missing.length) {
+    console.error('Maaltafels: ontbrekende elementen in index.html:', missing.join(', '));
+    document.body.insertAdjacentHTML('afterbegin',
+      '<p style="background:#d64545;color:#fff;padding:1rem;margin:0">Fout: ontbrekende elementen in index.html: ' +
+      missing.join(', ') + '</p>');
+    return;
+  }
+  const modeButtons = document.querySelectorAll('.mode-btn');
 
   /* =========================================================
      Status
@@ -40,13 +53,12 @@
   let score = 0;
   let locked = false;
 
-  // Schrijfvak
   const ctx = els.pad.getContext('2d');
   let strokes = [];            // [[{x,y}, ...], ...] in CSS-pixels
   let activeStroke = null;
   let activePointerId = null;
-  let penSeen = false;
-  let modeHint = null;
+  let activePointerType = null;
+  let penSeen = false;         // echte actieve pen gedetecteerd?
 
   /* =========================================================
      Tafels kiezen
@@ -101,9 +113,7 @@
   function onTablesChanged() {
     saveTables();
     updateTableButtons();
-    if (!current || !selectedTables.includes(current.table)) {
-      newExercise();
-    }
+    if (!current || !selectedTables.includes(current.table)) newExercise();
   }
 
   els.selectAll.addEventListener('click', () => {
@@ -130,36 +140,16 @@
     try { localStorage.setItem(INPUT_KEY, inputMode); } catch (e) { /* negeren */ }
   }
 
-  function renderInputModeButtons() {
-    const panel = els.settingsHint.parentElement || els.tableButtons.parentElement;
-    const wrap = document.createElement('div');
-    wrap.className = 'input-mode';
-    wrap.innerHTML = `
-      <h3 class="input-mode-title">Schrijven met</h3>
-      <div class="input-mode-buttons" role="group" aria-label="Schrijven met">
-        <button type="button" class="table-btn mode-btn" data-mode="pen"
-                title="Schrijf met een pen of potlood voor tablet">Potlood</button>
-        <button type="button" class="table-btn mode-btn" data-mode="hand"
-                title="Schrijf met je vinger">Vinger</button>
-      </div>
-      <p class="mode-hint"></p>`;
-    panel.appendChild(wrap);
-
-    modeHint = wrap.querySelector('.mode-hint');
-    wrap.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.addEventListener('click', () => setInputMode(btn.dataset.mode));
-    });
-    updateInputModeButtons();
-  }
-
   function updateInputModeButtons() {
-    document.querySelectorAll('.mode-btn').forEach(btn => {
+    modeButtons.forEach(btn => {
       btn.setAttribute('aria-pressed', btn.dataset.mode === inputMode ? 'true' : 'false');
     });
-    if (modeHint) {
-      modeHint.textContent = inputMode === 'pen'
-        ? 'Alleen de pen schrijft. Je hand mag op het scherm rusten.'
-        : 'Schrijf met één vinger.';
+    if (inputMode === 'pen') {
+      els.modeHint.textContent = penSeen
+        ? 'Pen herkend: alleen de pen schrijft, je hand mag op het scherm rusten.'
+        : 'Schrijf met je pen of potlood.';
+    } else {
+      els.modeHint.textContent = 'Schrijf met één vinger.';
     }
   }
 
@@ -167,18 +157,21 @@
     if (mode !== 'pen' && mode !== 'hand') return;
     inputMode = mode;
     saveInputMode();
-    updateInputModeButtons();
     activeStroke = null;
     activePointerId = null;
-    if (els.feedback.classList.contains('info')) setFeedback('', '');
+    activePointerType = null;
+    updateInputModeButtons();
     redraw();
   }
 
-  // Mag dit type aanraking schrijven in de huidige modus?
+  modeButtons.forEach(btn => btn.addEventListener('click', () => setInputMode(btn.dataset.mode)));
+
+  // Mag deze aanraking schrijven?
   function acceptsPointer(e) {
-    if (e.pointerType === 'mouse') return true;          // pc blijft altijd werken
-    if (inputMode === 'pen') return e.pointerType === 'pen';
-    return e.isPrimary;                                   // vinger: enkel de eerste vinger
+    if (e.pointerType === 'mouse' || e.pointerType === 'pen') return true;
+    if (inputMode === 'hand') return e.isPrimary;
+    // Potlood-modus: passieve stylus/vinger werkt, tot een echte pen herkend is (dan handpalm negeren)
+    return !penSeen;
   }
 
   /* =========================================================
@@ -304,7 +297,6 @@
   /* =========================================================
      Schrijfvak (canvas)
      ========================================================= */
-  // Geen scrollen/zoomen wanneer de hand op het schrijfvak rust
   els.pad.style.touchAction = 'none';
   els.pad.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
   els.pad.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
@@ -312,6 +304,7 @@
 
   function resizeCanvas() {
     const rect = els.pad.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
     const dpr = window.devicePixelRatio || 1;
     els.pad.width = Math.round(rect.width * dpr);
     els.pad.height = Math.round(rect.height * dpr);
@@ -323,7 +316,7 @@
     const ink = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#1e3799';
     ctx.strokeStyle = ink;
     ctx.fillStyle = ink;
-    ctx.lineWidth = LINE_WIDTH[inputMode] || 9;
+    ctx.lineWidth = LINE_WIDTH[inputMode] || 8;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
   }
@@ -352,22 +345,33 @@
     return { x: e.clientX - rect.left, y: e.clientY - rect.top };
   }
 
+  function dropActiveStroke() {
+    if (activeStroke) strokes = strokes.filter(s => s !== activeStroke);
+    activeStroke = null;
+    activePointerId = null;
+    activePointerType = null;
+    redraw();
+  }
+
   els.pad.addEventListener('pointerdown', e => {
     e.preventDefault();
     if (locked || !current) return;
-    if (e.pointerType === 'pen') penSeen = true;
 
-    if (!acceptsPointer(e)) {
-      // Potlood-modus maar met vinger aangeraakt: uitleg tonen zolang er nog geen pen gebruikt is
-      if (inputMode === 'pen' && e.pointerType === 'touch' && !penSeen && !strokes.length) {
-        setFeedback('Potlood-modus: schrijf met de pen, of kies "Vinger".', 'info');
+    if (e.pointerType === 'pen') {
+      if (!penSeen) {
+        penSeen = true;
+        updateInputModeButtons();
       }
-      return;
+      // Handpalm die net vóór de pen het scherm raakte: die lijn weghalen
+      if (inputMode === 'pen' && activePointerType === 'touch') dropActiveStroke();
     }
+
+    if (!acceptsPointer(e)) return;
     if (activePointerId !== null) return;     // er wordt al geschreven
 
     activePointerId = e.pointerId;
-    els.pad.setPointerCapture(e.pointerId);
+    activePointerType = e.pointerType;
+    try { els.pad.setPointerCapture(e.pointerId); } catch (err) { /* negeren */ }
     activeStroke = [getPos(e)];
     strokes.push(activeStroke);
     redraw();
@@ -378,7 +382,7 @@
     e.preventDefault();
     const events = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
     setInkStyle();
-    events.forEach(ev => {
+    (events.length ? events : [e]).forEach(ev => {
       const p = getPos(ev);
       const last = activeStroke[activeStroke.length - 1];
       ctx.beginPath();
@@ -393,6 +397,7 @@
     if (e.pointerId !== activePointerId) return;
     activeStroke = null;
     activePointerId = null;
+    activePointerType = null;
   };
   els.pad.addEventListener('pointerup', endStroke);
   els.pad.addEventListener('pointercancel', endStroke);
@@ -402,6 +407,7 @@
     strokes = [];
     activeStroke = null;
     activePointerId = null;
+    activePointerType = null;
     redraw();
   }
 
@@ -409,10 +415,15 @@
     strokes.pop();
     activeStroke = null;
     activePointerId = null;
+    activePointerType = null;
     redraw();
   }
 
-  window.addEventListener('resize', resizeCanvas);
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(resizeCanvas).observe(els.canvasWrap);
+  } else {
+    window.addEventListener('resize', resizeCanvas);
+  }
 
   /* =========================================================
      Cijferherkenning ($P point-cloud recognizer)
@@ -619,7 +630,6 @@
       }
     });
 
-    // Groepen die na samenvoegen overlappen alsnog samenvoegen
     let merged = true;
     while (merged) {
       merged = false;
@@ -639,7 +649,6 @@
       }
     }
 
-    // Kleine vlekjes negeren
     const maxH = Math.max(...groups.map(g => g.maxY - g.minY), 0);
     groups = groups.filter(g => Math.max(g.maxX - g.minX, g.maxY - g.minY) >= maxH * 0.25);
 
@@ -680,7 +689,7 @@
      Start
      ========================================================= */
   renderTableButtons();
-  renderInputModeButtons();
+  updateInputModeButtons();
   resizeCanvas();
   newExercise();
 })();

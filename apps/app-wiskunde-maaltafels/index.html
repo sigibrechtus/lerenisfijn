@@ -8,67 +8,59 @@
 </head>
 <body>
   <header class="topbar">
-    <a href="../../index.html" class="home-btn">&larr; Home</a>
-    <div class="titles">
+    <a class="back" href="../../index.html">&larr; Terug</a>
+    <div class="title">
       <h1>Maaltafels</h1>
-      <span class="subtitle">OLV SGR L2 – Wiskunde</span>
+      <p class="subtitle">OLV SGR L2 – Wiskunde</p>
     </div>
+    <div class="score-box">Score: <span id="score">0</span></div>
   </header>
 
   <main class="layout">
     <!-- Instellingen (links) -->
-    <aside class="settings">
-      <h2>Welke tafels?</h2>
-      <div id="tableChoices" class="table-grid"></div>
-      <div class="row">
-        <button id="selectAll" class="small-btn" type="button">Alles</button>
-        <button id="selectNone" class="small-btn" type="button">Niets</button>
+    <aside class="settings" aria-label="Instellingen">
+      <h2>Tafels</h2>
+      <div id="tableButtons" class="table-grid"></div>
+      <div class="quick">
+        <button type="button" id="selectAll" class="small-btn">Alles</button>
+        <button type="button" id="selectNone" class="small-btn">Geen</button>
       </div>
+      <p id="settingsHint" class="settings-hint"></p>
 
       <h2>Schrijven met</h2>
-      <div class="mode-toggle" role="radiogroup">
-        <label class="mode-option">
-          <input type="radio" name="mode" value="pen">
-          <span>Potlood (stylus)</span>
-        </label>
-        <label class="mode-option">
-          <input type="radio" name="mode" value="hand">
-          <span>Vinger</span>
-        </label>
+      <div class="mode-grid" role="group" aria-label="Schrijven met">
+        <button type="button" class="mode-btn" data-mode="pen" aria-pressed="true">Potlood</button>
+        <button type="button" class="mode-btn" data-mode="hand" aria-pressed="false">Vinger</button>
       </div>
-      <p id="modeHint" class="hint"></p>
-
-      <div class="score">
-        <span>Goed: <strong id="scoreOk">0</strong></span>
-        <span>Pogingen: <strong id="scoreTotal">0</strong></span>
-      </div>
+      <p id="modeHint" class="settings-hint"></p>
     </aside>
 
-    <!-- Spel en schrijfzone -->
+    <!-- Spel (rechts) -->
     <section class="game">
-      <div class="exercise">
-        <span id="factorA">1</span>
-        <span class="op">×</span>
-        <span id="factorB">2</span>
+      <div id="exercise" class="exercise">
+        <span id="factorA" class="num">?</span>
+        <span class="op">&times;</span>
+        <span id="factorB" class="num">?</span>
         <span class="op">=</span>
-        <span id="answerBox" class="answer-box"></span>
+        <span id="answerSlot" class="answer">?</span>
       </div>
 
-      <div id="feedback" class="feedback" aria-live="polite"></div>
-
-      <div class="pad-wrap">
+      <div id="canvasWrap" class="canvas-wrap">
         <canvas id="pad"></canvas>
-        <span id="padLabel" class="pad-label">Schrijf hier je antwoord</span>
+        <span class="placeholder">Schrijf hier je antwoord</span>
       </div>
 
-      <div class="actions">
-        <button id="undoBtn" class="btn btn-secondary" type="button">Stap terug</button>
-        <button id="clearBtn" class="btn btn-secondary" type="button">Wissen</button>
-        <button id="checkBtn" class="btn btn-primary" type="button">Controleer</button>
+      <div class="controls">
+        <button type="button" id="undoBtn" class="btn">Stap terug</button>
+        <button type="button" id="clearBtn" class="btn">Wissen</button>
+        <button type="button" id="checkBtn" class="btn primary">Controleer</button>
       </div>
+
+      <p id="feedback" class="feedback" aria-live="polite"></p>
+      <p id="hint" class="hint"></p>
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
