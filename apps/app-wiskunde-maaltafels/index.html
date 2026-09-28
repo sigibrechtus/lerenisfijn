@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Maaltafels – Leren is fijn</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
   <header class="topbar">
@@ -13,34 +13,38 @@
       <h1>Maaltafels</h1>
       <p class="subtitle">OLV SGR L2 – Wiskunde</p>
     </div>
-    <div class="score-box">Score: <span id="score">0</span></div>
+    <div class="score-box">Score <span id="score">0</span></div>
   </header>
 
   <main class="layout">
     <!-- Instellingen (links) -->
     <aside class="settings" aria-label="Instellingen">
-      <h2>Tafels</h2>
-      <div id="tableButtons" class="table-grid"></div>
-      <div class="quick">
-        <button type="button" id="selectAll" class="small-btn">Alles</button>
-        <button type="button" id="selectNone" class="small-btn">Geen</button>
-      </div>
-      <p id="settingsHint" class="settings-hint"></p>
+      <section class="settings-block">
+        <h2>Kies je tafels</h2>
+        <div id="tableButtons" class="table-grid"></div>
+        <div class="quick">
+          <button type="button" id="selectAll" class="small-btn small-all">Alles</button>
+          <button type="button" id="selectNone" class="small-btn small-none">Geen</button>
+        </div>
+        <p id="settingsHint" class="settings-hint"></p>
+      </section>
 
-      <h2>Schrijven met</h2>
-      <div class="mode-grid" role="group" aria-label="Schrijven met">
-        <button type="button" class="mode-btn" data-mode="pen" aria-pressed="true">Potlood</button>
-        <button type="button" class="mode-btn" data-mode="hand" aria-pressed="false">Vinger</button>
-      </div>
-      <p id="modeHint" class="settings-hint"></p>
+      <section class="settings-block">
+        <h2>Schrijven met</h2>
+        <div class="mode-grid" role="group" aria-label="Schrijven met">
+          <button type="button" class="mode-btn mode-pen" data-mode="pen" aria-pressed="true">&#9998; Potlood</button>
+          <button type="button" class="mode-btn mode-hand" data-mode="hand" aria-pressed="false">&#9757; Vinger</button>
+        </div>
+        <p id="modeHint" class="settings-hint"></p>
+      </section>
     </aside>
 
     <!-- Spel (rechts) -->
     <section class="game">
       <div id="exercise" class="exercise">
-        <span id="factorA" class="num">?</span>
+        <span id="factorA" class="num num-a">?</span>
         <span class="op">&times;</span>
-        <span id="factorB" class="num">?</span>
+        <span id="factorB" class="num num-b">?</span>
         <span class="op">=</span>
         <span id="answerSlot" class="answer">?</span>
       </div>
@@ -51,9 +55,9 @@
       </div>
 
       <div class="controls">
-        <button type="button" id="undoBtn" class="btn">Stap terug</button>
-        <button type="button" id="clearBtn" class="btn">Wissen</button>
-        <button type="button" id="checkBtn" class="btn primary">Controleer</button>
+        <button type="button" id="undoBtn" class="btn btn-undo">&#8630; Stap terug</button>
+        <button type="button" id="clearBtn" class="btn btn-clear">&#10005; Wissen</button>
+        <button type="button" id="checkBtn" class="btn btn-check">&#10003; Controleer</button>
       </div>
 
       <p id="feedback" class="feedback" aria-live="polite"></p>
@@ -61,6 +65,6 @@
     </section>
   </main>
 
-  <script src="script.js" defer></script>
+  <script src="script.js?v=3" defer></script>
 </body>
 </html>
