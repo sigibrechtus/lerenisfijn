@@ -1,84 +1,71 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard voor Oefeningen</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .widget-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px 0;
-        }
-        .widget {
-            display: block;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 8px;
-            text-decoration: none;
-            color: #333;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .widget:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .widget h2 {
-            margin: 0 0 10px 0;
-            color: #2c3e50;
-        }
-        .widget p {
-            margin: 0;
-            color: #666;
-            font-size: 14px;
-        }
-        @media (max-width: 768px) {
-            .widget-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leren is fijn – Kies een oefening</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <header>
-        <h1>Kies een Oefening</h1>
-        <p>Selecteer een van de onderstaande apps om te starten.</p>
-    </header>
+  <header class="topbar">
+    <h1>Leren is fijn</h1>
+    <p class="subtitle">Kies een oefening om te starten.</p>
+  </header>
 
-    <main class="widget-container">
-        <a href="./apps/app-taal-spelling/index.html" class="widget">
-            <h2>Themadictee</h2>
-            <p>OLV SGR L2 - Taal - Spelling</p>
-        </a>
+  <main class="card-grid">
 
-        <a href="./apps/app-wiskunde-splitsingen/index.html" class="widget">
-            <h2>Splitsingen</h2>
-            <p>OLV SGR L2 - Wiskunde</p>
-        </a>
+    <a href="./apps/app-taal-spelling/index.html" class="card card--taal">
+      <span class="card-icon" aria-hidden="true">abc</span>
+      <div class="card-body">
+        <h2>Themadictee</h2>
+        <p>OLV SGR L2 – Taal – Spelling</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">L2</span>
+        <span class="tag tag--subject">Taal</span>
+      </div>
+    </a>
 
-        <a href="./apps/app-wiskunde-maaldeeltafels/index.html" class="widget">
-            <h2>Maal- en deeltafels</h2>
-            <p>OLV SGR L2 - Wiskunde</p>
-        </a>
+    <a href="./apps/app-wiskunde-splitsingen/index.html" class="card card--wiskunde">
+      <span class="card-icon" aria-hidden="true">2+3</span>
+      <div class="card-body">
+        <h2>Splitsingen</h2>
+        <p>OLV SGR L2 – Wiskunde</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">L2</span>
+        <span class="tag tag--subject">Wiskunde</span>
+      </div>
+    </a>
 
-        <a href="./apps/app-wiskunde-kloklezen/index.html" class="widget">
-            <h2>Kloklezen</h2>
-            <p>OLV SGR L3 - Wiskunde</p>
-        </a>
-    </main>
+    <a href="./apps/app-wiskunde-maaldeeltafels/index.html" class="card card--wiskunde">
+      <span class="card-icon" aria-hidden="true">&times;&divide;</span>
+      <div class="card-body">
+        <h2>Maal- en deeltafels</h2>
+        <p>OLV SGR L2 – Wiskunde</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">L2</span>
+        <span class="tag tag--subject">Wiskunde</span>
+      </div>
+    </a>
+
+    <a href="./apps/app-wiskunde-kloklezen/index.html" class="card card--wiskunde">
+      <span class="card-icon" aria-hidden="true"><span class="clock"></span></span>
+      <div class="card-body">
+        <h2>Kloklezen</h2>
+        <p>OLV SGR L3 – Wiskunde</p>
+      </div>
+      <div class="card-tags">
+        <span class="tag">L3</span>
+        <span class="tag tag--subject">Wiskunde</span>
+      </div>
+    </a>
+
+  </main>
+
+  <footer class="footer">Leren is fijn</footer>
 
 </body>
 </html>

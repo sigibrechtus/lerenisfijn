@@ -1,62 +1,143 @@
 :root {
-  --bg: #f4f6fb;
-  --card: #fff;
-  --text: #1d2b53;
-  --muted: #5b6785;
-  --accent: #0a7cff;
+  --bg: #fff8ec;
+  --card: #ffffff;
+  --primary: #ff7a45;
+  --primary-dark: #e8622c;
+  --accent: #4dabf7;
+  --accent-dark: #1c7ed6;
+  --taal: #9c36b5;
+  --taal-light: #f8f0fc;
+  --wiskunde: #1c7ed6;
+  --wiskunde-light: #e7f5ff;
+  --good: #2f9e44;
+  --text: #2b2d42;
+  --muted: #6c757d;
+  --radius: 18px;
+  --shadow: 0 6px 18px rgba(0, 0, 0, .08);
+  --shadow-hover: 0 12px 26px rgba(0, 0, 0, .14);
+  --font: "Comic Sans MS", "Chalkboard SE", "Segoe UI", Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
-
+html, body { margin: 0; }
 body {
-  margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font);
   background: var(--bg);
   color: var(--text);
-}
-
-header { padding: 2.5rem 1.5rem 0.5rem; text-align: center; }
-h1 { margin: 0; font-size: 2.2rem; }
-header p { color: var(--muted); font-size: 1.1rem; }
-
-.grid, .widget-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 1.25rem;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 1.5rem;
-}
-
-.tile, .widget {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 1.5rem;
-  background: var(--card);
-  border-radius: 18px;
-  text-decoration: none;
-  color: inherit;
-  box-shadow: 0 4px 14px rgba(29, 43, 83, 0.08);
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-.tile:hover, .tile:focus-visible,
-.widget:hover, .widget:focus-visible {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(29, 43, 83, 0.14);
 }
 
-.tile-icon {
-  width: 56px; height: 56px;
-  border-radius: 14px;
-  display: grid; place-items: center;
-  font-size: 1.5rem; font-weight: 700;
+/* ---------- Kopbalk ---------- */
+.topbar {
+  background: var(--primary);
   color: #fff;
-  background: var(--c, var(--accent));
+  text-align: center;
+  padding: 1.5rem 1rem 1.75rem;
+  box-shadow: var(--shadow);
+}
+.topbar h1 { margin: 0; font-size: clamp(1.8rem, 5vw, 2.6rem); }
+.subtitle { margin: .35rem 0 0; font-size: 1.05rem; opacity: .92; }
+
+/* ---------- Kaarten ---------- */
+.card-grid {
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
 }
 
-.tile h2, .widget h2 { margin: 0.25rem 0 0; font-size: 1.25rem; }
-.tile p, .widget p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.4; }
-.tile.soon { opacity: 0.55; pointer-events: none; }
+.card {
+  --subject: var(--accent-dark);
+  --subject-light: var(--wiskunde-light);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+  padding: 1.4rem 1.25rem 1.1rem;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border-top: 8px solid var(--subject);
+  color: var(--text);
+  text-decoration: none;
+  transition: transform .2s, box-shadow .2s;
+}
+.card--taal     { --subject: var(--taal);     --subject-light: var(--taal-light); }
+.card--wiskunde { --subject: var(--wiskunde); --subject-light: var(--wiskunde-light); }
 
-footer { text-align: center; color: var(--muted); padding: 2rem; font-size: 0.85rem; }
+.card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+.card:active { transform: translateY(-1px) scale(.98); }
+.card:focus-visible { outline: 4px solid var(--primary); outline-offset: 3px; }
+
+.card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: var(--subject-light);
+  color: var(--subject);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.card-body h2 { margin: 0 0 .3rem; font-size: 1.35rem; color: var(--text); }
+.card-body p  { margin: 0; font-size: .9rem; color: var(--muted); }
+
+.card-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: auto; }
+.tag {
+  padding: .2rem .65rem;
+  border-radius: 999px;
+  background: #eef2f7;
+  color: var(--text);
+  font-size: .8rem;
+  font-weight: 700;
+}
+.tag--subject { background: var(--subject-light); color: var(--subject); }
+.tag--new     { background: var(--good); color: #fff; }
+
+/* ---------- Klok-icoon (CSS) ---------- */
+.clock {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border: 4px solid currentColor;
+  border-radius: 50%;
+}
+.clock::before, .clock::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 4px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform-origin: bottom center;
+}
+.clock::before { height: 11px; transform: rotate(90deg); }  /* uurwijzer op 3 */
+.clock::after  { height: 14px; }                            /* minutenwijzer op 12 */
+
+/* ---------- Voettekst ---------- */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  color: var(--muted);
+  font-size: .85rem;
+}
+
+/* ---------- Kleine schermen ---------- */
+@media (max-width: 600px) {
+  .card-grid { grid-template-columns: 1fr; padding: 1.25rem 1rem; }
+  .card { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .card-body { flex: 1; min-width: 0; }
+  .card-tags { width: 100%; }
+}
