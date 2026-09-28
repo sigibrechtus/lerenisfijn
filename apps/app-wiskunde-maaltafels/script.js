@@ -7,6 +7,10 @@
   const STORAGE_KEY = 'lerenisfijn-maaltafels-tafels';
   const DEFAULT_TABLES = [2, 5, 10];
   const PRAISE = ['Goed zo!', 'Super!', 'Knap gedaan!', 'Prima!', 'Top!', 'Heel goed!'];
+  const INPUT_KEY = 'lerenisfijn-maaltafels-schrijfwijze';
+  const DEFAULT_INPUT = 'hand';               // 'pen' = potlood, 'hand' = vinger
+  const LINE_WIDTH = { pen: 6, hand: 10 };
+
 
   const els = {
     tableButtons: document.getElementById('tableButtons'),
@@ -32,6 +36,10 @@
   let attempts = 0;
   let score = 0;
   let locked = false;
+  let inputMode = loadInputMode();
+  let activePointerId = null;
+  let penSeen = false;
+
 
   /* =========================================================
      Instellingen (tafels kiezen)
@@ -100,6 +108,74 @@
     selectedTables = [];
     onTablesChanged();
   });
+
+    /* =========================================================
+     Schrijfwijze (potlood of vinger)
+     ========================================================= */
+  function loadInputMode() {
+    try {
+      const saved = localStorage.getItem(INPUT_KEY);
+      if (saved === 'pen' || saved === 'hand') return saved;
+    } catch (e) { /* negeren */ }
+    return DEFAULT_INPUT;
+  }
+
+  function saveInputMode() {
+    try { localStorage.setItem(INPUT_KEY, inputMode); } catch (e) { /* negeren */ }
+  }
+
+  let modeHint = null;
+
+  function renderInputModeButtons() {
+    const panel = els.settingsHint.parentElement || els.tableButtons.parentElement;
+    const wrap = document.createElement('div');
+    wrap.className = 'input-mode';
+    wrap.innerHTML = `
+      <h3 class="input-mode-title">Schrijven met</h3>
+      <div class="input-mode-buttons" role="group" aria-label="Schrijven met">
+        <button type="button" class="table-btn mode-btn" data-mode="pen"
+                title="Schrijf met een pen of potlood voor tablet">Potlood</button>
+        <button type="button" class="table-btn mode-btn" data-mode="hand"
+                title="Schrijf met je vinger">Vinger</button>
+      </div>
+      <p class="mode-hint"></p>`;
+    panel.appendChild(wrap);
+
+    modeHint = wrap.querySelector('.mode-hint');
+    wrap.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => setInputMode(btn.dataset.mode));
+    });
+    updateInputModeButtons();
+  }
+
+  function updateInputModeButtons() {
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.setAttribute('aria-pressed', btn.dataset.mode === inputMode ? 'true' : 'false');
+    });
+    if (modeHint) {
+      modeHint.textContent = inputMode === 'pen'
+        ? 'Alleen de pen schrijft. Je hand mag op het scherm rusten.'
+        : 'Schrijf met één vinger.';
+    }
+  }
+
+  function setInputMode(mode) {
+    if (mode !== 'pen' && mode !== 'hand') return;
+    inputMode = mode;
+    saveInputMode();
+    updateInputModeButtons();
+    activeStroke = null;
+    activePointerId = null;
+    redraw();
+  }
+
+  // Mag dit type aanraking schrijven in de huidige modus?
+  function acceptsPointer(e) {
+    if (e.pointerType === 'mouse') return true;
+    if (inputMode === 'pen') return e.pointerType === 'pen';
+    return e.isPrimary;                       // vinger: enkel de eerste vinger
+  }
+
 
   /* =========================================================
      Oefeningen
@@ -241,7 +317,7 @@
     const ink = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#1e3799';
     ctx.strokeStyle = ink;
     ctx.fillStyle = ink;
-    ctx.lineWidth = 9;
+    ctx.lineWidth = LINE_WIDTH[inputMode] || 9;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
   }
@@ -253,7 +329,7 @@
     strokes.forEach(s => {
       if (s.length === 1) {
         ctx.beginPath();
-        ctx.arc(s[0].x, s[0].y, 4.5, 0, Math.PI * 2);
+        ctx.arc(s[0].x, s[0].y, ctx.lineWidth / 2, 0, Math.PI * 2);
         ctx.fill();
         return;
       }
@@ -279,8 +355,29 @@
     redraw();
   });
 
+  els.pad.addEventListener('pointerdown', e => {
+    e.preventDefault();                       // geen scrollen/zoomen door de hand
+    if (locked || !current) return;
+    if (e.pointerType === 'pen') penSeen = true;
+
+    if (!acceptsPointer(e)) {
+      // Potlood-modus maar met vinger aangeraakt: één keer uitleg tonen
+      if (inputMode === 'pen' && e.pointerType === 'touch' && !penSeen && !strokes.length) {
+        setFeedback('Potlood-modus: schrijf met de pen, of kies "Vinger".', 'info');
+      }
+      return;
+    }
+    if (activePointerId !== null) return;     // al aan het schrijven
+
+    activePointerId = e.pointerId;
+    els.pad.setPointerCapture(e.pointerId);
+    activeStroke = [getPos(e)];
+    strokes.push(activeStroke);
+    redraw();
+  });
+
   els.pad.addEventListener('pointermove', e => {
-    if (!activeStroke) return;
+    if (!activeStroke || e.pointerId !== activePointerId) return;
     e.preventDefault();
     const events = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
     setInkStyle();
@@ -295,13 +392,19 @@
     });
   });
 
-  const endStroke = () => { activeStroke = null; };
+  const endStroke = e => {
+    if (e.pointerId !== activePointerId) return;
+    activeStroke = null;
+    activePointerId = null;
+  };
   els.pad.addEventListener('pointerup', endStroke);
   els.pad.addEventListener('pointercancel', endStroke);
+  els.pad.addEventListener('lostpointercapture', endStroke);
 
   function clearPad() {
     strokes = [];
     activeStroke = null;
+    activePointerId = null;
     redraw();
   }
 
@@ -578,6 +681,8 @@
      Start
      ========================================================= */
   renderTableButtons();
+  renderInputModeButtons();
   resizeCanvas();
   newExercise();
+
 })();

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Maaltafels – Leren is fijn</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="../index.html" class="home-btn">&larr; Home</a>
+    <div class="titles">
+      <h1>Maaltafels</h1>
+      <span class="subtitle">OLV SGR L2 – Wiskunde</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- Instellingen (links) -->
+    <aside class="settings">
+      <h2>Welke tafels?</h2>
+      <div id="tableChoices" class="table-grid"></div>
+      <div class="row">
+        <button id="selectAll" class="small-btn" type="button">Alles</button>
+        <button id="selectNone" class="small-btn" type="button">Niets</button>
+      </div>
+
+      <h2>Schrijven met</h2>
+      <div class="mode-toggle" role="radiogroup">
+        <label class="mode-option">
+          <input type="radio" name="mode" value="pen">
+          <span>Potlood (stylus)</span>
+        </label>
+        <label class="mode-option">
+          <input type="radio" name="mode" value="hand">
+          <span>Vinger</span>
+        </label>
+      </div>
+      <p id="modeHint" class="hint"></p>
+
+      <div class="score">
+        <span>Goed: <strong id="scoreOk">0</strong></span>
+        <span>Pogingen: <strong id="scoreTotal">0</strong></span>
+      </div>
+    </aside>
+
+    <!-- Spel en schrijfzone -->
+    <section class="game">
+      <div class="exercise">
+        <span id="factorA">1</span>
+        <span class="op">×</span>
+        <span id="factorB">2</span>
+        <span class="op">=</span>
+        <span id="answerBox" class="answer-box"></span>
+      </div>
+
+      <div id="feedback" class="feedback" aria-live="polite"></div>
+
+      <div class="pad-wrap">
+        <canvas id="pad"></canvas>
+        <span id="padLabel" class="pad-label">Schrijf hier je antwoord</span>
+      </div>
+
+      <div class="actions">
+        <button id="undoBtn" class="btn btn-secondary" type="button">Stap terug</button>
+        <button id="clearBtn" class="btn btn-secondary" type="button">Wissen</button>
+        <button id="checkBtn" class="btn btn-primary" type="button">Controleer</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
