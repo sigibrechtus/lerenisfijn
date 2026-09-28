@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Maaltafels – Leren is fijn</title>
-  <link rel="stylesheet" href="style.css?v=3">
+  <title>Maal- en deeltafels – Leren is fijn</title>
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <header class="topbar">
     <a class="back" href="../../index.html">&larr; Terug</a>
     <div class="title">
-      <h1>Maaltafels</h1>
+      <h1>Maal- en deeltafels</h1>
       <p class="subtitle">OLV SGR L2 – Wiskunde</p>
     </div>
     <div class="score-box">Score <span id="score">0</span></div>
@@ -19,6 +19,15 @@
   <main class="layout">
     <!-- Instellingen (links) -->
     <aside class="settings" aria-label="Instellingen">
+      <section class="settings-block">
+        <h2>Soort oefening</h2>
+        <div class="type-grid" role="group" aria-label="Soort oefening">
+          <button type="button" class="type-btn type-mul" data-type="mul" aria-pressed="true">&times; Maal</button>
+          <button type="button" class="type-btn type-div" data-type="div" aria-pressed="false">: Deel</button>
+          <button type="button" class="type-btn type-mix" data-type="mix" aria-pressed="false">Beide</button>
+        </div>
+      </section>
+
       <section class="settings-block">
         <h2>Kies je tafels</h2>
         <div id="tableButtons" class="table-grid"></div>
@@ -43,7 +52,7 @@
     <section class="game">
       <div id="exercise" class="exercise">
         <span id="factorA" class="num num-a">?</span>
-        <span class="op">&times;</span>
+        <span id="opSign" class="op">&times;</span>
         <span id="factorB" class="num num-b">?</span>
         <span class="op">=</span>
         <span id="answerSlot" class="answer">?</span>
@@ -65,6 +74,6 @@
     </section>
   </main>
 
-  <script src="script.js?v=3" defer></script>
+  <script src="script.js?v=4" defer></script>
 </body>
 </html>

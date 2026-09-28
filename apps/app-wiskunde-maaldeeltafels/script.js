@@ -6,9 +6,12 @@
      ========================================================= */
   const STORAGE_KEY = 'lerenisfijn-maaltafels-tafels';
   const INPUT_KEY = 'lerenisfijn-maaltafels-schrijfwijze';
+  const TYPE_KEY = 'lerenisfijn-maaltafels-soort';
   const DEFAULT_TABLES = [2, 5, 10];
   const DEFAULT_INPUT = 'pen';                 // 'pen' = potlood (standaard), 'hand' = vinger
+  const DEFAULT_TYPE = 'mul';                  // 'mul' = maal, 'div' = deel, 'mix' = beide
   const LINE_WIDTH = { pen: 6, hand: 10 };
+  const SIGN = { mul: '\u00D7', div: ':' };
   const PRAISE = ['Goed zo!', 'Super!', 'Knap gedaan!', 'Prima!', 'Top!', 'Heel goed!'];
 
   const $ = id => document.getElementById(id);
@@ -21,6 +24,7 @@
     exercise: $('exercise'),
     factorA: $('factorA'),
     factorB: $('factorB'),
+    opSign: $('opSign'),
     answerSlot: $('answerSlot'),
     canvasWrap: $('canvasWrap'),
     pad: $('pad'),
@@ -42,13 +46,15 @@
     return;
   }
   const modeButtons = document.querySelectorAll('.mode-btn');
+  const typeButtons = document.querySelectorAll('.type-btn');
 
   /* =========================================================
      Status
      ========================================================= */
   let selectedTables = loadTables();
   let inputMode = loadInputMode();
-  let current = null;          // { table, m, answer }
+  let exerciseType = loadType();
+  let current = null;          // { type, table, m, a, b, sign, answer }
   let attempts = 0;
   let score = 0;
   let locked = false;
@@ -59,6 +65,38 @@
   let activePointerId = null;
   let activePointerType = null;
   let penSeen = false;         // echte actieve pen gedetecteerd?
+
+  /* =========================================================
+     Soort oefening (maal / deel / beide)
+     ========================================================= */
+  function loadType() {
+    try {
+      const saved = localStorage.getItem(TYPE_KEY);
+      if (saved === 'mul' || saved === 'div' || saved === 'mix') return saved;
+    } catch (e) { /* negeren */ }
+    return DEFAULT_TYPE;
+  }
+
+  function saveType() {
+    try { localStorage.setItem(TYPE_KEY, exerciseType); } catch (e) { /* negeren */ }
+  }
+
+  function updateTypeButtons() {
+    typeButtons.forEach(btn => {
+      btn.setAttribute('aria-pressed', btn.dataset.type === exerciseType ? 'true' : 'false');
+    });
+  }
+
+  function setType(type) {
+    if (type !== 'mul' && type !== 'div' && type !== 'mix') return;
+    if (locked) return;
+    exerciseType = type;
+    saveType();
+    updateTypeButtons();
+    newExercise();
+  }
+
+  typeButtons.forEach(btn => btn.addEventListener('click', () => setType(btn.dataset.type)));
 
   /* =========================================================
      Tafels kiezen
@@ -179,6 +217,18 @@
      ========================================================= */
   const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
+  function makeExercise() {
+    const type = exerciseType === 'mix' ? pick(['mul', 'div']) : exerciseType;
+    const table = pick(selectedTables);
+    const m = 1 + Math.floor(Math.random() * 10);
+    if (type === 'div') {
+      // (m × tafel) : tafel = m
+      return { type, table, m, a: m * table, b: table, sign: SIGN.div, answer: m };
+    }
+    // m × tafel = ?
+    return { type, table, m, a: m, b: table, sign: SIGN.mul, answer: m * table };
+  }
+
   function newExercise() {
     clearPad();
     setFeedback('', '');
@@ -191,6 +241,8 @@
       current = null;
       els.factorA.textContent = '?';
       els.factorB.textContent = '?';
+      els.opSign.textContent = exerciseType === 'div' ? SIGN.div : SIGN.mul;
+      els.exercise.classList.toggle('is-div', exerciseType === 'div');
       setGameEnabled(false);
       return;
     }
@@ -199,15 +251,16 @@
     let ex;
     let guard = 0;
     do {
-      const table = pick(selectedTables);
-      const m = 1 + Math.floor(Math.random() * 10);
-      ex = { table, m, answer: table * m };
+      ex = makeExercise();
       guard++;
-    } while (current && ex.table === current.table && ex.m === current.m && guard < 25);
+    } while (current && ex.type === current.type && ex.table === current.table &&
+             ex.m === current.m && guard < 25);
 
     current = ex;
-    els.factorA.textContent = ex.m;
-    els.factorB.textContent = ex.table;
+    els.factorA.textContent = ex.a;
+    els.factorB.textContent = ex.b;
+    els.opSign.textContent = ex.sign;
+    els.exercise.classList.toggle('is-div', ex.type === 'div');
   }
 
   function setGameEnabled(enabled) {
@@ -223,11 +276,18 @@
   }
 
   function showHint() {
-    const { m, table } = current;
-    const sum = Array(m).fill(table).join(' + ');
-    els.hint.textContent = m === 1
-      ? `Tip: 1 \u00D7 ${table} betekent 1 keer ${table}.`
-      : `Tip: ${m} \u00D7 ${table} betekent ${m} keer ${table}: ${sum}`;
+    const { type, m, table, a, b } = current;
+    if (type === 'div') {
+      const steps = [];
+      for (let i = 1; i <= m; i++) steps.push(i * table);
+      els.hint.textContent =
+        `Tip: denk aan de maaltafel: ? \u00D7 ${b} = ${a}. Tel verder met ${b}: ${steps.join(', ')}`;
+    } else {
+      const sum = Array(m).fill(table).join(' + ');
+      els.hint.textContent = m === 1
+        ? `Tip: 1 \u00D7 ${table} betekent 1 keer ${table}.`
+        : `Tip: ${m} \u00D7 ${table} betekent ${m} keer ${table}: ${sum}`;
+    }
     els.hint.classList.add('visible');
   }
 
@@ -264,7 +324,7 @@
       els.score.textContent = score;
       els.answerSlot.textContent = current.answer;
       els.answerSlot.classList.add('correct');
-      setFeedback(`${pick(PRAISE)} ${current.m} \u00D7 ${current.table} = ${current.answer}`, 'good');
+      setFeedback(`${pick(PRAISE)} ${current.a} ${current.sign} ${current.b} = ${current.answer}`, 'good');
       hideHint();
       animate('pop');
       setTimeout(() => {
@@ -689,6 +749,7 @@
      Start
      ========================================================= */
   renderTableButtons();
+  updateTypeButtons();
   updateInputModeButtons();
   resizeCanvas();
   newExercise();

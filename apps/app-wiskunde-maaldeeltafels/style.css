@@ -357,3 +357,32 @@ button { font-family: inherit; }
   .controls { grid-template-columns: 1fr 1fr 1fr; }
   .btn, .btn-check { padding: 10px 6px; font-size: .95rem; }
 }
+
+/* ---------- Soort oefening (maal / deel / beide) ---------- */
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 6px;
+  gap: 6px;
+}
+.type-btn {
+  font-size: .95rem;
+  font-weight: bold;
+  padding: 9px 2px;
+  border: 3px solid var(--c);
+  border-bottom-width: 6px;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--c);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.type-mul { --c: var(--blue); }
+.type-div { --c: #ea580c; }
+.type-mix { --c: var(--green); }
+.type-btn[aria-pressed="true"] { background: var(--c); color: #fff; }
+.type-btn:active { transform: translateY(2px); border-bottom-width: 4px; }
+
+/* Deelteken iets groter zodat het goed zichtbaar is */
+#opSign { min-width: .6em; text-align: center; }
+.exercise.is-div #opSign { color: #ea580c; }
