@@ -2,15 +2,14 @@
   'use strict';
 
   /* =========================================================
-     Instellingen & status
+     Instellingen & constanten
      ========================================================= */
   const STORAGE_KEY = 'lerenisfijn-maaltafels-tafels';
-  const DEFAULT_TABLES = [2, 5, 10];
-  const PRAISE = ['Goed zo!', 'Super!', 'Knap gedaan!', 'Prima!', 'Top!', 'Heel goed!'];
   const INPUT_KEY = 'lerenisfijn-maaltafels-schrijfwijze';
-  const DEFAULT_INPUT = 'hand';               // 'pen' = potlood, 'hand' = vinger
+  const DEFAULT_TABLES = [2, 5, 10];
+  const DEFAULT_INPUT = 'pen';                 // 'pen' = potlood (standaard), 'hand' = vinger
   const LINE_WIDTH = { pen: 6, hand: 10 };
-
+  const PRAISE = ['Goed zo!', 'Super!', 'Knap gedaan!', 'Prima!', 'Top!', 'Heel goed!'];
 
   const els = {
     tableButtons: document.getElementById('tableButtons'),
@@ -31,25 +30,32 @@
     score: document.getElementById('score')
   };
 
+  /* =========================================================
+     Status
+     ========================================================= */
   let selectedTables = loadTables();
-  let current = null;       // { table, m, answer }
+  let inputMode = loadInputMode();
+  let current = null;          // { table, m, answer }
   let attempts = 0;
   let score = 0;
   let locked = false;
-  let inputMode = loadInputMode();
+
+  // Schrijfvak
+  const ctx = els.pad.getContext('2d');
+  let strokes = [];            // [[{x,y}, ...], ...] in CSS-pixels
+  let activeStroke = null;
   let activePointerId = null;
   let penSeen = false;
-
+  let modeHint = null;
 
   /* =========================================================
-     Instellingen (tafels kiezen)
+     Tafels kiezen
      ========================================================= */
   function loadTables() {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
       if (Array.isArray(saved)) {
-        const valid = saved.filter(n => Number.isInteger(n) && n >= 1 && n <= 10);
-        return valid;
+        return saved.filter(n => Number.isInteger(n) && n >= 1 && n <= 10);
       }
     } catch (e) { /* negeren */ }
     return DEFAULT_TABLES.slice();
@@ -109,7 +115,7 @@
     onTablesChanged();
   });
 
-    /* =========================================================
+  /* =========================================================
      Schrijfwijze (potlood of vinger)
      ========================================================= */
   function loadInputMode() {
@@ -123,8 +129,6 @@
   function saveInputMode() {
     try { localStorage.setItem(INPUT_KEY, inputMode); } catch (e) { /* negeren */ }
   }
-
-  let modeHint = null;
 
   function renderInputModeButtons() {
     const panel = els.settingsHint.parentElement || els.tableButtons.parentElement;
@@ -166,16 +170,16 @@
     updateInputModeButtons();
     activeStroke = null;
     activePointerId = null;
+    if (els.feedback.classList.contains('info')) setFeedback('', '');
     redraw();
   }
 
   // Mag dit type aanraking schrijven in de huidige modus?
   function acceptsPointer(e) {
-    if (e.pointerType === 'mouse') return true;
+    if (e.pointerType === 'mouse') return true;          // pc blijft altijd werken
     if (inputMode === 'pen') return e.pointerType === 'pen';
-    return e.isPrimary;                       // vinger: enkel de eerste vinger
+    return e.isPrimary;                                   // vinger: enkel de eerste vinger
   }
-
 
   /* =========================================================
      Oefeningen
@@ -300,9 +304,11 @@
   /* =========================================================
      Schrijfvak (canvas)
      ========================================================= */
-  const ctx = els.pad.getContext('2d');
-  let strokes = [];          // [[{x,y}, ...], ...] in CSS-pixels
-  let activeStroke = null;
+  // Geen scrollen/zoomen wanneer de hand op het schrijfvak rust
+  els.pad.style.touchAction = 'none';
+  els.pad.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
+  els.pad.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+  els.pad.addEventListener('contextmenu', e => e.preventDefault());
 
   function resizeCanvas() {
     const rect = els.pad.getBoundingClientRect();
@@ -347,27 +353,18 @@
   }
 
   els.pad.addEventListener('pointerdown', e => {
-    if (locked || !current) return;
     e.preventDefault();
-    els.pad.setPointerCapture(e.pointerId);
-    activeStroke = [getPos(e)];
-    strokes.push(activeStroke);
-    redraw();
-  });
-
-  els.pad.addEventListener('pointerdown', e => {
-    e.preventDefault();                       // geen scrollen/zoomen door de hand
     if (locked || !current) return;
     if (e.pointerType === 'pen') penSeen = true;
 
     if (!acceptsPointer(e)) {
-      // Potlood-modus maar met vinger aangeraakt: één keer uitleg tonen
+      // Potlood-modus maar met vinger aangeraakt: uitleg tonen zolang er nog geen pen gebruikt is
       if (inputMode === 'pen' && e.pointerType === 'touch' && !penSeen && !strokes.length) {
         setFeedback('Potlood-modus: schrijf met de pen, of kies "Vinger".', 'info');
       }
       return;
     }
-    if (activePointerId !== null) return;     // al aan het schrijven
+    if (activePointerId !== null) return;     // er wordt al geschreven
 
     activePointerId = e.pointerId;
     els.pad.setPointerCapture(e.pointerId);
@@ -410,6 +407,8 @@
 
   function undoStroke() {
     strokes.pop();
+    activeStroke = null;
+    activePointerId = null;
     redraw();
   }
 
@@ -684,5 +683,4 @@
   renderInputModeButtons();
   resizeCanvas();
   newExercise();
-
 })();
