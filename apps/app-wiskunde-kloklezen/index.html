@@ -2,73 +2,75 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Leer de klok kennen! – Leren is fijn</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kloklezen - OLV SGR L2 - Wiskunde</title>
 <link rel="stylesheet" href="style.css">
-<style>
-@media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-    h1 {
-        font-size: 1.5em;
-        margin: 10px 0;
-    }
-    .instructie {
-        font-size: 0.9em;
-    }
-    #opdracht {
-        font-size: 1.1em;
-        margin: 15px 0;
-    }
-    #klok-container {
-        max-width: 300px;
-        margin: 20px auto;
-    }
-    #legende {
-        flex-direction: column;
-        gap: 10px;
-    }
-    #knoppen {
-        flex-direction: column;
-        gap: 10px;
-    }
-    #knoppen button {
-        width: 100%;
-    }
-}
-</style>
 </head>
 <body>
-<header class="topbar">
-    <a href="../../index.html" class="btn btn-ghost">&larr; Home</a>
-</header>
+<div class="app">
 
-<h1>🕐 Leer de klok kennen! 🕐</h1>
-<p class="instructie">Sleep de wijzers naar de juiste stand om de tijd hierboven te maken.</p>
+  <header class="top">
+    <h1>🕒 Kloklezen</h1>
+    <div class="score-badge">Score: <span id="score">0</span></div>
+  </header>
 
-<div id="opdracht">Zet de klok op 3 uur</div>
+  <section class="settings-panel">
+    <h2>Oefentype</h2>
+    <div class="mode-cards" id="modeCards">
+      <button type="button" class="mode-card" data-mode="read" aria-pressed="true" style="--card-color:#4b7bec">
+        <span class="mode-icon">🕐</span>
+        <span class="mode-label">Klok aflezen</span>
+      </button>
+      <button type="button" class="mode-card" data-mode="calc" aria-pressed="false" style="--card-color:#20bf6b">
+        <span class="mode-icon">➕</span>
+        <span class="mode-label">Rekenen met tijd</span>
+      </button>
+    </div>
+  </section>
 
-<div id="klok-container">
-    <div id="klok"></div>
-    <div id="grote-wijzer" class="wijzer"></div>
-    <div id="kleine-wijzer" class="wijzer"></div>
-    <div id="centrum"></div>
+  <section class="exercise" id="exercise">
+
+    <div class="clock-col">
+      <h3 id="leftLabel">Hoe laat is het?</h3>
+      <div class="clock-wrap">
+        <svg id="clockLeft" class="clock" viewBox="0 0 200 200" aria-label="gegeven klok"></svg>
+      </div>
+      <p class="delta-text" id="deltaText" hidden></p>
+    </div>
+
+    <div class="answer-col">
+      <h3 id="rightLabel">Zet de tijd</h3>
+
+      <div class="digital-input" id="digitalInput">
+        <div class="spinner">
+          <button type="button" class="spin-btn" data-target="hour" data-dir="1">▲</button>
+          <div class="spin-value" id="hourValue">12</div>
+          <button type="button" class="spin-btn" data-target="hour" data-dir="-1">▼</button>
+        </div>
+        <div class="colon">:</div>
+        <div class="spinner">
+          <button type="button" class="spin-btn" data-target="minute" data-dir="1">▲</button>
+          <div class="spin-value" id="minuteValue">00</div>
+          <button type="button" class="spin-btn" data-target="minute" data-dir="-1">▼</button>
+        </div>
+      </div>
+
+      <div class="clock-wrap" id="answerClockWrap" hidden>
+        <svg id="clockRight" class="clock answer-clock" viewBox="0 0 200 200" aria-label="jouw klok"></svg>
+        <p class="clock-hint">Sleep de wijzers naar de juiste tijd.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="controls">
+    <button type="button" id="checkBtn" class="btn primary">Controleer</button>
+  </div>
+
+  <p class="feedback" id="feedback" aria-live="polite"></p>
+  <p class="hint" id="hint"></p>
+
 </div>
-
-<div id="legende">
-    <div class="legende-item"><span class="kleur-vak" style="background:#2980b9;"></span> Grote wijzer = minuten</div>
-    <div class="legende-item"><span class="kleur-vak" style="background:#e74c3c;"></span> Kleine wijzer = uren</div>
-</div>
-
-<div id="knoppen">
-    <button id="controleer-btn">Controleer</button>
-    <button id="nieuwe-opdracht-btn">Nieuwe oefening</button>
-</div>
-
-<div id="feedback"></div>
-
-<script src="script.js" defer></script>
-
+<script src="script.js"></script>
 </body>
 </html>
