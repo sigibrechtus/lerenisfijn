@@ -7,13 +7,15 @@
   --good: #20bf6b;
   --bad: #eb3b5a;
   --info: #4b7bec;
+  --warn: #f7b731;
   --radius: 18px;
   --shadow: 0 10px 24px rgba(45, 49, 72, .08);
 }
 
 * { box-sizing: border-box; }
-[hidden] { display: none !important; }
 
+/* Zorgt dat [hidden] ALTIJD wint, ook als een andere regel display zet */
+[hidden] { display: none !important; }
 
 body {
   margin: 0;
@@ -31,6 +33,7 @@ body {
   padding: 1.5rem 1.25rem 3rem;
 }
 
+/* ---------- Header ---------- */
 .top {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -39,26 +42,24 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.home-btn {
-  justify-self: start;
+.top h1 { font-size: 1.8rem; margin: 0; text-align: center; }
+
+.back-link {
   display: inline-flex;
   align-items: center;
   gap: .3rem;
   background: var(--card-bg);
+  border-radius: 999px;
+  padding: .5rem 1rem;
+  box-shadow: var(--shadow);
   color: var(--text);
   text-decoration: none;
-  border-radius: 999px;
-  padding: .5rem 1.1rem;
-  box-shadow: var(--shadow);
+  font-size: .9rem;
   font-weight: bold;
-  font-size: .95rem;
-  transition: transform .15s ease;
+  white-space: nowrap;
 }
 
-.home-btn:hover { transform: translateY(-2px); }
-
-
-.top h1 { font-size: 1.8rem; margin: 0; text-align: center; }
+.back-link:hover { filter: brightness(0.96); }
 
 .score-badge {
   background: var(--card-bg);
@@ -66,8 +67,14 @@ body {
   padding: .5rem 1.1rem;
   box-shadow: var(--shadow);
   font-weight: bold;
+  white-space: nowrap;
 }
 
+@media (max-width: 560px) {
+  .top { grid-template-columns: 1fr; justify-items: center; gap: .6rem; }
+}
+
+/* ---------- Instellingen (mode cards) ---------- */
 .settings-panel {
   background: var(--card-bg);
   border-radius: var(--radius);
@@ -111,6 +118,7 @@ body {
 
 .mode-card:hover { transform: translateY(-2px); }
 
+/* ---------- Oefengebied ---------- */
 .exercise {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -160,12 +168,38 @@ body {
 .answer-clock .hand-hit { stroke: transparent; stroke-width: 24; cursor: grab; touch-action: none; }
 .answer-clock.dragging { cursor: grabbing; }
 
-.delta-text {
-  background: #fff6d8;
-  border-radius: 999px;
-  padding: .4rem 1rem;
+/* ---------- Tekst / woorden weergave (modus 'set') ---------- */
+.phrase-display {
+  background: #fff3d6;
+  border: 2px dashed var(--warn);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  font-size: 1.6rem;
   font-weight: bold;
   color: #7a5c00;
+  text-align: center;
+  margin: 0;
+}
+
+/* ---------- Delta-kaart met leuk icoon (modus 'calc') ---------- */
+.delta-card {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  background: #e6fbef;
+  border: 2px dashed var(--good);
+  border-radius: 16px;
+  padding: .9rem 1.2rem;
+  max-width: 100%;
+}
+
+.delta-icon { font-size: 2.4rem; line-height: 1; flex-shrink: 0; }
+
+.delta-sentence {
+  font-size: .95rem;
+  font-weight: bold;
+  color: #15794a;
+  text-align: left;
 }
 
 .clock-hint {
@@ -175,6 +209,7 @@ body {
   text-align: center;
 }
 
+/* ---------- Digitale invoer ---------- */
 .digital-input {
   display: flex;
   align-items: center;
@@ -200,6 +235,7 @@ body {
 }
 
 .spin-btn:hover { filter: brightness(1.08); }
+.spin-btn:disabled { opacity: .4; cursor: not-allowed; }
 
 .spin-value {
   width: 60px;
@@ -214,6 +250,7 @@ body {
 
 .colon { font-size: 1.8rem; font-weight: bold; color: var(--ink); }
 
+/* ---------- Besturing & feedback ---------- */
 .controls {
   display: flex;
   justify-content: center;
