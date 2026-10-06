@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ff7a45">
+  <title>Plus en min – Leren is fijn</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="back-link" href="../../index.html">← Alle oefeningen</a>
+    <h1>Plus en min</h1>
+    <p>Rekenoefeningen voor het tweede leerjaar</p>
+  </header>
+
+  <main class="app-shell">
+    <section class="panel" aria-label="Rekenoefening">
+      <div class="toolbar">
+        <label for="limit">Rekenen tot</label>
+        <select id="limit" aria-label="Kies het hoogste getal">
+          <option value="20">20</option>
+          <option value="100">100</option>
+        </select>
+        <button class="button button--quiet" id="new-round" type="button">Nieuwe reeks</button>
+      </div>
+
+      <p class="round-note">Tien vragen. Kies je antwoord en druk op <strong>Controleer</strong>.</p>
+
+      <section id="quiz" aria-labelledby="question-title">
+        <div class="score-row">
+          <span id="progress">Vraag 1 van 10</span>
+          <span id="score">Goed: 0</span>
+        </div>
+
+        <h2 id="question-title" class="question" aria-live="polite">Klaar voor de eerste vraag?</h2>
+
+        <form id="answer-form" class="answer-form">
+          <label class="sr-only" for="answer">Jouw antwoord</label>
+          <input id="answer" name="answer" type="number" inputmode="numeric" step="1" required autocomplete="off" aria-describedby="feedback">
+          <button class="button" id="submit-button" type="submit">Controleer</button>
+        </form>
+
+        <p id="feedback" class="feedback" role="status" aria-live="polite">Vul je antwoord in om te beginnen.</p>
+      </section>
+
+      <section id="summary" class="summary" hidden aria-live="polite">
+        <div class="summary-star" aria-hidden="true">★</div>
+        <h2 id="summary-title">Reeks klaar!</h2>
+        <p id="summary-score"></p>
+        <button class="button" id="again-button" type="button">Nog een reeks</button>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">Leren is fijn</footer>
+</body>
+</html>
