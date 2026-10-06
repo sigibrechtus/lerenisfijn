@@ -2,7 +2,8 @@
   const PROJECT_URL = "https://drouoptqpggvaomqacho.supabase.co";
   const PUBLISHABLE_KEY = "sb_publishable_MCkhERDuogH8NoVK2OIL-Q_BzqK3I6l";
 
-  const form = document.querySelector("#authForm");
+  const form = document.querySelector("#authEntry");
+  const authForm = document.querySelector("#authForm");
   const modeButtons = [...document.querySelectorAll("[data-auth-mode]")];
   const nameField = document.querySelector("#displayNameField");
   const nameInput = document.querySelector("#displayName");
@@ -88,7 +89,7 @@
     button.addEventListener("click", () => setMode(button.dataset.authMode));
   });
 
-  form.addEventListener("submit", async (event) => {
+  authForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     submitButton.disabled = true;
     setStatus(mode === "signup" ? "Je account wordt aangemaakt…" : "Je wordt ingelogd…", "");
