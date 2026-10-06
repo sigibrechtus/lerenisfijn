@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leren is fijn – Kies een oefening</title>
   <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+  <script defer src="auth.js"></script>
 </head>
 <body>
 
@@ -13,68 +15,106 @@
     <p class="subtitle">Kies een oefening om te starten.</p>
   </header>
 
-  <main class="card-grid">
+  <main>
+    <section class="auth-panel" aria-labelledby="authHeading">
+      <div class="auth-copy">
+        <h2 id="authHeading">Je account</h2>
+        <p>Maak een account of log in om je profiel te bewaren.</p>
+      </div>
 
-    <a href="./apps/app-taal-spelling/index.html" class="card card--taal">
-      <span class="card-icon" aria-hidden="true">abc</span>
-      <div class="card-body">
-        <h2>Themadictee</h2>
-        <p>OLV SGR L2 – Taal – Spelling</p>
-      </div>
-      <div class="card-tags">
-        <span class="tag">L2</span>
-        <span class="tag tag--subject">Taal</span>
-      </div>
-    </a>
+      <div class="auth-content">
+        <div id="authEntry">
+          <div class="auth-tabs" role="group" aria-label="Aanmeldoptie">
+            <button class="auth-tab" type="button" data-auth-mode="signin" aria-pressed="true">Inloggen</button>
+            <button class="auth-tab" type="button" data-auth-mode="signup" aria-pressed="false">Account maken</button>
+          </div>
+          <form id="authForm" class="auth-form">
+            <div id="displayNameField" hidden>
+              <label for="displayName">Naam</label>
+              <input id="displayName" name="name" type="text" autocomplete="name" maxlength="80" required>
+            </div>
+            <div>
+              <label for="authEmail">E-mailadres</label>
+              <input id="authEmail" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div>
+              <label for="authPassword">Wachtwoord</label>
+              <input id="authPassword" name="password" type="password" autocomplete="current-password" minlength="8" required>
+              <small>Minimaal 8 tekens.</small>
+            </div>
+            <button id="authSubmit" class="auth-submit" type="submit">Inloggen</button>
+            <p id="authStatus" class="auth-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
 
-    <a href="./apps/app-wiskunde-splitsingen/index.html" class="card card--wiskunde">
-      <span class="card-icon" aria-hidden="true">2+3</span>
-      <div class="card-body">
-        <h2>Splitsingen</h2>
-        <p>OLV SGR L2 – Wiskunde</p>
+        <div id="accountState" class="account-state" hidden>
+          <p id="accountGreeting"></p>
+          <button id="signOut" class="auth-submit auth-submit--secondary" type="button">Uitloggen</button>
+        </div>
       </div>
-      <div class="card-tags">
-        <span class="tag">L2</span>
-        <span class="tag tag--subject">Wiskunde</span>
-      </div>
-    </a>
+    </section>
 
-    <a href="./apps/app-wiskunde-plus-min/index.html" class="card card--wiskunde">
-      <span class="card-icon" aria-hidden="true">±</span>
-      <div class="card-body">
-        <h2>Plus en min</h2>
-        <p>OLV SGR L2 – Wiskunde</p>
-      </div>
-      <div class="card-tags">
-        <span class="tag">L2</span>
-        <span class="tag tag--subject">Wiskunde</span>
-      </div>
-    </a>
+    <section class="card-grid" aria-label="Oefeningen">
+      <a href="./apps/app-taal-spelling/index.html" class="card card--taal">
+        <span class="card-icon" aria-hidden="true">abc</span>
+        <div class="card-body">
+          <h2>Themadictee</h2>
+          <p>OLV SGR L2 – Taal – Spelling</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">L2</span>
+          <span class="tag tag--subject">Taal</span>
+        </div>
+      </a>
 
-    <a href="./apps/app-wiskunde-maaldeeltafels/index.html" class="card card--wiskunde">
-      <span class="card-icon" aria-hidden="true">&times;&divide;</span>
-      <div class="card-body">
-        <h2>Maal- en deeltafels</h2>
-        <p>OLV SGR L2 – Wiskunde</p>
-      </div>
-      <div class="card-tags">
-        <span class="tag">L2</span>
-        <span class="tag tag--subject">Wiskunde</span>
-      </div>
-    </a>
+      <a href="./apps/app-wiskunde-splitsingen/index.html" class="card card--wiskunde">
+        <span class="card-icon" aria-hidden="true">2+3</span>
+        <div class="card-body">
+          <h2>Splitsingen</h2>
+          <p>OLV SGR L2 – Wiskunde</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">L2</span>
+          <span class="tag tag--subject">Wiskunde</span>
+        </div>
+      </a>
 
-    <a href="./apps/app-wiskunde-kloklezen/index.html" class="card card--wiskunde">
-      <span class="card-icon" aria-hidden="true"><span class="clock"></span></span>
-      <div class="card-body">
-        <h2>Kloklezen</h2>
-        <p>OLV SGR L3 – Wiskunde</p>
-      </div>
-      <div class="card-tags">
-        <span class="tag">L3</span>
-        <span class="tag tag--subject">Wiskunde</span>
-      </div>
-    </a>
+      <a href="./apps/app-wiskunde-plus-min/index.html" class="card card--wiskunde">
+        <span class="card-icon" aria-hidden="true">±</span>
+        <div class="card-body">
+          <h2>Plus en min</h2>
+          <p>OLV SGR L2 – Wiskunde</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">L2</span>
+          <span class="tag tag--subject">Wiskunde</span>
+        </div>
+      </a>
 
+      <a href="./apps/app-wiskunde-maaldeeltafels/index.html" class="card card--wiskunde">
+        <span class="card-icon" aria-hidden="true">&times;&divide;</span>
+        <div class="card-body">
+          <h2>Maal- en deeltafels</h2>
+          <p>OLV SGR L2 – Wiskunde</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">L2</span>
+          <span class="tag tag--subject">Wiskunde</span>
+        </div>
+      </a>
+
+      <a href="./apps/app-wiskunde-kloklezen/index.html" class="card card--wiskunde">
+        <span class="card-icon" aria-hidden="true"><span class="clock"></span></span>
+        <div class="card-body">
+          <h2>Kloklezen</h2>
+          <p>OLV SGR L3 – Wiskunde</p>
+        </div>
+        <div class="card-tags">
+          <span class="tag">L3</span>
+          <span class="tag tag--subject">Wiskunde</span>
+        </div>
+      </a>
+    </section>
   </main>
 
   <footer class="footer">Leren is fijn</footer>
