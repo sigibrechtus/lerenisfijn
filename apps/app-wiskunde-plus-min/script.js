@@ -22,6 +22,8 @@
   let currentAnswer = 0;
   let currentQuestionText = "";
   let answered = false;
+  let questionId = null;
+  let questionStartedAt = 0;
 
   function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -54,6 +56,8 @@
     const limit = Number(limitSelect.value);
     const question = makeQuestion(limit);
     currentAnswer = question.answer;
+    questionId = window.lerenProgress ? window.lerenProgress.questionId() : null;
+    questionStartedAt = Date.now();
     currentQuestionText = question.text;
     answered = false;
 
@@ -106,7 +110,9 @@
     answered = true;
     answerInput.disabled = true;
 
-    if (userAnswer === currentAnswer) {
+    const correct = userAnswer === currentAnswer;
+    if (questionId && window.lerenProgress) window.lerenProgress.recordQuestion({ exercise_key: "app-wiskunde-plus-min", mode: String(limitSelect.value), question_id: questionId, attempt_count: 1, first_try_correct: correct, assisted: false, duration_ms: Math.max(0, Date.now() - questionStartedAt) });
+    if (correct) {
       correctAnswers += 1;
       feedback.textContent = "Juist! " + currentQuestionText.replace(" = ?", "") + " = " + currentAnswer + ".";
       feedback.className = "feedback feedback--good";
