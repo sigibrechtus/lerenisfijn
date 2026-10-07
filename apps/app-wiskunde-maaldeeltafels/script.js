@@ -58,6 +58,8 @@
   let attempts = 0;
   let score = 0;
   let locked = false;
+  let questionId = null;
+  let questionStartedAt = 0;
 
   const ctx = els.pad.getContext('2d');
   let strokes = [];            // [[{x,y}, ...], ...] in CSS-pixels
@@ -234,6 +236,8 @@
     setFeedback('', '');
     hideHint();
     attempts = 0;
+    questionId = window.lerenProgress ? window.lerenProgress.questionId() : null;
+    questionStartedAt = Date.now();
     els.answerSlot.textContent = '?';
     els.answerSlot.classList.remove('correct');
 
@@ -319,6 +323,7 @@
     const value = parseInt(read, 10);
 
     if (value === current.answer) {
+      if (questionId && window.lerenProgress) window.lerenProgress.recordQuestion({ exercise_key: "app-wiskunde-maaldeeltafels", mode: exerciseType, question_id: questionId, attempt_count: attempts + 1, first_try_correct: attempts === 0, assisted: false, duration_ms: Math.max(0, Date.now() - questionStartedAt) });
       locked = true;
       score++;
       els.score.textContent = score;
