@@ -378,6 +378,10 @@ const session = {
   lastRead: '',
   difficult: new Map(),
   lookTimer: null,
+  questionId: null,
+  questionStartedAt: 0,
+  assisted: false,
+  lastOutcome: false,
 };
 
 const currentItem = () => session.queue[session.index];
@@ -421,6 +425,10 @@ function showWord() {
   clearTimeout(session.lookTimer);
   const item = currentItem();
   session.attempts = 0;
+  session.questionId = window.lerenProgress ? window.lerenProgress.questionId() : null;
+  session.questionStartedAt = Date.now();
+  session.assisted = false;
+  session.lastOutcome = false;
 
   $('progress').textContent = `Woord ${session.index + 1} van ${session.queue.length}`;
   updateStars();
@@ -456,6 +464,7 @@ function showWord() {
 
 function registerOutcome(ok) {
   const item = currentItem();
+  session.lastOutcome = ok;
   if (ok) {
     if (session.attempts === 1) session.stars++;
   } else {
@@ -481,6 +490,7 @@ function showAutoResult(ok, read, item) {
 }
 
 function showManualResult(item) {
+  session.assisted = true;
   const box = $('result');
   $('write-actions').hidden = true;
   $('result-auto').hidden = true;
@@ -529,6 +539,9 @@ function overrideAsCorrect() {
 
 function next() {
   stopSpeech();
+  if (session.questionId && window.lerenProgress) {
+    window.lerenProgress.recordQuestion({ exercise_key: 'app-taal-spelling', mode: String(session.mode), question_id: session.questionId, attempt_count: Math.max(1, session.attempts), first_try_correct: session.lastOutcome && session.attempts === 1 && !session.assisted, assisted: session.assisted, duration_ms: Math.max(0, Date.now() - session.questionStartedAt) });
+  }
   session.index++;
   if (session.index >= session.queue.length) finish();
   else {
