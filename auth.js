@@ -1,12 +1,9 @@
 (() => {
-  const PROJECT_URL = "https://drouoptqpggvaomqacho.supabase.co";
-  const PUBLISHABLE_KEY = "sb_publishable_MCkhERDuogH8NoVK2OIL-Q_BzqK3I6l";
-
   const form = document.querySelector("#authEntry");
   const authForm = document.querySelector("#authForm");
   const modeButtons = [...document.querySelectorAll("[data-auth-mode]")];
-  const nameField = document.querySelector("#displayNameField");
-  const nameInput = document.querySelector("#displayName");
+  const nameField = document.querySelector("#nicknameField");
+  const nameInput = document.querySelector("#nickname");
   const emailInput = document.querySelector("#authEmail");
   const passwordInput = document.querySelector("#authPassword");
   const submitButton = document.querySelector("#authSubmit");
@@ -20,7 +17,8 @@
     return;
   }
 
-  const client = window.supabase.createClient(PROJECT_URL, PUBLISHABLE_KEY);
+  const client = window.lerenSupabase;
+  if (!client) { status.textContent = "Aanmelden is tijdelijk niet beschikbaar. Vernieuw de pagina."; return; }
   const redirectUrl = window.location.origin + window.location.pathname;
   let mode = "signin";
   let sessionVersion = 0;
@@ -45,23 +43,19 @@
   }
 
   async function saveProfile(user, version) {
-    const displayName = (user.user_metadata && user.user_metadata.display_name) || "";
-    const { data, error } = await client
-      .from("profiles")
-      .upsert(
-        { id: user.id, display_name: displayName, updated_at: new Date().toISOString() },
-        { onConflict: "id" }
-      )
-      .select("display_name")
-      .single();
-
+    const nickname = (user.user_metadata && user.user_metadata.nickname) || "";
+    let { data, error } = await client.from("profiles").select("nickname").eq("id", user.id).maybeSingle();
+    if (!error && !data) {
+      const inserted = await client.from("profiles").insert({ id: user.id, nickname });
+      error = inserted.error;
+      data = { nickname };
+    }
     if (version !== sessionVersion) return;
-    const name = data && data.display_name ? data.display_name : displayName;
-    accountGreeting.textContent = name
-      ? "Welkom, " + name + " (" + user.email + ")"
-      : "Ingelogd als " + user.email;
+    accountGreeting.textContent = data && data.nickname
+      ? "Welkom, " + data.nickname
+      : "Je account is klaar. Stel een leerlingbijnaam in bij Mijn voortgang.";
     if (error) {
-      accountGreeting.textContent = "Ingelogd als " + user.email;
+      accountGreeting.textContent = "Je bent ingelogd. Je profiel kon nog niet worden geladen.";
       setStatus("Je bent ingelogd. Je profiel kon nog niet worden geladen.", "error");
     }
   }
@@ -76,7 +70,7 @@
       setStatus("", "");
       return;
     }
-    accountGreeting.textContent = "Ingelogd als " + user.email;
+    accountGreeting.textContent = "Je account is klaar.";
     setStatus("", "");
     Promise.resolve().then(() => saveProfile(user, version)).catch(() => {
       if (version === sessionVersion) {
@@ -103,7 +97,7 @@
           email,
           password,
           options: {
-            data: { display_name: nameInput.value.trim() },
+            data: { nickname: nameInput.value.trim() },
             emailRedirectTo: redirectUrl
           }
         });
