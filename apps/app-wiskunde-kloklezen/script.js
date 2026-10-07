@@ -54,6 +54,8 @@
   let score = 0;
   let attempts = 0;
   let locked = false;
+  let questionId = null;
+  let questionStartedAt = 0;
 
   // Antwoord via spinners (enkel modus 'read')
   let answerHour = 12;
@@ -142,6 +144,8 @@
     setFeedback('', '');
     hideHint();
     attempts = 0;
+    questionId = window.lerenProgress ? window.lerenProgress.questionId() : null;
+    questionStartedAt = Date.now();
     locked = false;
     els.checkBtn.disabled = false;
 
@@ -417,6 +421,7 @@
     const correct = (readHour === current.hour) && (readMinute === current.minute);
 
     if (correct) {
+      if (questionId && window.lerenProgress) window.lerenProgress.recordQuestion({ exercise_key: "app-wiskunde-kloklezen", mode, question_id: questionId, attempt_count: attempts + 1, first_try_correct: attempts === 0, assisted: false, duration_ms: Math.max(0, Date.now() - questionStartedAt) });
       locked = true;
       score++;
       els.score.textContent = score;
