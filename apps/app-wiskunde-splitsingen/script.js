@@ -71,6 +71,7 @@ function updateStartscherm() {
 /* ---------- Spel ---------- */
 let goed = 0, fout = 0, hoofdgetal = 0, gegeven = 0, ontbrekend = 0;
 let dropzone = null, vergrendeld = false, bezig = false, eindTijd = 0, timerId = null, vorige = "";
+let vraagId = null, vraagStart = 0, vraagPogingen = 0;
 
 function rand(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
 
@@ -95,6 +96,9 @@ function bouwPot() {
 }
 
 function nieuweSplitsing() {
+    vraagId = window.lerenProgress ? window.lerenProgress.questionId() : null;
+    vraagStart = Date.now();
+    vraagPogingen = 0;
     let sleutel;
     do {
         if (inst.nul) { hoofdgetal = rand(1, inst.max); gegeven = rand(0, hoofdgetal); }
@@ -161,9 +165,11 @@ document.addEventListener("touchmove", (e) => { if (kloon) e.preventDefault(); }
 /* ---------- Automatische controle ---------- */
 function controleer(waarde) {
     vergrendeld = true;
+    vraagPogingen++;
     dropzone.textContent = waarde;
     if (waarde === ontbrekend) {
         goed++;
+        if (vraagId && window.lerenProgress) window.lerenProgress.recordQuestion({ exercise_key: "app-wiskunde-splitsingen", question_id: vraagId, attempt_count: vraagPogingen, first_try_correct: vraagPogingen === 1, assisted: false, duration_ms: Math.max(0, Date.now() - vraagStart) });
         updateTeller();
         dropzone.className = "bol juist";
         melding("Goed!", "goed");
