@@ -202,3 +202,5 @@ body {
 @media (max-width: 600px) {
   .auth-form { grid-template-columns: 1fr; }
 }
+
+.card--progress .card-icon{background:#fff2c6;color:#9a6e00}
