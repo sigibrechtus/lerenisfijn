@@ -6,6 +6,7 @@
   <title>Leren is fijn – Kies een oefening</title>
   <link rel="stylesheet" href="styles.css">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+  <script defer src="supabase-client.js"></script>
   <script defer src="auth.js"></script>
 </head>
 <body>
@@ -29,9 +30,9 @@
             <button class="auth-tab" type="button" data-auth-mode="signup" aria-pressed="false">Account maken</button>
           </div>
           <form id="authForm" class="auth-form">
-            <div id="displayNameField" hidden>
-              <label for="displayName">Naam</label>
-              <input id="displayName" name="name" type="text" autocomplete="name" maxlength="80" required>
+            <div id="nicknameField" hidden>
+              <label for="nickname">Bijnaam leerling</label>
+              <input id="nickname" name="nickname" type="text" autocomplete="nickname" maxlength="24" required>
             </div>
             <div>
               <label for="authEmail">E-mailadres</label>
@@ -113,6 +114,9 @@
           <span class="tag">L3</span>
           <span class="tag tag--subject">Wiskunde</span>
         </div>
+      </a>
+      <a href="./apps/app-mijn-voortgang/index.html" class="card card--progress">
+        <span class="card-icon" aria-hidden="true">★</span><div class="card-body"><h2>Mijn voortgang</h2><p>Bekijk je persoonlijke oefenresultaten</p></div><div class="card-tags"><span class="tag">Persoonlijk</span></div>
       </a>
     </section>
   </main>
