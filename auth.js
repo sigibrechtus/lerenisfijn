@@ -47,8 +47,14 @@
     let { data, error } = await client.from("profiles").select("nickname").eq("id", user.id).maybeSingle();
     if (!error && !data) {
       const inserted = await client.from("profiles").insert({ id: user.id, nickname });
-      error = inserted.error;
-      data = { nickname };
+      if (inserted.error) {
+        const retry = await client.from("profiles").select("nickname").eq("id", user.id).maybeSingle();
+        error = retry.error || (retry.data ? null : inserted.error);
+        data = retry.data;
+      } else {
+        error = null;
+        data = { nickname };
+      }
     }
     if (version !== sessionVersion) return;
     accountGreeting.textContent = data && data.nickname
