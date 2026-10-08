@@ -1,3 +1,219 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>OLV SGR L2 - Taal - Spelling - Themadictee 1 – Leren is fijn</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="../../app-theme.css?v=14">
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+<script defer src="../../supabase-client.js"></script>
+<script defer src="../../app-effects.js?v=3"></script>
+<script defer src="word-lists.js?v=1"></script>
+<script defer src="script.js?v=24"></script>
+</head>
+<body>
+
+  <!-- ============ START ============ -->
+  <section id="screen-start" class="screen">
+    <header class="topbar app-header-layout">
+      <a class="app-home-link" href="../../index.html">← Overzicht</a>
+      <div class="app-header-title"><h1 id="app-title">OLV SGR L2 - Taal - Spelling - Themadictee 1 – Leren is fijn</h1></div>
+      <button id="btn-open-settings" class="app-settings-button" type="button">Instellingen</button>
+    </header>
+
+    <p class="subtitle">Kies een oefening.</p>
+    <div class="word-library-summary"><p id="active-word-list" aria-live="polite"></p><button id="btn-choose-words" class="btn" type="button">Woorden kiezen of TXT laden</button></div>
+
+    <div class="mode-grid">
+      <button class="mode-card" data-mode="1" type="button">
+        <span class="mode-num">1</span>
+        <strong>Overschrijven</strong>
+        <span>Je ziet en hoort het woord. Schrijf het over.</span>
+      </button>
+      <button class="mode-card" data-mode="2" type="button">
+        <span class="mode-num">2</span>
+        <strong>Kijken en schrijven</strong>
+        <span>Je ziet het woord even. Daarna schrijf je het uit je hoofd.</span>
+      </button>
+      <button class="mode-card" data-mode="3" type="button">
+        <span class="mode-num">3</span>
+        <strong>Dictee</strong>
+        <span>Je hoort het woord, met het lidwoord als dat erbij hoort. Schrijf alles op.</span>
+      </button>
+      <button class="mode-card" data-mode="4" type="button">
+        <span class="mode-num">4</span>
+        <strong>Dictee met lidwoord</strong>
+        <span>Je hoort alleen het woord. Denk zelf aan “de” of “het” en schrijf alles op.</span>
+      </button>
+    </div>
+
+    <p class="hint">
+      Schrijf met de Apple Pencil en laat een duidelijke spatie tussen het lidwoord en het woord.
+      Tik daarna op <strong>Klaar</strong>: de app leest je schrift en verbetert het automatisch.
+      Hiervoor is internet nodig.
+    </p>
+  </section>
+
+  <!-- ============ INSTELLINGEN ============ -->
+  <section id="screen-settings" class="screen" hidden>
+    <h2>Instellingen</h2>
+
+    <div class="settings">
+      <div class="setting-row">
+        <div><strong>Spreeksnelheid</strong><small>Lager = trager (1 is normaal)</small></div>
+        <div class="stepper" data-key="rate">
+          <button type="button" data-step="-1" aria-label="Minder">−</button>
+          <output></output>
+          <button type="button" data-step="1" aria-label="Meer">+</button>
+        </div>
+      </div>
+
+      <label class="setting-row">
+        <div><strong>Lidwoord en woord apart</strong><small>“de” … pauze … “tak”</small></div>
+        <input type="checkbox" id="set-separate">
+      </label>
+
+      <label class="setting-row">
+        <div><strong>Woord twee keer zeggen</strong></div>
+        <input type="checkbox" id="set-twice">
+      </label>
+
+      <div class="setting-row">
+        <div><strong>Kijktijd</strong><small>Seconden zichtbaar bij oefening 2</small></div>
+        <div class="stepper" data-key="lookTime">
+          <button type="button" data-step="-1" aria-label="Minder">−</button>
+          <output></output>
+          <button type="button" data-step="1" aria-label="Meer">+</button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div><strong>Strengheid verbetering</strong><small>Streng = spelfouten vallen sneller op</small></div>
+        <div class="stepper" data-key="strict">
+          <button type="button" data-step="-1" aria-label="Minder">−</button>
+          <output></output>
+          <button type="button" data-step="1" aria-label="Meer">+</button>
+        </div>
+      </div>
+
+      <button id="btn-test-voice" class="btn" type="button">Test de stem</button>
+
+      <section class="word-library" aria-labelledby="word-library-heading">
+        <h3 id="word-library-heading">Woordenbibliotheek</h3>
+        <p>Eigen voorbeeldreeksen per leerjaar en thema, ook met bijwoorden. Dit zijn geen officiële woordenlijsten van Plantyn of VAN IN.</p>
+        <div class="library-filters">
+          <label>Lesmethode voor bronlinks<select id="library-method"><option value="eigen">Eigen oefensets</option><option value="plantyn">Plantyn · De Taalkanjers</option><option value="vanin">VAN IN · Tijd voor Taal accent</option><option value="talent">VAN IN · TALENT</option></select></label>
+          <label>Leerjaar<select id="library-grade"><option value="1">1e leerjaar</option><option value="2">2e leerjaar</option><option value="3">3e leerjaar</option><option value="4">4e leerjaar</option><option value="5">5e leerjaar</option><option value="6">6e leerjaar</option></select></label>
+          <label>Woordsoort<select id="library-kind"><option value="all">Alle woorden</option><option value="woordenschat">Woorden met lidwoorden</option><option value="bijwoorden">Bijwoorden en uitdrukkingen</option></select></label>
+          <label>Thema<select id="library-theme" disabled><option>Bibliotheek laden…</option></select></label>
+        </div>
+        <button id="btn-load-word-set" class="btn" type="button" disabled>Laad deze oefenset</button>
+        <div id="library-sources" class="library-sources"></div>
+        <p id="library-status" class="library-status" role="status" aria-live="polite"></p>
+      </section>
+      <section id="plantyn-theme-catalogue" class="word-library" aria-labelledby="plantyn-theme-heading" hidden>
+        <h3 id="plantyn-theme-heading">Plantyn-thema's per leerjaar</h3>
+        <p>Dit zijn de officiële thema's uit het openbare thema-overzicht. Plantyn publiceert daar geen spellingwoordlijsten. De oefenreeksen in de bibliotheek hierboven zijn eigen voorbeelden; gebruik TXT import voor een woordenlijst uit je klas.</p>
+        <label>Thema voor dit leerjaar<select id="plantyn-theme" disabled><option>Thema's laden…</option></select></label>
+        <p id="plantyn-theme-domain" class="library-status" aria-live="polite"></p>
+        <div id="plantyn-preview-links" class="library-sources"></div>
+      </section>
+      <section class="word-library" aria-labelledby="txt-heading">
+        <h3 id="txt-heading">Je eigen TXT-woordenlijst</h3>
+        <label class="field">TXT-bestand laden<input id="word-file" type="file" accept=".txt,text/plain"></label>
+        <p>Eén woord of uitdrukking per regel: bijvoorbeeld <em>de tak</em>, <em>het raam</em>, <em>morgen</em> of <em>af en toe</em>. Maximaal 200 woorden. Dubbele woorden worden verwijderd.</p>
+        <button id="btn-download-words" class="btn" type="button">Download woordenlijst als TXT</button>
+        <p id="word-file-status" class="library-status" role="status" aria-live="polite"></p>
+      </section>
+      <label class="field">
+        <strong>Titel</strong>
+        <input id="set-title" type="text" autocomplete="off">
+      </label>
+
+      <label class="field">
+        <strong>Woordenlijst</strong>
+        <small>Eén woord per regel. Lidwoorden, bijwoorden en korte uitdrukkingen mogen in dezelfde lijst staan.</small>
+        <textarea id="set-words" rows="10" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button id="btn-settings-done" class="btn btn-primary" type="button">Klaar</button>
+      <button id="btn-settings-reset" class="btn" type="button">Standaardwaarden</button>
+    </div>
+  </section>
+
+  <!-- ============ OEFENEN ============ -->
+  <section id="screen-practice" class="screen" hidden>
+    <header class="topbar app-header-layout">
+      <button id="btn-stop" class="app-home-link" type="button">← Startscherm</button>
+      <h2 id="practice-title" class="app-header-title">Themadictee</h2>
+      <div class="app-header-metrics" aria-label="Voortgang en score">
+        <span id="progress" class="app-header-metric">Woord 1 van 1</span>
+        <span id="stars" class="stars app-header-metric">Score: ★ 0</span>
+      </div>
+    </header>
+
+    <div class="prompt">
+      <div id="word-display" class="word-display"></div>
+      <button id="btn-listen" class="btn" type="button">Luister opnieuw</button>
+    </div>
+
+    <div id="pad-wrap" class="canvas-wrap">
+      <canvas id="pad"></canvas>
+    </div>
+
+    <div id="write-actions" class="actions">
+      <button id="btn-undo" class="btn" type="button">Ongedaan maken</button>
+      <button id="btn-clear" class="btn" type="button">Wis alles</button>
+      <button id="btn-check" class="btn btn-primary" type="button">Klaar</button>
+    </div>
+
+    <div id="result" class="result" hidden>
+      <div id="result-auto">
+        <p class="result-line"><small>Ik lees:</small><span id="read-text"></span></p>
+        <p class="result-line"><small>Zo schrijf je het:</small><span id="target-text"></span></p>
+        <div class="actions">
+          <button id="btn-retry" class="btn" type="button">Opnieuw schrijven</button>
+          <button id="btn-next" class="btn" type="button">Verder</button>
+        </div>
+        <button id="btn-override" class="link-btn" type="button">Mijn schrift werd verkeerd gelezen, het was juist</button>
+      </div>
+
+      <div id="result-manual" hidden>
+        <p>Vergelijk zelf: heb je het goed geschreven?</p>
+        <p class="result-line"><small>Zo schrijf je het:</small><span id="manual-target"></span></p>
+        <div class="actions">
+          <button id="btn-self-ok" class="btn btn-ok" type="button">✓ Goed</button>
+          <button id="btn-self-bad" class="btn btn-bad" type="button">✗ Nog oefenen</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EINDE ============ -->
+  <section id="screen-end" class="screen" hidden>
+    <h1>Klaar!</h1>
+    <p id="end-summary" class="subtitle"></p>
+
+    <div id="end-difficult-wrap" class="difficult" hidden>
+      <p>Deze woorden oefen je best nog eens:</p>
+      <ul id="end-difficult"></ul>
+    </div>
+
+    <div class="actions">
+      <button id="btn-practice-difficult" class="btn btn-primary" type="button">Oefen moeilijke woorden</button>
+      <button id="btn-restart" class="btn" type="button">Alles opnieuw</button>
+      <button id="btn-home" class="btn" type="button">Startscherm</button>
+    </div>
+  </section>
+
+  
+</body>
+</html>
+
 'use strict';
 
 /* ================= Configuratie ================= */
@@ -643,7 +859,7 @@ $('btn-settings-reset').addEventListener('click', () => {
 });
 
 /* ================= Woordenbibliotheek en TXT ================= */
-let wordLibrary=[],wordResources=[],importVersion=0;
+let wordLibrary=[],wordResources=[],plantynThemes=[],plantynPreviews=[],plantynThemeSource='https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-taal/thema-overzicht',importVersion=0;
 function sourceLink(label,url){const link=document.createElement('a');link.textContent=label;link.href=url;link.target='_blank';link.rel='noopener noreferrer';return link;}
 function refreshSources(){
   const method=$('library-method').value,grade=$('library-grade').value,links=[];
@@ -662,6 +878,30 @@ function refreshSources(){
   }
   $('library-sources').replaceChildren(...links);
   const note=document.createElement('small');note.textContent='KlasCement bevat door leraren gedeelde lijsten. Aanmelden kan nodig zijn. Controleer de editie en het thema van je klas en bewaar de gewenste woorden als TXT. De voorbeeldreeksen hierboven blijven eigen oefensets.';$('library-sources').append(note);
+  refreshPlantynThemes();
+}
+function refreshPlantynThemes(){
+  const panel=$('plantyn-theme-catalogue'),grade=Number($('library-grade').value),picker=$('plantyn-theme');
+  panel.hidden=$('library-method').value!=='plantyn';
+  const themes=plantynThemes.filter(item=>item.grade===grade),previous=picker.value;
+  picker.replaceChildren(...themes.map((item,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent=item.domain+' · '+item.theme;return option;}));
+  picker.disabled=!themes.length;
+  if(themes.length){const selected=themes.findIndex(item=>item.theme===previous);picker.value=String(selected>=0?selected:0);showPlantynTheme();}
+  else{$('plantyn-theme-domain').textContent='Voor dit leerjaar zijn geen thema’s geladen.';$('plantyn-preview-links').replaceChildren();}
+}
+function showPlantynTheme(){
+  const grade=Number($('library-grade').value),item=plantynThemes.filter(entry=>entry.grade===grade)[Number($('plantyn-theme').value)];
+  if(!item)return;
+  $('plantyn-theme-domain').textContent='Leerjaar '+grade+' · '+item.domain+' · '+item.theme;
+  const links=[sourceLink('Officieel thema-overzicht',plantynThemeSource)];
+  const previews=plantynPreviews.filter(preview=>preview.grade===grade);
+  if(previews.length){
+    for(const preview of previews){const label=preview.kind==='leerwerkboek'?'Bekijk voorbeeldles · leerwerkboek':'Bekijk voorbeeldles · handleiding';links.push(sourceLink(label,preview.url));}
+    const note=document.createElement('small');note.textContent='De openbare voorbeeldlessen tonen één lesweek, geen complete woordenlijsten voor alle thema’s.';links.push(note);
+  }else{
+    const note=document.createElement('small');note.textContent='Plantyn vermeldt voor dit leerjaar thema’s, maar publiceert hier geen woordpakketten of voorbeeldles.';links.push(note);
+  }
+  $('plantyn-preview-links').replaceChildren(...links);
 }
 function refreshLibraryChoices(){
   const grade=Number($('library-grade').value),kind=$('library-kind').value,previous=$('library-theme').value;
@@ -687,6 +927,7 @@ $('btn-load-word-set').addEventListener('click',()=>{
   const set=wordLibrary.find(item=>item.id===$('library-theme').value);if(!set)return;
   settings.wordSet=set.id;const count=applyWordList(set.words.join('\n'),set.title,{grade:set.grade,theme:set.theme,kind:set.kind,method:'eigen'});$('library-status').textContent=count+' voorbeeldwoorden geladen. Kies Klaar en start een oefening.';
 });
+$('plantyn-theme').addEventListener('change',showPlantynTheme);
 $('word-file').addEventListener('change',async event=>{
   const file=event.target.files?.[0];if(!file)return;const version=++importVersion;$('word-file-status').textContent='Woordenlijst lezen…';
   try {
@@ -712,7 +953,7 @@ $('set-words').addEventListener('input',()=>{settings.words=$('set-words').value
 $('set-title').addEventListener('input',()=>{settings.title=$('set-title').value;});
 $('btn-choose-words').addEventListener('click',openSettings);
 async function loadWordLibrary(){
-  try {const response=await fetch('word-library.json?v=2');if(!response.ok)throw new Error();const data=await response.json();wordLibrary=data.sets;wordResources=data.resources||[];refreshLibraryChoices();}
+  try {const response=await fetch('word-library.json?v=3');if(!response.ok)throw new Error();const data=await response.json();wordLibrary=data.sets;wordResources=data.resources||[];plantynThemes=data.plantynThemes||[];plantynPreviews=data.plantynPreviews||[];plantynThemeSource=data.plantynThemeSource||'https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-taal/thema-overzicht';refreshLibraryChoices();}
   catch(_){$('library-status').textContent='De voorbeeldbibliotheek kon niet worden geladen. Je kunt wel een TXT-bestand laden of woorden typen.';}
 }
 loadWordLibrary();
@@ -743,4 +984,3 @@ $('btn-home').addEventListener('click', () => showScreen('start'));
 
 /* ================= Start ================= */
 applyTitle();
-
