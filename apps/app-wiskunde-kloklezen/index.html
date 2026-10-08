@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kloklezen - OLV SGR L2 - Wiskunde</title>
 <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="../../app-theme.css?v=3">
+  <link rel="stylesheet" href="../../app-theme.css?v=4">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script defer src="../../supabase-client.js"></script>
 <script defer src="script.js"></script>
@@ -13,24 +13,24 @@
 <body>
 <div class="app">
 
-  <header class="top">
+  <header class="top app-header-layout">
     <a class="app-home-link" href="../../index.html">← Overzicht</a>
-    <h1>🕒 Kloklezen</h1>
+    <h1 class="app-header-title">🕒 Kloklezen</h1>
     <div class="score-badge">Score: <span id="score">0</span></div>
   </header>
 
   <section class="settings-panel">
     <h2>Oefentype</h2>
     <div class="mode-cards" id="modeCards">
-      <button type="button" class="mode-card" data-mode="read" aria-pressed="true" style="--card-color:#4b7bec">
+      <button type="button" class="mode-card" data-mode="read" aria-pressed="true">
         <span class="mode-icon">🕐</span>
         <span class="mode-label">Klok aflezen</span>
       </button>
-      <button type="button" class="mode-card" data-mode="set" aria-pressed="false" style="--card-color:#f7b731">
+      <button type="button" class="mode-card" data-mode="set" aria-pressed="false">
         <span class="mode-icon">📝</span>
         <span class="mode-label">Klok instellen</span>
       </button>
-      <button type="button" class="mode-card" data-mode="calc" aria-pressed="false" style="--card-color:#20bf6b">
+      <button type="button" class="mode-card" data-mode="calc" aria-pressed="false">
         <span class="mode-icon">➕</span>
         <span class="mode-label">Rekenen met tijd</span>
       </button>
