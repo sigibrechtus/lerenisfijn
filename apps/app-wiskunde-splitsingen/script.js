@@ -62,6 +62,7 @@ function bewaarRecord(w) {
 function updateStartscherm() {
     const woordMin = inst.minuten === 1 ? "minuut" : "minuten";
     $("startTitel").textContent = "Splitsen tot " + inst.max;
+    $("gameTitel").textContent = "Splitsen tot " + inst.max;
     $("startTekst").innerHTML = "Maak minstens <b>" + inst.doel + " splitsingen</b> juist in <b>" +
         inst.minuten + " " + woordMin + "</b>.<br>Sleep het juiste getal naar het lege bolletje.";
     const r = leesRecord();
