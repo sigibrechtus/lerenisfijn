@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ff7a45">
   <title>Plus en min – Leren is fijn</title>
   <link rel="stylesheet" href="style.css?v=3">
-  <link rel="stylesheet" href="../../app-theme.css?v=10">
+  <link rel="stylesheet" href="../../app-theme.css?v=11">
   
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script defer src="../../supabase-client.js"></script>
@@ -16,12 +16,12 @@
   <header class="topbar app-header-layout">
     <a class="app-home-link" href="../../index.html">← Overzicht</a>
     <div class="app-header-title"><h1>Plus en min</h1><p>Rekenoefeningen voor het tweede leerjaar</p></div>
-    <div class="score-badge app-score-badge">Score: <span id="score">0</span></div>
+    <div class="app-header-actions"><a class="app-settings-button" href="#options">Instellingen</a><div class="score-badge app-score-badge">Score: <span id="score">0</span></div></div>
   </header>
 
   <main class="app-shell">
     <section class="panel" aria-label="Rekenoefening">
-      <div class="toolbar">
+      <div class="toolbar" id="options">
         <label for="limit">Rekenen tot</label>
         <select id="limit" aria-label="Kies het hoogste getal">
           <option value="20">20</option>
