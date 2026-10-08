@@ -377,9 +377,19 @@
   els.clearBtn.addEventListener('click', () => { if (!locked) clearPad(); });
   els.undoBtn.addEventListener('click', () => { if (!locked) undoStroke(); });
 
+  els.keyboardAnswer.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      check();
+    }
+  });
+
   document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); check(); }
     const typingAnswer = e.target === els.keyboardAnswer;
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!typingAnswer) check();
+    }
     if (e.key === 'Backspace' && !typingAnswer && !locked) { e.preventDefault(); undoStroke(); }
     if (e.key === 'Escape' && !typingAnswer && !locked) clearPad();
   });
