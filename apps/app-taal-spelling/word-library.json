@@ -1,0 +1,365 @@
+{
+  "version": 1,
+  "sets": [
+    {
+      "id": "l1-school",
+      "grade": 1,
+      "theme": "School en thuis",
+      "kind": "woordenschat",
+      "title": "Leerjaar 1 · School en thuis",
+      "words": [
+        "de pen",
+        "het boek",
+        "de tas",
+        "de bel",
+        "de klas",
+        "het raam",
+        "de stoel",
+        "de juf",
+        "de map",
+        "de gum"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l1-natuur",
+      "grade": 1,
+      "theme": "Natuur en dieren",
+      "kind": "woordenschat",
+      "title": "Leerjaar 1 · Natuur en dieren",
+      "words": [
+        "de kat",
+        "de hond",
+        "het bos",
+        "de tak",
+        "de vis",
+        "de boom",
+        "de mus",
+        "het gras",
+        "de kip",
+        "de zon"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l1-bijwoorden",
+      "grade": 1,
+      "theme": "Tijd, plaats en manier",
+      "kind": "bijwoorden",
+      "title": "Leerjaar 1 · Tijd, plaats en manier",
+      "words": [
+        "niet",
+        "wel",
+        "nu",
+        "hier",
+        "daar",
+        "ook",
+        "al",
+        "nog",
+        "vaak",
+        "weer"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l2-school",
+      "grade": 2,
+      "theme": "School en thuis",
+      "kind": "woordenschat",
+      "title": "Leerjaar 2 · School en thuis",
+      "words": [
+        "het potlood",
+        "de school",
+        "de tafel",
+        "het schrift",
+        "de jongen",
+        "het meisje",
+        "de meester",
+        "de pauze",
+        "het bord",
+        "de gang"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l2-natuur",
+      "grade": 2,
+      "theme": "Natuur en dieren",
+      "kind": "woordenschat",
+      "title": "Leerjaar 2 · Natuur en dieren",
+      "words": [
+        "de vogel",
+        "het konijn",
+        "de bloem",
+        "de eend",
+        "het paard",
+        "de wortel",
+        "de tuin",
+        "het blad",
+        "de regen",
+        "de vijver"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l2-bijwoorden",
+      "grade": 2,
+      "theme": "Tijd, plaats en manier",
+      "kind": "bijwoorden",
+      "title": "Leerjaar 2 · Tijd, plaats en manier",
+      "words": [
+        "vandaag",
+        "morgen",
+        "gisteren",
+        "samen",
+        "buiten",
+        "binnen",
+        "soms",
+        "altijd",
+        "bijna",
+        "graag"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l3-school",
+      "grade": 3,
+      "theme": "School en thuis",
+      "kind": "woordenschat",
+      "title": "Leerjaar 3 · School en thuis",
+      "words": [
+        "het klaslokaal",
+        "de schooltas",
+        "het leesboek",
+        "de opdracht",
+        "de afspraak",
+        "de leerling",
+        "de boekentas",
+        "het antwoord",
+        "de vraag",
+        "de speeltijd"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l3-natuur",
+      "grade": 3,
+      "theme": "Natuur en dieren",
+      "kind": "woordenschat",
+      "title": "Leerjaar 3 · Natuur en dieren",
+      "words": [
+        "de eekhoorn",
+        "de vlinder",
+        "de bladeren",
+        "het weiland",
+        "de boerderij",
+        "de paddenstoel",
+        "het seizoen",
+        "de omgeving",
+        "het insect",
+        "de lente"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l3-bijwoorden",
+      "grade": 3,
+      "theme": "Tijd, plaats en manier",
+      "kind": "bijwoorden",
+      "title": "Leerjaar 3 · Tijd, plaats en manier",
+      "words": [
+        "later",
+        "vroeger",
+        "nergens",
+        "overal",
+        "meteen",
+        "langzaam",
+        "dikwijls",
+        "opnieuw",
+        "achteraan",
+        "vooraan"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l4-school",
+      "grade": 4,
+      "theme": "School en thuis",
+      "kind": "woordenschat",
+      "title": "Leerjaar 4 · School en thuis",
+      "words": [
+        "de bibliotheek",
+        "de boodschap",
+        "de vergadering",
+        "het woordenboek",
+        "de bladzijde",
+        "het schoolplein",
+        "de kalender",
+        "het onderwerp",
+        "de geschiedenis",
+        "de rekenmachine"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l4-natuur",
+      "grade": 4,
+      "theme": "Natuur en dieren",
+      "kind": "woordenschat",
+      "title": "Leerjaar 4 · Natuur en dieren",
+      "words": [
+        "de natuur",
+        "de ontdekking",
+        "de waterval",
+        "het landschap",
+        "de temperatuur",
+        "de onweersbui",
+        "het gebergte",
+        "de zonneschijn",
+        "de herfst",
+        "de rivier"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l4-bijwoorden",
+      "grade": 4,
+      "theme": "Tijd, plaats en manier",
+      "kind": "bijwoorden",
+      "title": "Leerjaar 4 · Tijd, plaats en manier",
+      "words": [
+        "ondertussen",
+        "plotseling",
+        "regelmatig",
+        "misschien",
+        "waarschijnlijk",
+        "binnenkort",
+        "daarom",
+        "bovendien",
+        "eindelijk",
+        "telkens"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l5-school",
+      "grade": 5,
+      "theme": "School en thuis",
+      "kind": "woordenschat",
+      "title": "Leerjaar 5 · School en thuis",
+      "words": [
+        "het onderzoek",
+        "de samenwerking",
+        "de presentatie",
+        "het schoolreglement",
+        "de verantwoordelijkheid",
+        "het experiment",
+        "de discussie",
+        "de samenvatting",
+        "de oplossing",
+        "de vergelijking"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l5-natuur",
+      "grade": 5,
+      "theme": "Natuur en dieren",
+      "kind": "woordenschat",
+      "title": "Leerjaar 5 · Natuur en dieren",
+      "words": [
+        "het klimaat",
+        "de vervuiling",
+        "de bescherming",
+        "de plantengroei",
+        "de overstroming",
+        "het leefgebied",
+        "de voedselketen",
+        "de verdamping",
+        "de duurzaamheid",
+        "de biodiversiteit"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l5-bijwoorden",
+      "grade": 5,
+      "theme": "Tijd, plaats en manier",
+      "kind": "bijwoorden",
+      "title": "Leerjaar 5 · Tijd, plaats en manier",
+      "words": [
+        "nauwelijks",
+        "uiteindelijk",
+        "kennelijk",
+        "eigenlijk",
+        "af en toe",
+        "hier en daar",
+        "langzamerhand",
+        "voortdurend",
+        "vanzelfsprekend",
+        "voorlopig"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l6-school",
+      "grade": 6,
+      "theme": "School en thuis",
+      "kind": "woordenschat",
+      "title": "Leerjaar 6 · School en thuis",
+      "words": [
+        "de enquête",
+        "de coördinator",
+        "de efficiëntie",
+        "de hypothese",
+        "de nieuwsgierigheid",
+        "de creativiteit",
+        "het argument",
+        "de conclusie",
+        "de belangstelling",
+        "de gelegenheid"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l6-natuur",
+      "grade": 6,
+      "theme": "Natuur en dieren",
+      "kind": "woordenschat",
+      "title": "Leerjaar 6 · Natuur en dieren",
+      "words": [
+        "de fotosynthese",
+        "de neerslag",
+        "de evolutie",
+        "het ecosysteem",
+        "de atmosfeer",
+        "de energiebron",
+        "de biodiversiteit",
+        "de oceaan",
+        "het broeikaseffect",
+        "de milieubescherming"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l6-bijwoorden",
+      "grade": 6,
+      "theme": "Tijd, plaats en manier",
+      "kind": "bijwoorden",
+      "title": "Leerjaar 6 · Tijd, plaats en manier",
+      "words": [
+        "desondanks",
+        "ongetwijfeld",
+        "geleidelijk",
+        "doorgaans",
+        "tevergeefs",
+        "uitsluitend",
+        "bijvoorbeeld",
+        "overigens",
+        "tenminste",
+        "wellicht"
+      ],
+      "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    }
+  ]
+}

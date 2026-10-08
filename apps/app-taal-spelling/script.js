@@ -12,6 +12,11 @@ const DEFAULTS = {
   lookTime: 3,
   strict: 2,
   title: 'Themadictee',
+  grade: 2,
+  libraryGrade: 2,
+  method: 'eigen',
+  wordKind: 'all',
+  wordSet: '',
   words: ['de tak', 'het net', 'de bal', 'het dak', 'de vis', 'het bos', 'de maan', 'niet'].join('\n'),
 };
 
@@ -47,16 +52,8 @@ function showScreen(name) {
 
 /* ================= Woordenlijst ================= */
 function parseWords(text) {
-  return text
-    .split('\n')
-    .map((l) => l.trim().replace(/\s+/g, ' '))
-    .filter(Boolean)
-    .map((line) => {
-      const m = line.match(/^(de|het)\s+(.+)$/i);
-      return m
-        ? { article: m[1].toLowerCase(), word: m[2], full: `${m[1].toLowerCase()} ${m[2]}` }
-        : { article: '', word: line, full: line };
-    });
+  if(!text.trim()) return [];
+  return window.DicteeWordLists.parseText(text).words;
 }
 
 function shuffle(arr) {
@@ -587,6 +584,10 @@ function renderSettings() {
   $('set-twice').checked = settings.twice;
   $('set-title').value = settings.title;
   $('set-words').value = settings.words;
+  $('library-grade').value=String(settings.libraryGrade||settings.grade);
+  $('library-method').value=settings.method;
+  $('library-kind').value=settings.wordKind;
+  refreshLibraryChoices();
 }
 
 function openSettings() {
@@ -595,6 +596,7 @@ function openSettings() {
 }
 
 function closeSettings() {
+  try {window.DicteeWordLists.parseText($('set-words').value);} catch(error) {$('word-file-status').textContent=error.message;return;}
   settings.title = $('set-title').value.trim() || DEFAULTS.title;
   settings.words = $('set-words').value.trim();
   saveSettings();
@@ -605,6 +607,8 @@ function closeSettings() {
 function applyTitle() {
   $('app-title').textContent = settings.title;
   document.title = settings.title;
+  let count=0;try{count=parseWords(settings.words).length;}catch(_){}
+  $('active-word-list').textContent=settings.title+' · '+count+' woorden · leerjaar '+settings.grade;
 }
 
 document.querySelectorAll('.stepper').forEach((st) => {
@@ -635,9 +639,70 @@ $('btn-settings-reset').addEventListener('click', () => {
   renderSettings();
 });
 
+/* ================= Woordenbibliotheek en TXT ================= */
+let wordLibrary=[],importVersion=0;
+function sourceLink(label,url){const link=document.createElement('a');link.textContent=label;link.href=url;link.target='_blank';link.rel='noopener noreferrer';return link;}
+function refreshSources(){
+  const method=$('library-method').value,grade=$('library-grade').value,links=[];
+  if(method==='plantyn'){
+    links.push(sourceLink('Plantyn: De Taalkanjers en spelling','https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling'));
+    links.push(sourceLink('KlasCement: woordlijsten voor dit leerjaar','https://www.klascement.net/lesmateriaal/?q='+encodeURIComponent('De Taalkanjers '+grade+'e leerjaar woordenlijsten')));
+  }else if(method==='vanin'){
+    links.push(sourceLink('VAN IN: Tijd voor Taal accent','https://www.vanin.be/methodes/lager-onderwijs/nederlands/tijd-voor-taal-accent/'));
+    links.push(sourceLink('KlasCement: woordpakketten voor dit leerjaar','https://www.klascement.net/lesmateriaal/?q='+encodeURIComponent('Tijd voor Taal accent '+grade+'e leerjaar woordenlijsten')));
+  }else links.push(sourceLink('Zoek woordenlijsten op KlasCement','https://www.klascement.net/lesmateriaal/?q='+encodeURIComponent('woordenlijsten '+grade+'e leerjaar spelling')));
+  $('library-sources').replaceChildren(...links);
+  const note=document.createElement('small');note.textContent='Voor sommige downloads op KlasCement is aanmelden nodig. Controleer de editie en het thema van je klas; laad de klaswoorden daarna als TXT.';$('library-sources').append(note);
+}
+function refreshLibraryChoices(){
+  const grade=Number($('library-grade').value),kind=$('library-kind').value,previous=$('library-theme').value;
+  const filtered=wordLibrary.filter(set=>set.grade===grade&&(kind==='all'||set.kind===kind));
+  $('library-theme').replaceChildren(...filtered.map(set=>{const option=document.createElement('option');option.value=set.id;option.textContent=set.theme+' · '+set.words.length+' woorden';return option;}));
+  if(filtered.some(set=>set.id===previous))$('library-theme').value=previous;else if(filtered.some(set=>set.id===settings.wordSet))$('library-theme').value=settings.wordSet;
+  $('library-theme').disabled=!filtered.length;$('btn-load-word-set').disabled=!filtered.length;refreshSources();
+}
+function applyWordList(text,title,metadata={}){
+  const parsed=window.DicteeWordLists.parseText(text);
+  settings.words=parsed.words.map(item=>item.full).join('\n');settings.title=parsed.metadata.titel||title||'Eigen woordenlijst';
+  const grade=Number(parsed.metadata.leerjaar||metadata.grade||$('library-grade').value);if(Number.isInteger(grade)&&grade>=1&&grade<=6){settings.grade=grade;settings.libraryGrade=grade;}
+  $('set-words').value=settings.words;$('set-title').value=settings.title;$('library-grade').value=String(settings.grade);
+  saveSettings();applyTitle();refreshLibraryChoices();return parsed.words.length;
+}
+for(const id of ['library-grade','library-kind','library-method'])$(id).addEventListener('change',()=>{
+  settings.libraryGrade=Number($('library-grade').value);settings.wordKind=$('library-kind').value;settings.method=$('library-method').value;saveSettings();refreshLibraryChoices();
+});
+$('btn-load-word-set').addEventListener('click',()=>{
+  const set=wordLibrary.find(item=>item.id===$('library-theme').value);if(!set)return;
+  settings.wordSet=set.id;const count=applyWordList(set.words.join('\n'),set.title,{grade:set.grade});$('library-status').textContent=count+' voorbeeldwoorden geladen. Kies Klaar en start een oefening.';
+});
+$('word-file').addEventListener('change',async event=>{
+  const file=event.target.files?.[0];if(!file)return;const version=++importVersion;$('word-file-status').textContent='Woordenlijst lezen…';
+  try {
+    if(!/\.txt$/i.test(file.name))throw new Error('Kies een TXT-bestand.');if(file.size>128*1024)throw new Error('Het bestand is te groot. Gebruik maximaal 128 KB.');
+    const text=await file.text();if(version!==importVersion)return;if(text.includes('\uFFFD'))throw new Error('Bewaar je TXT-bestand als UTF-8 en probeer opnieuw.');
+    const parsed=window.DicteeWordLists.parseText(text);settings.wordSet='';const count=applyWordList(text,file.name.replace(/\.txt$/i,''));
+    $('word-file-status').textContent=count+' woorden geladen en op dit toestel bewaard. '+(parsed.metadata.thema?'Thema: '+parsed.metadata.thema+'. ':'')+'Kies Klaar om te oefenen.';
+  } catch(error){if(version===importVersion)$('word-file-status').textContent=error.message;}
+  finally{if(version===importVersion)event.target.value='';}
+});
+$('btn-download-words').addEventListener('click',()=>{
+  try {
+    const parsed=window.DicteeWordLists.parseText($('set-words').value),text=window.DicteeWordLists.exportText(parsed.words,{titel:$('set-title').value||'Themadictee',leerjaar:settings.grade});
+    const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})),link=document.createElement('a');link.href=url;link.download='woorden-leerjaar-'+settings.grade+'.txt';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('word-file-status').textContent='TXT-bestand gedownload.';
+  }catch(error){$('word-file-status').textContent=error.message;}
+});
+$('set-words').addEventListener('input',()=>{settings.words=$('set-words').value;});
+$('set-title').addEventListener('input',()=>{settings.title=$('set-title').value;});
+$('btn-choose-words').addEventListener('click',openSettings);
+async function loadWordLibrary(){
+  try {const response=await fetch('word-library.json?v=1');if(!response.ok)throw new Error();const data=await response.json();wordLibrary=data.sets;refreshLibraryChoices();}
+  catch(_){$('library-status').textContent='De voorbeeldbibliotheek kon niet worden geladen. Je kunt wel een TXT-bestand laden of woorden typen.';}
+}
+loadWordLibrary();
+
 /* ================= Koppelingen ================= */
 document.querySelectorAll('.mode-card').forEach((b) => {
-  b.addEventListener('click', () => startSession(Number(b.dataset.mode), parseWords(settings.words)));
+  b.addEventListener('click', () => {try{startSession(Number(b.dataset.mode), parseWords(settings.words));}catch(error){openSettings();$('word-file-status').textContent=error.message;}});
 });
 
 $('btn-open-settings').addEventListener('click', openSettings);
@@ -652,8 +717,8 @@ $('btn-check').addEventListener('click', check);
 $('btn-retry').addEventListener('click', resetWriting);
 $('btn-next').addEventListener('click', next);
 $('btn-override').addEventListener('click', overrideAsCorrect);
-$('btn-self-ok').addEventListener('click', () => { registerOutcome(true); next(); });
-$('btn-self-bad').addEventListener('click', () => { registerOutcome(false); next(); });
+$('btn-self-ok').addEventListener('click', () => { window.lerenEffects?.correct($('result')); registerOutcome(true); next(); });
+$('btn-self-bad').addEventListener('click', () => { window.lerenEffects?.incorrect($('result')); registerOutcome(false); next(); });
 
 $('btn-practice-difficult').addEventListener('click', () => startSession(session.mode, [...session.difficult.values()]));
 $('btn-restart').addEventListener('click', () => startSession(session.mode, parseWords(settings.words)));

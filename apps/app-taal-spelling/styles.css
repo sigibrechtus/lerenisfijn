@@ -217,3 +217,7 @@ h2 { margin: 0.5rem 0 0; }
 .difficult { background: var(--card); border-radius: var(--radius); padding: 1rem 1.25rem; border: 1px solid var(--line); max-width: 600px; width: 100%; }
 .difficult ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
 .difficult li { background: #fff3f3; color: var(--bad); padding: 0.5rem 1rem; border-radius: 999px; font-weight: 600; }
+
+/* Word-library choices and file import stay in the same app theme. */
+.word-library-summary{text-align:center;background:#fff;border-radius:16px;padding:12px;margin:16px auto;max-width:860px}.word-library-summary p{margin:0 0 10px;font-weight:bold}.word-library{padding:18px 0;border-top:1px solid #e1e6ea}.word-library h3{margin:0 0 12px}.word-library p{font-size:.9rem}.library-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0}.library-filters label{display:flex;flex-direction:column;gap:7px;font-weight:bold}.library-filters select{max-width:100%;width:100%;padding:10px;border:2px solid #b8d9ee;border-radius:12px;font:inherit;background:#fff;color:#2b2d42}.library-sources{display:flex;flex-direction:column;gap:8px;margin-top:14px;font-size:.9rem}.library-sources a{color:#215987}.library-sources small{color:#6c757d}.library-status{min-height:1.4em;color:#215987;font-weight:bold}.word-library input[type=file]{font:inherit;max-width:100%}
+@media(max-width:560px){.library-filters{grid-template-columns:1fr}}

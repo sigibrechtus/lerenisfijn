@@ -1,24 +1,33 @@
 (() => {
   'use strict';
   const KEY='lerenisfijn-sound';
-  let enabled=true,context=null;
-  try {enabled=localStorage.getItem(KEY)!=='off';} catch (_) {}
+  let enabled=true,volume=.8,request=0;
+  try {enabled=localStorage.getItem(KEY)!=='off';const saved=localStorage.getItem(KEY+'-volume');if(saved!==null)volume=Math.max(.1,Math.min(1,Number(saved)||.8));} catch (_) {}
   const buttons=[];
-  function unlock(){
-    if(!enabled)return;
-    try {const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;context ||= new Audio();if(context.state==='suspended')context.resume().catch(()=>{});} catch (_) {}
+  const scriptURL=document.currentScript?.src||new URL('app-effects.js',document.baseURI).href;
+  const sources=Object.fromEntries(['tap','correct','incorrect','complete','back'].map(kind=>[kind,new URL('sounds/'+kind+'.wav',scriptURL).href]));
+  const player=document.createElement('audio');player.id='lf-effects-audio';player.preload='auto';player.src=sources.tap;player.hidden=true;player.setAttribute('aria-hidden','true');player.volume=volume;document.body.append(player);
+  const tools=document.createElement('details');tools.className='lf-sound-tools';
+  const summary=document.createElement('summary');summary.textContent='Geluid testen en volume';tools.append(summary);
+  const group=document.createElement('div');group.className='lf-sound-tests';
+  const status=document.createElement('p');status.className='lf-sound-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
+  const volumeLabel=document.createElement('label');volumeLabel.textContent='Volume geluidseffecten';
+  const slider=document.createElement('input');slider.type='range';slider.min='10';slider.max='100';slider.value=String(Math.round(volume*100));slider.setAttribute('aria-label','Volume geluidseffecten');
+  slider.addEventListener('input',()=>{volume=Number(slider.value)/100;player.volume=volume;try{localStorage.setItem(KEY+'-volume',String(volume));}catch(_){}});volumeLabel.append(slider);
+  function setEnabled(value){enabled=value;try{localStorage.setItem(KEY,enabled?'on':'off');}catch(_){}if(!enabled){request++;player.pause();player.dataset.playback='muted';}refresh();}
+  function play(kind,{test=false}={}){
+    if(!enabled)return Promise.resolve(false);
+    const current=++request;kind=Object.prototype.hasOwnProperty.call(sources,kind)?kind:'tap';
+    player.pause();if(player.src!==sources[kind])player.src=sources[kind];try{player.currentTime=0;}catch(_){}player.muted=false;player.volume=volume;player.dataset.effect=kind;player.dataset.playback='starting';
+    let result;try{result=player.play();}catch(error){result=Promise.reject(error);}
+    return Promise.resolve(result).then(()=>{if(current===request){player.dataset.playback='playing';if(test)status.textContent='De geluidstest speelt af. Hoor je niets? Controleer het volume van je toestel.';}return true;}).catch(error=>{
+      if(current!==request||error.name==='AbortError')return false;
+      player.dataset.playback='blocked';tools.open=true;status.textContent=error.name==='NotAllowedError'?'De browser blokkeert geluid. Tik op Test goed om geluid te activeren.':'Het geluid kon niet geladen worden. Vernieuw de pagina en probeer de geluidstest.';return false;
+    });
   }
-  function play(kind){
-    if(!enabled)return;unlock();if(!context||context.state!=='running')return;
-    const tones={tap:[520],correct:[523,659,784],incorrect:[330,262],complete:[523,659,784,1047]};
-    const notes=tones[kind]||tones.tap,step=kind==='tap'?.055:.115;
-    try {notes.forEach((frequency,index)=>{
-      const oscillator=context.createOscillator(),gain=context.createGain(),at=context.currentTime+index*step;
-      oscillator.type='sine';oscillator.frequency.value=frequency;
-      gain.gain.setValueAtTime(0,at);gain.gain.linearRampToValueAtTime(kind==='tap'?.025:.065,at+.012);gain.gain.exponentialRampToValueAtTime(.001,at+step);
-      oscillator.connect(gain);gain.connect(context.destination);oscillator.start(at);oscillator.stop(at+step+.02);
-    });} catch (_) {}
-  }
+  player.addEventListener('ended',()=>{player.dataset.playback='ended';});
+  for(const [kind,label] of [['correct','Test goed'],['incorrect','Test fout'],['back','Test terug']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.addEventListener('click',()=>{setEnabled(true);play(kind,{test:true});});group.append(button);}
+  tools.append(group,volumeLabel,status);document.body.append(tools);
   function feedback(kind,target){
     play(kind);
     const element=typeof target==='string'?document.querySelector(target):target;
@@ -30,18 +39,27 @@
       document.body.append(burst);setTimeout(()=>burst.remove(),1000);
     }
   }
-  function refresh(){buttons.forEach(button=>{button.textContent=enabled?'🔊':'🔇';button.setAttribute('aria-pressed',String(enabled));button.setAttribute('aria-label',enabled?'Geluid uitzetten':'Geluid aanzetten');button.title=enabled?'Geluid aan':'Geluid uit';});}
+  function refresh(){buttons.forEach(button=>{button.textContent=enabled?'🔊 Geluid':'🔇 Stil';button.setAttribute('aria-pressed',String(enabled));button.setAttribute('aria-label',enabled?'Geluid uitzetten':'Geluid aanzetten');button.title=enabled?'Geluid aan':'Geluid uit';});}
   document.querySelectorAll('.app-header-layout').forEach(header=>{
     let actions=header.querySelector(':scope > .app-header-actions, :scope > .app-header-metrics');
     if(!actions){actions=document.createElement('div');actions.className='app-header-actions';const existing=header.querySelector(':scope > .app-settings-button, :scope > .score-badge, :scope > .score-box');if(existing)actions.append(existing);header.append(actions);}
     const button=document.createElement('button');button.type='button';button.className='app-settings-button app-sound-button';
-    button.addEventListener('click',()=>{enabled=!enabled;try{localStorage.setItem(KEY,enabled?'on':'off');}catch(_){}refresh();if(enabled){unlock();play('tap');}});
+    button.addEventListener('click',()=>{setEnabled(!enabled);if(enabled)play('correct',{test:true});});
     button.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' ')event.stopPropagation();});
     actions.append(button);buttons.push(button);
   });
   refresh();
-  document.addEventListener('pointerdown',unlock,{capture:true});document.addEventListener('keydown',unlock,{capture:true});
-  document.addEventListener('click',event=>{const button=event.target.closest('button');if(button&&!button.classList.contains('app-sound-button')&&button.type!=='submit'&&!/check|controleer/i.test(button.id))play('tap');});
-  window.addEventListener('storage',event=>{if(event.key===KEY){enabled=event.newValue!=='off';refresh();}});
-  window.lerenEffects={correct:target=>feedback('correct',target),incorrect:target=>feedback('incorrect',target),complete:target=>feedback('complete',target),tap:()=>play('tap')};
+  document.addEventListener('pointerdown',event=>{if(enabled&&event.target.closest('button,a.app-home-link,summary')&&!event.target.closest('.lf-sound-tools'))play('tap');},{capture:true});
+  document.addEventListener('keydown',event=>{if(enabled&&(event.key==='Enter'||event.key===' ')&&event.target.closest('button,a.app-home-link')&&!event.target.closest('.lf-sound-tools'))play('tap');},{capture:true});
+  document.addEventListener('click',event=>{
+    const control=event.target.closest('button,a.app-home-link');if(!control||control.closest('.lf-sound-tools')||control.classList.contains('app-sound-button'))return;
+    const back=control.classList.contains('app-home-link')||/^(←|terug|overzicht|startscherm)/i.test(control.textContent.trim());
+    if(back){
+      if(control.tagName==='A'&&enabled&&event.button===0&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.altKey&&control.target!=='_blank'&&new URL(control.href).origin===location.origin){
+        event.preventDefault();let navigated=false;const go=()=>{if(navigated)return;navigated=true;location.assign(control.href);};const fallback=setTimeout(go,350);play('back').then(ok=>{if(ok)setTimeout(()=>{clearTimeout(fallback);go();},180);else{clearTimeout(fallback);go();}});
+      }else play('back');
+    }else if(event.detail===0&&control.type!=='submit'&&!/check|controleer/i.test(control.id))play('tap');
+  });
+  window.addEventListener('storage',event=>{if(event.key===KEY){enabled=event.newValue!=='off';if(!enabled)player.pause();refresh();}else if(event.key===KEY+'-volume'){volume=Math.max(.1,Math.min(1,Number(event.newValue)||.8));slider.value=String(Math.round(volume*100));player.volume=volume;}});
+  window.lerenEffects={correct:target=>feedback('correct',target),incorrect:target=>feedback('incorrect',target),complete:target=>feedback('complete',target),tap:()=>play('tap'),back:()=>play('back'),test:kind=>{setEnabled(true);return play(kind,{test:true});}};
 })();
