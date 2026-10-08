@@ -127,3 +127,66 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-weight: 700;
   white-space: nowrap;
 }
+
+
+/* Shared title, score, and status styles for every app header */
+.app-header-layout {
+  min-height: 68px;
+  padding: .75rem clamp(1rem, 3vw, 1.5rem);
+  border-radius: 0 0 var(--lf-radius) var(--lf-radius);
+}
+.app-header-layout > .app-header-title {
+  margin: 0;
+  color: #fff !important;
+  font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-shadow: none;
+}
+.app-header-title h1 {
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  text-shadow: none;
+}
+.app-header-title p {
+  margin: .18rem 0 0;
+  color: #fff !important;
+  font: 500 .88rem/1.25 var(--lf-font);
+  opacity: .95;
+}
+.app-header-layout > .score-badge,
+.app-header-layout > .score-box,
+.app-header-metrics > .app-header-metric {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  min-height: 42px;
+  padding: .55rem .95rem;
+  border: 1px solid rgba(255, 255, 255, .55);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--lf-text) !important;
+  box-shadow: var(--lf-shadow);
+  font: 700 .95rem/1.2 var(--lf-font);
+  white-space: nowrap;
+}
+.app-header-metrics {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.app-header-metrics > .app-header-metric { box-shadow: none; }
+.app-home-link { cursor: pointer; }
+@media (max-width: 560px) {
+  .app-header-layout { min-height: 60px; padding: .6rem .75rem; }
+  .app-header-layout > .score-badge,
+  .app-header-layout > .score-box,
+  .app-header-metrics { grid-column: 2; }
+  .app-header-metrics { gap: .35rem; }
+  .app-header-metrics > .app-header-metric { padding: .45rem .65rem; font-size: .82rem; }
+}
