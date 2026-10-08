@@ -6,7 +6,7 @@
     for(let tries=0;tries<50;tries++){question=game.makeQuestion(level);const key=question.sentence||JSON.stringify(question.sequence);if(!seen.has(key))break;}
     seen.add(question.sentence||JSON.stringify(question.sequence));attempts=0;locked=false;startedAt=Date.now();questionId=window.lerenProgress?.questionId();
     $('level-name').textContent='Niveau '+level+' · '+game.levels[level];$('progress').textContent='Vraag '+(index+1)+' van 10';$('round-progress').value=index;
-    $('feedback').textContent='';$('feedback').className='';$('check').disabled=false;$('check').textContent='Controleer';game.render(question,false);$('check').focus();
+    $('feedback').textContent='';$('feedback').className='';$('check').disabled=false;$('check').textContent='Controleer';game.render(question,false);$('check').focus({preventScroll:true});
   }
   function start(){clearTimeout(timer);level=Number($('level').value);index=0;score=0;seen=new Set();$('score').textContent='0';$('summary').hidden=true;$('quiz').hidden=false;nextQuestion();}
   function finish(){

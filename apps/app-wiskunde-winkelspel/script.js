@@ -68,7 +68,7 @@
     $('answer').value='';$('answer').disabled=false;$('check').disabled=false;$('check').textContent='Controleer';
     $('money-builder').hidden=!buildsMoney();$('keyboard-answer').hidden=buildsMoney();
     $('feedback').textContent='';$('feedback').className='';
-    if(buildsMoney()){wallet=game.makeWallet(question.answer,level===2);placed=[];renderMoney();$('check').focus();}else $('answer').focus();
+    if(buildsMoney()){wallet=game.makeWallet(question.answer,level===2);placed=[];renderMoney();$('check').focus({preventScroll:true});}else $('answer').focus();
   }
   function startRound(){
     clearTimeout(timer);number=0;score=0;$('score').textContent=0;
