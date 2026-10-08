@@ -225,3 +225,5 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (max-width: 380px) {
   .app-header-actions { display: grid; justify-items: end; gap: .25rem; }
 }
+
+[hidden] { display: none !important; }
