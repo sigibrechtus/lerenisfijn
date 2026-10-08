@@ -209,6 +209,7 @@
     updateInputModeButtons();
     redraw();
     if (mode === 'keyboard') els.keyboardAnswer.focus();
+    else resizeCanvas();
   }
 
   modeButtons.forEach(btn => btn.addEventListener('click', () => setInputMode(btn.dataset.mode)));
@@ -280,6 +281,7 @@
     els.clearBtn.disabled = !enabled;
     els.undoBtn.disabled = !enabled;
     els.canvasWrap.classList.toggle('disabled', !enabled);
+    els.keyboardAnswer.disabled = !enabled;
   }
 
   function setFeedback(text, type) {
@@ -373,8 +375,9 @@
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Enter') { e.preventDefault(); check(); }
-    if (e.key === 'Backspace' && !locked) { e.preventDefault(); undoStroke(); }
-    if (e.key === 'Escape' && !locked) clearPad();
+    const typingAnswer = e.target === els.keyboardAnswer;
+    if (e.key === 'Backspace' && !typingAnswer && !locked) { e.preventDefault(); undoStroke(); }
+    if (e.key === 'Escape' && !typingAnswer && !locked) clearPad();
   });
 
   /* =========================================================
