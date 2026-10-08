@@ -176,7 +176,7 @@ button { font-family: inherit; }
 
 .mode-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-gap: 8px;
   gap: 8px;
 }
@@ -193,6 +193,12 @@ button { font-family: inherit; }
 }
 .mode-pen  { --c: var(--purple); }
 .mode-hand { --c: var(--pink); }
+.mode-keyboard { --c: var(--blue); font-size: .86rem; padding-left: 2px; padding-right: 2px; }
+.keyboard-wrap { max-width: 440px; margin: 0 auto; }
+.keyboard-wrap[hidden] { display: none; }
+.keyboard-wrap label { display: block; margin-bottom: 10px; font-weight: 700; color: var(--muted); }
+.keyboard-wrap input { width: min(100%, 300px); min-height: 64px; border: 3px solid var(--blue); border-radius: 16px; padding: 10px 18px; background: #fff; color: #1e293b; font-size: 2rem; font-weight: 700; text-align: center; }
+.keyboard-wrap input:focus { outline: 3px solid color-mix(in srgb, var(--blue) 25%, transparent); }
 .mode-btn[aria-pressed="true"] { background: var(--c); color: #fff; }
 .mode-btn:active { transform: translateY(2px); border-bottom-width: 4px; }
 
