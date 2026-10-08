@@ -89,10 +89,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 .app-header-layout > .app-home-link { justify-self: start; }
 .app-header-layout > .app-header-title { grid-column: 2; text-align: center; }
-.app-header-layout > .app-header-action,
+ .app-header-layout > .app-header-action,
 .app-header-layout > .app-settings-button,
 .app-header-layout > .score-badge,
-.app-header-layout > .score-box { justify-self: end; }
+.app-header-layout > .score-box {
+  grid-column: 3;
+  justify-self: end;
+}
 .app-header-layout > .app-header-spacer { grid-column: 2; }
 
 @media (max-width: 560px) {
