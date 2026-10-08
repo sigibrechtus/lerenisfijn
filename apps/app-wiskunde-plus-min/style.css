@@ -1,8 +1,8 @@
 :root {
-  --bg: #fff8ec;
+  --bg: linear-gradient(160deg, #e0f2fe 0%, #fdf4ff 50%, #fff7ed 100%);
   --card: #ffffff;
-  --primary: #ff7a45;
-  --primary-dark: #e8622c;
+  --primary: #2563eb;
+  --primary-dark: #1e40af;
   --accent: #1c7ed6;
   --accent-light: #e7f5ff;
   --text: #2b2d42;
@@ -21,13 +21,14 @@ body {
   display: flex;
   flex-direction: column;
   background: var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   font-family: var(--font);
 }
 
 .topbar {
   position: relative;
-  background: var(--primary);
+  background: linear-gradient(135deg, #6366f1 0%, #2563eb 60%, #0ea5e9 100%);
   color: #fff;
   text-align: center;
   padding: 1.5rem 1rem 1.75rem;
