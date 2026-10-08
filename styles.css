@@ -225,3 +225,77 @@ main { flex: 1; width: 100%; }
 }
 
 .card--progress .card-icon{background:#fff2c6;color:#9a6e00}
+
+
+/* Signed-in status in the homepage header */
+.topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 112px;
+  padding-right: 190px;
+  padding-left: 190px;
+}
+.topbar-title { text-align: center; }
+.topbar-title h1 { margin: 0; font-size: clamp(1.8rem, 5vw, 2.6rem); }
+.account-indicator {
+  position: absolute;
+  top: 50%;
+  right: max(1rem, calc((100vw - 1100px) / 2));
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  max-width: min(340px, 38vw);
+  padding: .45rem .55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .18);
+}
+.account-indicator[hidden] { display: none !important; }
+.account-indicator__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  color: #237a36;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+.account-indicator__greeting {
+  min-width: 0;
+  overflow: hidden;
+  color: #fff;
+  font-size: .9rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.account-indicator__signout {
+  border: 0;
+  border-radius: 999px;
+  padding: .45rem .7rem;
+  background: #fff;
+  color: var(--primary-dark);
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.account-indicator__signout:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.auth-panel[hidden] { display: none !important; }
+@media (max-width: 700px) {
+  .topbar { min-height: 145px; padding: 1rem; align-items: flex-start; }
+  .topbar-title { width: 100%; padding-top: .2rem; }
+  .account-indicator {
+    top: auto;
+    right: 1rem;
+    bottom: .65rem;
+    transform: none;
+    max-width: calc(100% - 2rem);
+  }
+}
