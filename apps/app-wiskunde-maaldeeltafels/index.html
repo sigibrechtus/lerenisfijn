@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Maal- en deeltafels – Leren is fijn</title>
   <link rel="stylesheet" href="style.css?v=7">
-  <link rel="stylesheet" href="../../app-theme.css?v=10">
+  <link rel="stylesheet" href="../../app-theme.css?v=11">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script defer src="../../supabase-client.js"></script>
 <script defer src="script.js?v=7"></script>
@@ -17,12 +17,12 @@
       <h1>Maal- en deeltafels</h1>
       <p class="subtitle">OLV SGR L2 – Wiskunde</p>
     </div>
-    <div class="score-box app-score-badge">Score: <span id="score">0</span></div>
+    <div class="app-header-actions"><a class="app-settings-button" href="#app-settings">Instellingen</a><div class="score-box app-score-badge">Score: <span id="score">0</span></div></div>
   </header>
 
   <main class="layout">
     <!-- Instellingen (links) -->
-    <aside class="settings" aria-label="Instellingen">
+    <aside id="app-settings" class="settings" aria-label="Instellingen">
       <section class="settings-block">
         <h2>Soort oefening</h2>
         <div class="type-grid" role="group" aria-label="Soort oefening">
