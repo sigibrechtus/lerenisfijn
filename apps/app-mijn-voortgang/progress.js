@@ -1,5 +1,5 @@
 (() => {
- const client=window.lerenSupabase, signedOut=document.getElementById("signedOut"),content=document.getElementById("progressContent"),pageStatus=document.getElementById("pageStatus"),form=document.getElementById("nicknameForm"),nickname=document.getElementById("nickname"),nicknameStatus=document.getElementById("nicknameStatus");
+ const client=window.lerenSupabase, signedOut=document.getElementById("signedOut"),content=document.getElementById("progressContent"),pageStatus=document.getElementById("pageStatus"),form=document.getElementById("nicknameForm"),nickname=document.getElementById("nickname"),nicknameStatus=document.getElementById("nicknameStatus"),profileSettingsLink=document.getElementById("profileSettingsLink");
  const names={"app-taal-spelling":"Themadictee","app-wiskunde-splitsingen":"Splitsingen","app-wiskunde-plus-min":"Plus en min","app-wiskunde-maaldeeltafels":"Maal- en deeltafels","app-wiskunde-kloklezen":"Kloklezen"};
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  function render(rows){
@@ -13,7 +13,7 @@
   document.getElementById("recentList").innerHTML=rows.slice(0,20).map(r=>'<div class="recent-row"><div><strong>'+esc(names[r.exercise_key]||r.exercise_key)+'</strong><small>'+new Date(r.completed_at).toLocaleString("nl-BE",{dateStyle:"medium",timeStyle:"short"})+'</small></div><span class="count">'+(r.assisted?'Samen nagekeken':r.first_try_correct?'Goed in één keer':'Na '+r.attempt_count+' pogingen')+'</span></div>').join("")||'<p class="empty">Je recente oefeningen verschijnen hier.</p>';
  }
  async function show(session){
-  const user=session&&session.user;signedOut.hidden=!!user;content.hidden=!user;if(!user)return;
+  const user=session&&session.user;profileSettingsLink.hidden=!user;signedOut.hidden=!!user;content.hidden=!user;if(!user)return;
   const p=await client.from("profiles").select("nickname").eq("id",user.id).maybeSingle();if(p.error)pageStatus.textContent="Je profiel kon niet worden geladen.";else nickname.value=(p.data&&p.data.nickname)||"";
   let rows=[],from=0;
   while(true){
