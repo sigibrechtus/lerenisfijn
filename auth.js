@@ -9,6 +9,7 @@
   const submitButton = document.querySelector("#authSubmit");
   const status = document.querySelector("#authStatus");
   const accountState = document.querySelector("#accountState");
+  const authPanel = document.querySelector("#authPanel");
   const accountGreeting = document.querySelector("#accountGreeting");
   const signOutButton = document.querySelector("#signOut");
 
@@ -73,6 +74,7 @@
     const version = sessionVersion;
     const user = session && session.user;
     form.hidden = Boolean(user);
+    authPanel.hidden = Boolean(user);
     accountState.hidden = !user;
     if (!user) {
       setStatus("", "");
