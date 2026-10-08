@@ -108,6 +108,9 @@ body {
   transition: transform .15s ease, border-color .15s ease, background .15s ease;
 }
 
+.mode-card[data-mode="read"] { --card-color: #4b7bec; }
+.mode-card[data-mode="set"] { --card-color: #f7b731; }
+.mode-card[data-mode="calc"] { --card-color: #20bf6b; }
 .mode-card .mode-icon { font-size: 1.8rem; }
 
 .mode-card[aria-pressed="true"] {
