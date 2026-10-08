@@ -26,16 +26,6 @@ header.topbar, header.top, .progress-header {
 header.topbar { border-radius: 0 0 var(--lf-radius) var(--lf-radius); }
 .progress-header { border: 0; }
 .progress-header p, .progress-header a { color: #fff !important; }
-.back-link, .back, .progress-header a {
-  display: inline-flex;
-  align-items: center;
-  gap: .3rem;
-  padding: .5rem 1rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .22);
-  color: #fff !important;
-  text-decoration: none;
-}
 .panel, .settings, .settings-panel, .game, .kaart, .nickname-card,
 .notice, .stat, .delta-card, .result, .summary {
   background-color: var(--lf-card);
@@ -80,11 +70,40 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font: inherit;
   font-weight: 700;
   cursor: pointer;
-  margin: .25rem;
+  margin: 0;
   box-shadow: var(--lf-shadow);
 }
 .app-settings-button:hover { background: #fff3ed; }
 .app-settings-button:focus-visible {
   outline: 3px solid var(--lf-accent);
   outline-offset: 3px;
+}
+
+
+/* Every app keeps navigation left and a secondary action or status right. */
+.app-header-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+}
+.app-header-layout > .app-home-link { justify-self: start; }
+.app-header-layout > .app-header-title { grid-column: 2; text-align: center; }
+.app-header-layout > .app-header-action,
+.app-header-layout > .app-settings-button,
+.app-header-layout > .score-badge,
+.app-header-layout > .score-box { justify-self: end; }
+.app-header-layout > .app-header-spacer { grid-column: 2; }
+
+@media (max-width: 560px) {
+  .app-header-layout {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .65rem;
+  }
+  .app-header-layout > .app-header-title {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+  }
+  .app-header-layout > .app-header-spacer { display: none; }
 }
