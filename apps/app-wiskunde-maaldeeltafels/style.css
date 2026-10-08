@@ -194,7 +194,19 @@ button { font-family: inherit; }
 .mode-pen  { --c: var(--purple); }
 .mode-hand { --c: var(--pink); }
 .mode-keyboard { --c: var(--blue); font-size: .86rem; padding-left: 2px; padding-right: 2px; }
-.keyboard-wrap { max-width: 440px; margin: 0 auto; }
+.keyboard-wrap { width: 100%; max-width: 440px; margin: 0 auto; }
+.canvas-wrap.keyboard-mode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  touch-action: auto;
+  background-color: #fffdf5;
+  background-image: none;
+}
+.canvas-wrap.keyboard-mode canvas,
+.canvas-wrap.keyboard-mode .placeholder { display: none; }
+.canvas-wrap.keyboard-mode .keyboard-wrap { max-width: none; }
 .keyboard-wrap[hidden] { display: none; }
 .keyboard-wrap label { display: block; margin-bottom: 10px; font-weight: 700; color: var(--muted); }
 .keyboard-wrap input { width: min(100%, 300px); min-height: 64px; border: 3px solid var(--blue); border-radius: 16px; padding: 10px 18px; background: #fff; color: #1e293b; font-size: 2rem; font-weight: 700; text-align: center; }
