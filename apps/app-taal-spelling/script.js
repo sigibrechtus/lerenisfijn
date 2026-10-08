@@ -398,12 +398,13 @@ function startSession(mode, items) {
     stars: 0,
     difficult: new Map(),
   });
+  $('practice-title').textContent = $('app-title').textContent;
   showScreen('practice');
   showWord();
 }
 
 function updateStars() {
-  $('stars').textContent = `★ ${session.stars}`;
+  $('stars').textContent = `Score: ★ ${session.stars}`;
 }
 
 function setPromptText(text) {
