@@ -65,7 +65,7 @@
   }
 
   function updateScore() {
-    scoreLabel.textContent = "Goed: " + correctAnswers;
+    scoreLabel.textContent = String(correctAnswers);
   }
 
   function updateOperationButtons() {
