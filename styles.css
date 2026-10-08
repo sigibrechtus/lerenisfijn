@@ -108,7 +108,7 @@ main { flex: 1; width: 100%; }
   letter-spacing: .02em;
 }
 
-.card-body h2 { margin: 0 0 .3rem; font-size: 1.35rem; color: var(--text); }
+.card-body h2, .card-body h3 { margin: 0 0 .3rem; font-size: 1.35rem; color: var(--text); }
 .card-body p  { margin: 0; font-size: .9rem; color: var(--muted); }
 
 .card-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: auto; }
