@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Het winkelspel – Leren is fijn</title>
-  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="../../app-theme.css?v=12">
+  <link rel="stylesheet" href="style.css?v=2"><link rel="stylesheet" href="../../app-theme.css?v=12">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
   <script defer src="../../supabase-client.js"></script>
-  <script defer src="game.js"></script><script defer src="script.js"></script>
+  <script defer src="game.js?v=2"></script><script defer src="script.js?v=2"></script>
 </head>
 <body>
   <header class="topbar app-header-layout">
@@ -17,7 +17,7 @@
   <main>
     <section class="panel" id="settings" hidden>
       <h2>Instellingen</h2><label for="level">Kies een niveau</label>
-      <select id="level"><option value="1">1 · Eén artikel, hele euro's</option><option value="2">2 · Twee artikelen, hele euro's</option><option value="3">3 · Eén artikel met centen</option><option value="4">4 · Drie artikelen met centen</option><option value="5">5 · Wisselgeld berekenen</option></select>
+      <select id="level"><option value="1">1 · Geld leggen: hele euro's</option><option value="2">2 · Geld leggen: euro's en centen</option><option value="3">3 · Twee artikelen, hele euro's</option><option value="4">4 · Drie artikelen met centen</option><option value="5">5 · Wisselgeld berekenen</option></select>
       <p>Na een reeks met minstens 8 van de 10 antwoorden goed in één keer ga je een niveau hoger. Bij minder blijf je oefenen op hetzelfde niveau.</p>
       <button id="restart" type="button">Nieuwe reeks</button>
     </section>
@@ -26,8 +26,16 @@
       <progress id="round-progress" value="0" max="10" aria-label="Afgeronde vragen"></progress>
       <h2 id="question"></h2><div id="basket" class="basket"></div><p id="payment"></p>
       <form id="answer-form" novalidate>
+        <section id="money-builder" hidden aria-label="Leg het juiste bedrag">
+          <p>Sleep geld uit je portemonnee naar het betaalvak. Terugleggen kan door terug te slepen of op een geldstuk in het betaalvak te tikken.</p>
+          <div id="pay-tray" class="money-zone" aria-label="Betaalvak"><h3>Betaalvak</h3><div id="placed-money" class="money-pieces"></div><p id="placed-total" aria-live="polite"></p><button id="clear-money" type="button">Wissen</button></div>
+          <div id="wallet" class="money-zone" aria-label="Portemonnee"><h3>Je portemonnee</h3><div id="available-money" class="money-pieces"></div></div>
+          <p class="note">Je hebt extra geld. Je hoeft niet alles te gebruiken. Je kunt ook op een geldstuk tikken of het met Enter kiezen.</p>
+        </section>
+        <div id="keyboard-answer">
         <label for="answer">Je antwoord in euro</label><div class="money-input"><span aria-hidden="true">€</span><input id="answer" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" aria-describedby="answer-help feedback"></div>
         <p id="answer-help">Typ bijvoorbeeld 3 of 3,50. Druk op Enter of Controleer.</p>
+        </div>
         <button id="check" type="submit">Controleer</button>
       </form>
       <p id="feedback" role="status" aria-live="polite"></p>
