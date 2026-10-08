@@ -322,7 +322,7 @@
     let read, value;
     if (inputMode === 'keyboard') {
       read = els.keyboardAnswer.value.trim();
-      if (!/^\d{1,3}$/.test(read)) {
+      if (read.length < 1 || read.length > 3 || Array.from(read).some(char => char < '0' || char > '9')) {
         setFeedback('Typ eerst een antwoord van maximaal drie cijfers.', 'info');
         els.keyboardAnswer.focus();
         return;
@@ -368,6 +368,10 @@
       }, 1300);
     }
   }
+
+  els.keyboardAnswer.addEventListener('input', () => {
+    if (els.keyboardAnswer.value.trim()) setFeedback('', '');
+  });
 
   els.checkBtn.addEventListener('click', check);
   els.clearBtn.addEventListener('click', () => { if (!locked) clearPad(); });
