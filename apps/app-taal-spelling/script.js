@@ -643,12 +643,16 @@ $('btn-settings-reset').addEventListener('click', () => {
 });
 
 /* ================= Woordenbibliotheek en TXT ================= */
-let wordLibrary=[],wordResources=[],plantynThemes=[],plantynPreviews=[],plantynThemeSource='https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-taal/thema-overzicht',importVersion=0;
+let wordLibrary=[],plantynPracticeSets=[],wordResources=[],plantynPreviews=[],plantynThemeSource='https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-taal/thema-overzicht',importVersion=0;
 function sourceLink(label,url){const link=document.createElement('a');link.textContent=label;link.href=url;link.target='_blank';link.rel='noopener noreferrer';return link;}
 function refreshSources(){
   const method=$('library-method').value,grade=$('library-grade').value,links=[];
   if(method==='plantyn'){
     links.push(sourceLink('Plantyn: De Taalkanjers en spelling','https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling'));
+    links.push(sourceLink('Officieel thema-overzicht',plantynThemeSource));
+    for(const preview of plantynPreviews.filter(item=>item.grade===Number(grade))){
+      links.push(sourceLink('Plantyn-preview '+grade+'e leerjaar · '+(preview.kind==='leerwerkboek'?'leerwerkboek':'handleiding'),preview.url));
+    }
     links.push(sourceLink('KlasCement: woordlijsten voor dit leerjaar','https://www.klascement.net/lesmateriaal/?q='+encodeURIComponent('De Taalkanjers '+grade+'e leerjaar woordenlijsten')));
   }else if(method==='vanin'){
     links.push(sourceLink('VAN IN: Tijd voor Taal accent','https://www.vanin.be/methodes/lager-onderwijs/nederlands/tijd-voor-taal-accent/'));
@@ -661,38 +665,20 @@ function refreshSources(){
     links.push(sourceLink('KlasCement: '+resource.title,resource.url));
   }
   $('library-sources').replaceChildren(...links);
-  const note=document.createElement('small');note.textContent='KlasCement bevat door leraren gedeelde lijsten. Aanmelden kan nodig zijn. Controleer de editie en het thema van je klas en bewaar de gewenste woorden als TXT. De voorbeeldreeksen hierboven blijven eigen oefensets.';$('library-sources').append(note);
-  refreshPlantynThemes();
-}
-function refreshPlantynThemes(){
-  const panel=$('plantyn-theme-catalogue'),grade=Number($('library-grade').value),picker=$('plantyn-theme');
-  panel.hidden=$('library-method').value!=='plantyn';
-  const themes=plantynThemes.filter(item=>item.grade===grade),previous=picker.value;
-  picker.replaceChildren(...themes.map((item,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent=item.domain+' · '+item.theme;return option;}));
-  picker.disabled=!themes.length;
-  if(themes.length){const selected=themes.findIndex(item=>item.theme===previous);picker.value=String(selected>=0?selected:0);showPlantynTheme();}
-  else{$('plantyn-theme-domain').textContent='Voor dit leerjaar zijn geen thema’s geladen.';$('plantyn-preview-links').replaceChildren();}
-}
-function showPlantynTheme(){
-  const grade=Number($('library-grade').value),item=plantynThemes.filter(entry=>entry.grade===grade)[Number($('plantyn-theme').value)];
-  if(!item)return;
-  $('plantyn-theme-domain').textContent='Leerjaar '+grade+' · '+item.domain+' · '+item.theme;
-  const links=[sourceLink('Officieel thema-overzicht',plantynThemeSource)];
-  const previews=plantynPreviews.filter(preview=>preview.grade===grade);
-  if(previews.length){
-    for(const preview of previews){const label=preview.kind==='leerwerkboek'?'Bekijk voorbeeldles · leerwerkboek':'Bekijk voorbeeldles · handleiding';links.push(sourceLink(label,preview.url));}
-    const note=document.createElement('small');note.textContent='De openbare voorbeeldlessen tonen één lesweek, geen complete woordenlijsten voor alle thema’s.';links.push(note);
-  }else{
-    const note=document.createElement('small');note.textContent='Plantyn vermeldt voor dit leerjaar thema’s, maar publiceert hier geen woordpakketten of voorbeeldles.';links.push(note);
-  }
-  $('plantyn-preview-links').replaceChildren(...links);
+  const note=document.createElement('small');
+  note.textContent=method==='plantyn'
+    ?'De Plantyn-keuze toont originele, gegenereerde oefenwoorden bij de officiële thema’s. Voor de eerste twee thema’s van leerjaar 2 en 3 is de spellingfocus afgeleid uit de voorbeeldinhoudsopgaven; andere accenten zijn inschattingen. Plantyn levert geen complete woordenlijsten voor alle thema’s.'
+    :'KlasCement bevat door leraren gedeelde lijsten. Aanmelden kan nodig zijn. Controleer de editie en het thema van je klas. De voorbeeldreeksen blijven eigen oefensets.';
+  $('library-sources').append(note);
 }
 function refreshLibraryChoices(){
   const grade=Number($('library-grade').value),kind=$('library-kind').value,previous=$('library-theme').value;
-  const filtered=wordLibrary.filter(set=>set.grade===grade&&(kind==='all'||set.kind===kind));
-  $('library-theme').replaceChildren(...filtered.map(set=>{const option=document.createElement('option');option.value=set.id;option.textContent=set.theme+' · '+set.words.length+' woorden';return option;}));
+  const method=$('library-method').value,sets=method==='plantyn'?plantynPracticeSets:wordLibrary;
+  const filtered=sets.filter(set=>set.grade===grade&&(kind==='all'||set.kind===kind));
+  $('library-theme').replaceChildren(...filtered.map(set=>{const option=document.createElement('option');option.value=set.id;option.textContent=set.theme+' · '+set.words.length+' woorden'+(set.focus?' · '+set.focus:'');return option;}));
   if(filtered.some(set=>set.id===previous))$('library-theme').value=previous;else if(filtered.some(set=>set.id===settings.wordSet))$('library-theme').value=settings.wordSet;
   $('library-theme').disabled=!filtered.length;$('btn-load-word-set').disabled=!filtered.length;refreshSources();
+  if(!filtered.length)$('library-status').textContent='Voor deze combinatie zijn geen oefenreeksen beschikbaar. Kies Alle woorden of een ander leerjaar.';
 }
 function applyWordList(text,title,metadata={}){
   const parsed=window.DicteeWordLists.parseText(text);
@@ -708,10 +694,13 @@ for(const id of ['library-grade','library-kind','library-method'])$(id).addEvent
   settings.libraryGrade=Number($('library-grade').value);settings.wordKind=$('library-kind').value;settings.method=$('library-method').value;saveSettings();refreshLibraryChoices();
 });
 $('btn-load-word-set').addEventListener('click',()=>{
-  const set=wordLibrary.find(item=>item.id===$('library-theme').value);if(!set)return;
-  settings.wordSet=set.id;const count=applyWordList(set.words.join('\n'),set.title,{grade:set.grade,theme:set.theme,kind:set.kind,method:'eigen'});$('library-status').textContent=count+' voorbeeldwoorden geladen. Kies Klaar en start een oefening.';
+  const library=$('library-method').value==='plantyn'?plantynPracticeSets:wordLibrary;
+  const set=library.find(item=>item.id===$('library-theme').value);if(!set)return;
+  settings.wordSet=set.id;
+  const method=$('library-method').value==='plantyn'?'Plantyn-thema · eigen gegenereerde oefenwoorden':'eigen';
+  const count=applyWordList(set.words.join('\n'),set.title,{grade:set.grade,theme:set.theme,kind:set.kind,method});
+  $('library-status').textContent=count+' eigen oefenwoorden geladen.'+(set.focus?' Focus: '+set.focus+'.':'')+' Kies Klaar en start een oefening.';
 });
-$('plantyn-theme').addEventListener('change',showPlantynTheme);
 $('word-file').addEventListener('change',async event=>{
   const file=event.target.files?.[0];if(!file)return;const version=++importVersion;$('word-file-status').textContent='Woordenlijst lezen…';
   try {
@@ -737,7 +726,7 @@ $('set-words').addEventListener('input',()=>{settings.words=$('set-words').value
 $('set-title').addEventListener('input',()=>{settings.title=$('set-title').value;});
 $('btn-choose-words').addEventListener('click',openSettings);
 async function loadWordLibrary(){
-  try {const response=await fetch('word-library.json?v=3');if(!response.ok)throw new Error();const data=await response.json();wordLibrary=data.sets;wordResources=data.resources||[];plantynThemes=data.plantynThemes||[];plantynPreviews=data.plantynPreviews||[];plantynThemeSource=data.plantynThemeSource||'https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-taal/thema-overzicht';refreshLibraryChoices();}
+  try {const response=await fetch('word-library.json?v=4');if(!response.ok)throw new Error();const data=await response.json();wordLibrary=data.sets;plantynPracticeSets=data.plantynPracticeSets||[];wordResources=data.resources||[];plantynPreviews=data.plantynPreviews||[];plantynThemeSource=data.plantynThemeSource||'https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-taal/thema-overzicht';refreshLibraryChoices();}
   catch(_){$('library-status').textContent='De voorbeeldbibliotheek kon niet worden geladen. Je kunt wel een TXT-bestand laden of woorden typen.';}
 }
 loadWordLibrary();
