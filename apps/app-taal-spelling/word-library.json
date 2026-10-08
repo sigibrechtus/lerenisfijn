@@ -1,5 +1,31 @@
 {
-  "version": 1,
+  "version": 2,
+  "resources": [
+    {
+      "method": "plantyn",
+      "grade": 2,
+      "title": "Woordpakketten per thema · De Taalkanjers 2",
+      "url": "https://www.klascement.net/downloadbaar-lesmateriaal/124821/woordpakketten-per-thema/"
+    },
+    {
+      "method": "plantyn",
+      "grade": 3,
+      "title": "Thema 1 tot 10 · De Taalkanjers 3",
+      "url": "https://www.klascement.net/downloadbaar-lesmateriaal/226431/thema-1-tot-10-woordenlijsten/"
+    },
+    {
+      "method": "plantyn",
+      "grade": 4,
+      "title": "Woordenlijsten per thema · De Taalkanjers 4",
+      "url": "https://www.klascement.net/downloadbaar-lesmateriaal/168089/woordenlijsten-per-thema/"
+    },
+    {
+      "method": "vanin",
+      "grade": 5,
+      "title": "Woordpakketten 1 tot 10 · Tijd voor Taal accent 5",
+      "url": "https://www.klascement.net/downloadbaar-lesmateriaal/96369/woordpakketten-1-tot-10/"
+    }
+  ],
   "sets": [
     {
       "id": "l1-school",

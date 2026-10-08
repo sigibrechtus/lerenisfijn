@@ -49,16 +49,22 @@
     actions.append(button);buttons.push(button);
   });
   refresh();
-  document.addEventListener('pointerdown',event=>{if(enabled&&event.target.closest('button,a.app-home-link,summary')&&!event.target.closest('.lf-sound-tools'))play('tap');},{capture:true});
-  document.addEventListener('keydown',event=>{if(enabled&&(event.key==='Enter'||event.key===' ')&&event.target.closest('button,a.app-home-link')&&!event.target.closest('.lf-sound-tools'))play('tap');},{capture:true});
+  const isBack=control=>control.classList.contains('app-home-link')||/^(←|terug|overzicht|startscherm)/i.test(control.textContent.trim());
+  // A click is activated after a touch is released. Starting media on touch
+  // pointerdown can be blocked before the browser grants user activation.
+  // Capture runs before answer handlers, so their result cue takes precedence.
+  document.addEventListener('click',event=>{
+    const control=event.target.closest('button,a.app-home-link,a.app-settings-button,summary');
+    if(enabled&&control&&!control.closest('.lf-sound-tools')&&!control.classList.contains('app-sound-button')&&!isBack(control))play('tap');
+  },{capture:true});
   document.addEventListener('click',event=>{
     const control=event.target.closest('button,a.app-home-link');if(!control||control.closest('.lf-sound-tools')||control.classList.contains('app-sound-button'))return;
-    const back=control.classList.contains('app-home-link')||/^(←|terug|overzicht|startscherm)/i.test(control.textContent.trim());
+    const back=isBack(control);
     if(back){
       if(control.tagName==='A'&&enabled&&event.button===0&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.altKey&&control.target!=='_blank'&&new URL(control.href).origin===location.origin){
         event.preventDefault();let navigated=false;const go=()=>{if(navigated)return;navigated=true;location.assign(control.href);};const fallback=setTimeout(go,350);play('back').then(ok=>{if(ok)setTimeout(()=>{clearTimeout(fallback);go();},180);else{clearTimeout(fallback);go();}});
       }else play('back');
-    }else if(event.detail===0&&control.type!=='submit'&&!/check|controleer/i.test(control.id))play('tap');
+    }
   });
   window.addEventListener('storage',event=>{if(event.key===KEY){enabled=event.newValue!=='off';if(!enabled)player.pause();refresh();}else if(event.key===KEY+'-volume'){volume=Math.max(.1,Math.min(1,Number(event.newValue)||.8));slider.value=String(Math.round(volume*100));player.volume=volume;}});
   window.lerenEffects={correct:target=>feedback('correct',target),incorrect:target=>feedback('incorrect',target),complete:target=>feedback('complete',target),tap:()=>play('tap'),back:()=>play('back'),test:kind=>{setEnabled(true);return play(kind,{test:true});}};

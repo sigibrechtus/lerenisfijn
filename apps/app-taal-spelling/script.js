@@ -17,6 +17,9 @@ const DEFAULTS = {
   method: 'eigen',
   wordKind: 'all',
   wordSet: '',
+  wordTheme: '',
+  wordMethod: 'eigen',
+  wordType: '',
   words: ['de tak', 'het net', 'de bal', 'het dak', 'de vis', 'het bos', 'de maan', 'niet'].join('\n'),
 };
 
@@ -640,7 +643,7 @@ $('btn-settings-reset').addEventListener('click', () => {
 });
 
 /* ================= Woordenbibliotheek en TXT ================= */
-let wordLibrary=[],importVersion=0;
+let wordLibrary=[],wordResources=[],importVersion=0;
 function sourceLink(label,url){const link=document.createElement('a');link.textContent=label;link.href=url;link.target='_blank';link.rel='noopener noreferrer';return link;}
 function refreshSources(){
   const method=$('library-method').value,grade=$('library-grade').value,links=[];
@@ -650,9 +653,15 @@ function refreshSources(){
   }else if(method==='vanin'){
     links.push(sourceLink('VAN IN: Tijd voor Taal accent','https://www.vanin.be/methodes/lager-onderwijs/nederlands/tijd-voor-taal-accent/'));
     links.push(sourceLink('KlasCement: woordpakketten voor dit leerjaar','https://www.klascement.net/lesmateriaal/?q='+encodeURIComponent('Tijd voor Taal accent '+grade+'e leerjaar woordenlijsten')));
+  }else if(method==='talent'){
+    links.push(sourceLink('VAN IN: TALENT, voorbeeldlessen per leerjaar','https://www.vanin.be/methodes/lager-onderwijs/nederlands/talent/'));
+    links.push(sourceLink('KlasCement: TALENT voor dit leerjaar','https://www.klascement.net/lesmateriaal/?q='+encodeURIComponent('TALENT '+grade+'e leerjaar woordenlijsten')));
   }else links.push(sourceLink('Zoek woordenlijsten op KlasCement','https://www.klascement.net/lesmateriaal/?q='+encodeURIComponent('woordenlijsten '+grade+'e leerjaar spelling')));
+  for(const resource of wordResources.filter(item=>item.method===method&&item.grade===Number(grade))){
+    links.push(sourceLink('KlasCement: '+resource.title,resource.url));
+  }
   $('library-sources').replaceChildren(...links);
-  const note=document.createElement('small');note.textContent='Voor sommige downloads op KlasCement is aanmelden nodig. Controleer de editie en het thema van je klas; laad de klaswoorden daarna als TXT.';$('library-sources').append(note);
+  const note=document.createElement('small');note.textContent='KlasCement bevat door leraren gedeelde lijsten. Aanmelden kan nodig zijn. Controleer de editie en het thema van je klas en bewaar de gewenste woorden als TXT. De voorbeeldreeksen hierboven blijven eigen oefensets.';$('library-sources').append(note);
 }
 function refreshLibraryChoices(){
   const grade=Number($('library-grade').value),kind=$('library-kind').value,previous=$('library-theme').value;
@@ -664,6 +673,9 @@ function refreshLibraryChoices(){
 function applyWordList(text,title,metadata={}){
   const parsed=window.DicteeWordLists.parseText(text);
   settings.words=parsed.words.map(item=>item.full).join('\n');settings.title=parsed.metadata.titel||title||'Eigen woordenlijst';
+  settings.wordTheme=parsed.metadata.thema||metadata.theme||'';
+  settings.wordMethod=parsed.metadata.methode||metadata.method||'eigen';
+  settings.wordType=parsed.metadata.woordsoort||metadata.kind||'';
   const grade=Number(parsed.metadata.leerjaar||metadata.grade||$('library-grade').value);if(Number.isInteger(grade)&&grade>=1&&grade<=6){settings.grade=grade;settings.libraryGrade=grade;}
   $('set-words').value=settings.words;$('set-title').value=settings.title;$('library-grade').value=String(settings.grade);
   saveSettings();applyTitle();refreshLibraryChoices();return parsed.words.length;
@@ -673,7 +685,7 @@ for(const id of ['library-grade','library-kind','library-method'])$(id).addEvent
 });
 $('btn-load-word-set').addEventListener('click',()=>{
   const set=wordLibrary.find(item=>item.id===$('library-theme').value);if(!set)return;
-  settings.wordSet=set.id;const count=applyWordList(set.words.join('\n'),set.title,{grade:set.grade});$('library-status').textContent=count+' voorbeeldwoorden geladen. Kies Klaar en start een oefening.';
+  settings.wordSet=set.id;const count=applyWordList(set.words.join('\n'),set.title,{grade:set.grade,theme:set.theme,kind:set.kind,method:'eigen'});$('library-status').textContent=count+' voorbeeldwoorden geladen. Kies Klaar en start een oefening.';
 });
 $('word-file').addEventListener('change',async event=>{
   const file=event.target.files?.[0];if(!file)return;const version=++importVersion;$('word-file-status').textContent='Woordenlijst lezen…';
@@ -687,15 +699,20 @@ $('word-file').addEventListener('change',async event=>{
 });
 $('btn-download-words').addEventListener('click',()=>{
   try {
-    const parsed=window.DicteeWordLists.parseText($('set-words').value),text=window.DicteeWordLists.exportText(parsed.words,{titel:$('set-title').value||'Themadictee',leerjaar:settings.grade});
+    const parsed=window.DicteeWordLists.parseText($('set-words').value);
+    const metadata={titel:$('set-title').value||'Themadictee',leerjaar:settings.grade};
+    if(settings.wordTheme)metadata.thema=settings.wordTheme;
+    if(settings.wordType)metadata.woordsoort=settings.wordType;
+    if(settings.wordMethod)metadata.methode=settings.wordMethod;
+    const text=window.DicteeWordLists.exportText(parsed.words,metadata);
     const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})),link=document.createElement('a');link.href=url;link.download='woorden-leerjaar-'+settings.grade+'.txt';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('word-file-status').textContent='TXT-bestand gedownload.';
   }catch(error){$('word-file-status').textContent=error.message;}
 });
-$('set-words').addEventListener('input',()=>{settings.words=$('set-words').value;});
+$('set-words').addEventListener('input',()=>{settings.words=$('set-words').value;settings.wordSet='';});
 $('set-title').addEventListener('input',()=>{settings.title=$('set-title').value;});
 $('btn-choose-words').addEventListener('click',openSettings);
 async function loadWordLibrary(){
-  try {const response=await fetch('word-library.json?v=1');if(!response.ok)throw new Error();const data=await response.json();wordLibrary=data.sets;refreshLibraryChoices();}
+  try {const response=await fetch('word-library.json?v=2');if(!response.ok)throw new Error();const data=await response.json();wordLibrary=data.sets;wordResources=data.resources||[];refreshLibraryChoices();}
   catch(_){$('library-status').textContent='De voorbeeldbibliotheek kon niet worden geladen. Je kunt wel een TXT-bestand laden of woorden typen.';}
 }
 loadWordLibrary();
