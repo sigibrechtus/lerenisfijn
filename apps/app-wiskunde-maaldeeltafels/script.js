@@ -8,7 +8,7 @@
   const INPUT_KEY = 'lerenisfijn-maaltafels-schrijfwijze';
   const TYPE_KEY = 'lerenisfijn-maaltafels-soort';
   const DEFAULT_TABLES = [2, 5, 10];
-  const DEFAULT_INPUT = 'pen';                 // 'pen' = potlood (standaard), 'hand' = vinger
+  const DEFAULT_INPUT = 'pen';                 // pen, hand of keyboard
   const DEFAULT_TYPE = 'mul';                  // 'mul' = maal, 'div' = deel, 'mix' = beide
   const LINE_WIDTH = { pen: 6, hand: 10 };
   const SIGN = { mul: '\u00D7', div: ':' };
@@ -16,6 +16,8 @@
 
   const $ = id => document.getElementById(id);
   const els = {
+    keyboardWrap: $('keyboardWrap'),
+    keyboardAnswer: $('keyboardAnswer'),
     tableButtons: $('tableButtons'),
     selectAll: $('selectAll'),
     selectNone: $('selectNone'),
@@ -171,7 +173,7 @@
   function loadInputMode() {
     try {
       const saved = localStorage.getItem(INPUT_KEY);
-      if (saved === 'pen' || saved === 'hand') return saved;
+      if (saved === 'pen' || saved === 'hand' || saved === 'keyboard') return saved;
     } catch (e) { /* negeren */ }
     return DEFAULT_INPUT;
   }
@@ -184,17 +186,21 @@
     modeButtons.forEach(btn => {
       btn.setAttribute('aria-pressed', btn.dataset.mode === inputMode ? 'true' : 'false');
     });
-    if (inputMode === 'pen') {
+    const keyboard = inputMode === 'keyboard';
+    els.canvasWrap.hidden = keyboard;
+    els.keyboardWrap.hidden = !keyboard;
+    els.undoBtn.hidden = keyboard;
+    els.clearBtn.hidden = keyboard;
+    if (keyboard) els.modeHint.textContent = 'Typ je antwoord met het schermtoetsenbord.';
+    else if (inputMode === 'pen') {
       els.modeHint.textContent = penSeen
         ? 'Pen herkend: alleen de pen schrijft, je hand mag op het scherm rusten.'
         : 'Schrijf met je pen of potlood.';
-    } else {
-      els.modeHint.textContent = 'Schrijf met één vinger.';
-    }
+    } else els.modeHint.textContent = 'Schrijf met één vinger.';
   }
 
   function setInputMode(mode) {
-    if (mode !== 'pen' && mode !== 'hand') return;
+    if (mode !== 'pen' && mode !== 'hand' && mode !== 'keyboard') return;
     inputMode = mode;
     saveInputMode();
     activeStroke = null;
@@ -202,6 +208,7 @@
     activePointerType = null;
     updateInputModeButtons();
     redraw();
+    if (mode === 'keyboard') els.keyboardAnswer.focus();
   }
 
   modeButtons.forEach(btn => btn.addEventListener('click', () => setInputMode(btn.dataset.mode)));
@@ -238,6 +245,7 @@
     attempts = 0;
     questionId = window.lerenProgress ? window.lerenProgress.questionId() : null;
     questionStartedAt = Date.now();
+    els.keyboardAnswer.value = '';
     els.answerSlot.textContent = '?';
     els.answerSlot.classList.remove('correct');
 
@@ -309,18 +317,27 @@
   function check() {
     if (locked || !current) return;
 
-    if (!strokes.length) {
-      setFeedback('Schrijf eerst je antwoord in het vak.', 'info');
-      return;
+    let read, value;
+    if (inputMode === 'keyboard') {
+      read = els.keyboardAnswer.value.trim();
+      if (!/^\\d{1,3}$/.test(read)) {
+        setFeedback('Typ eerst een antwoord van maximaal drie cijfers.', 'info');
+        els.keyboardAnswer.focus();
+        return;
+      }
+      value = Number(read);
+    } else {
+      if (!strokes.length) {
+        setFeedback('Schrijf eerst je antwoord in het vak.', 'info');
+        return;
+      }
+      read = recognizeNumber(strokes);
+      if (!read) {
+        setFeedback('Ik kan het niet goed lezen. Schrijf wat groter.', 'info');
+        return;
+      }
+      value = parseInt(read, 10);
     }
-
-    const read = recognizeNumber(strokes);
-    if (!read) {
-      setFeedback('Ik kan het niet goed lezen. Schrijf wat groter.', 'info');
-      return;
-    }
-
-    const value = parseInt(read, 10);
 
     if (value === current.answer) {
       if (questionId && window.lerenProgress) window.lerenProgress.recordQuestion({ exercise_key: "app-wiskunde-maaldeeltafels", mode: exerciseType, question_id: questionId, attempt_count: attempts + 1, first_try_correct: attempts === 0, assisted: false, duration_ms: Math.max(0, Date.now() - questionStartedAt) });
@@ -343,8 +360,9 @@
       animate('shake');
       if (attempts >= 2) showHint();
       setTimeout(() => {
-        clearPad();
+        if (inputMode !== 'keyboard') clearPad();
         locked = false;
+        if (inputMode === 'keyboard') { els.keyboardAnswer.focus(); els.keyboardAnswer.select(); }
       }, 1300);
     }
   }
