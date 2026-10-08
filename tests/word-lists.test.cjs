@@ -47,3 +47,17 @@ test('all six years have valid original sets and method links match their year',
     assert.equal(new URL(resource.url).hostname, 'www.klascement.net');
   }
 });
+
+test('Plantyn catalogue contains every published theme, grouped by grade, without claiming official word lists', () => {
+  const library = JSON.parse(fs.readFileSync(path.join(__dirname, '../apps/app-taal-spelling/word-library.json')));
+  assert.equal(library.plantynThemes.length, 48);
+  for (let grade = 1; grade <= 6; grade++) {
+    assert.equal(library.plantynThemes.filter(item => item.grade === grade).length, 8);
+  }
+  assert.equal(new Set(library.plantynThemes.map(item => `${item.grade}:${item.theme}`)).size, 48);
+  assert.deepEqual(library.plantynPreviews.map(item => `${item.grade}:${item.kind}`).sort(), [
+    '2:handleiding', '2:leerwerkboek', '3:handleiding', '3:leerwerkboek'
+  ]);
+  for (const preview of library.plantynPreviews) assert.equal(new URL(preview.url).hostname, 'view.publitas.com');
+  assert.match(library.plantynThemeSource, /plantyn\.com/);
+});
