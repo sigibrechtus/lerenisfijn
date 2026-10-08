@@ -68,3 +68,28 @@ h2 { margin: 0.5rem 0 0; }
     #spel { padding-top: 120px; }
     .tegel { width: 54px; height: 54px; font-size: 1.6rem; }
 }
+
+
+/* Compact shared header for the timed exercise */
+.game-header { margin: 0 0 1rem; }
+.game-header .hoek {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+  z-index: auto;
+  min-width: 0;
+  padding: .35rem .7rem;
+  border-radius: 999px;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+}
+.game-header .hoek-label { font-size: .68rem; letter-spacing: .04em; }
+.game-header #teller,
+.game-header #timer { color: var(--lf-text); font-size: .95rem; line-height: 1.15; }
+.game-header #teller small { color: var(--lf-muted); font-size: .75rem; }
+.game-header .doelbalk { display: none; }
+.game-header #stopBtn { position: static; bottom: auto; left: auto; z-index: auto; margin: 0; }
+#spel { padding-top: 20px; }
