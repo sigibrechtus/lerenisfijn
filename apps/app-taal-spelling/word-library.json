@@ -1,61 +1,273 @@
 {
-  "version": 3,
+  "version": 4,
   "plantynThemes": [
-    { "grade": 1, "domain": "Aardrijkskunde", "theme": "Mijn klas, mijn school, mijn buurt" },
-    { "grade": 1, "domain": "Wetenschap en techniek", "theme": "Beest en bos" },
-    { "grade": 1, "domain": "Geschiedenis", "theme": "Tijd!" },
-    { "grade": 1, "domain": "Wetenschap en techniek", "theme": "Kracht, licht en warmte" },
-    { "grade": 1, "domain": "Aardrijkskunde", "theme": "Weer en water" },
-    { "grade": 1, "domain": "Geschiedenis", "theme": "De prehistorie" },
-    { "grade": 1, "domain": "Wetenschap en techniek", "theme": "Fit en gezond" },
-    { "grade": 1, "domain": "Geschiedenis en burgerschap", "theme": "Ik, jij en wij" },
-    { "grade": 2, "domain": "Aardrijkskunde", "theme": "Op stap in onze gemeente" },
-    { "grade": 2, "domain": "Wetenschap en techniek", "theme": "Het bos, mijn vriend" },
-    { "grade": 2, "domain": "Geschiedenis", "theme": "Het eerste schrift" },
-    { "grade": 2, "domain": "Wetenschap en techniek", "theme": "Speuren naar kracht en licht" },
-    { "grade": 2, "domain": "Aardrijkskunde", "theme": "Zon en planeet aarde" },
-    { "grade": 2, "domain": "Geschiedenis", "theme": "De Grieken" },
-    { "grade": 2, "domain": "Wetenschap en techniek", "theme": "Groeien en bloeien" },
-    { "grade": 2, "domain": "Geschiedenis en burgerschap", "theme": "Iedereen anders, iedereen gelijk" },
-    { "grade": 3, "domain": "Aardrijkskunde", "theme": "Op reis door België" },
-    { "grade": 3, "domain": "Wetenschap en techniek", "theme": "Eet je goed? Beweeg je goed?" },
-    { "grade": 3, "domain": "Geschiedenis", "theme": "De Romeinen" },
-    { "grade": 3, "domain": "Wetenschap en techniek", "theme": "Van trilling tot beweging" },
-    { "grade": 3, "domain": "Aardrijkskunde", "theme": "Landschap, water en weer" },
-    { "grade": 3, "domain": "Geschiedenis", "theme": "De vroege middeleeuwen" },
-    { "grade": 3, "domain": "Wetenschap en techniek", "theme": "Lentekriebels" },
-    { "grade": 3, "domain": "Geschiedenis en burgerschap", "theme": "Samen kiezen, samen leven" },
-    { "grade": 4, "domain": "Aardrijkskunde", "theme": "Reis door de wereld" },
-    { "grade": 4, "domain": "Wetenschap en techniek", "theme": "Natuurlijk!" },
-    { "grade": 4, "domain": "Geschiedenis", "theme": "De hoge en late middeleeuwen" },
-    { "grade": 4, "domain": "Wetenschap en techniek", "theme": "Van magneet tot duurzame energie" },
-    { "grade": 4, "domain": "Aardrijkskunde", "theme": "Boeiende landschappen" },
-    { "grade": 4, "domain": "Geschiedenis", "theme": "De vroegmoderne tijd: Europa" },
-    { "grade": 4, "domain": "Wetenschap en techniek", "theme": "Over mijn lijf" },
-    { "grade": 4, "domain": "Geschiedenis en burgerschap", "theme": "Wij, samen wereldburgers" },
-    { "grade": 5, "domain": "Aardrijkskunde", "theme": "Welkom in Europa" },
-    { "grade": 5, "domain": "Wetenschap en techniek", "theme": "Gezond en gewerveld" },
-    { "grade": 5, "domain": "Geschiedenis", "theme": "De vroegmoderne tijd: koninkrijken en ontdekkingen" },
-    { "grade": 5, "domain": "Wetenschap en techniek", "theme": "Natuur en techniek in beweging" },
-    { "grade": 5, "domain": "Aardrijkskunde", "theme": "Wonderlijke wereldbol" },
-    { "grade": 5, "domain": "Geschiedenis", "theme": "De moderne tijd: stroom en strijd" },
-    { "grade": 5, "domain": "Wetenschap en techniek", "theme": "Groene vingers en kriebelpoten" },
-    { "grade": 5, "domain": "Geschiedenis en burgerschap", "theme": "Andere bril, andere wereld" },
-    { "grade": 6, "domain": "Aardrijkskunde", "theme": "Krachtige aarde" },
-    { "grade": 6, "domain": "Wetenschap en techniek", "theme": "'t Zit van binnen" },
-    { "grade": 6, "domain": "Geschiedenis", "theme": "De moderne tijd: wet en vrijheid" },
-    { "grade": 6, "domain": "Wetenschap en techniek", "theme": "Stroom nodig?" },
-    { "grade": 6, "domain": "Aardrijkskunde", "theme": "Van de kustlijn tot het heelal" },
-    { "grade": 6, "domain": "Geschiedenis", "theme": "De hedendaagse tijd" },
-    { "grade": 6, "domain": "Wetenschap en techniek", "theme": "Natuur in balans" },
-    { "grade": 6, "domain": "Geschiedenis en burgerschap", "theme": "Mijn stem, onze staat" }
+    {
+      "grade": 1,
+      "domain": "Aardrijkskunde",
+      "theme": "Mijn klas, mijn school, mijn buurt"
+    },
+    {
+      "grade": 1,
+      "domain": "Wetenschap en techniek",
+      "theme": "Beest en bos"
+    },
+    {
+      "grade": 1,
+      "domain": "Geschiedenis",
+      "theme": "Tijd!"
+    },
+    {
+      "grade": 1,
+      "domain": "Wetenschap en techniek",
+      "theme": "Kracht, licht en warmte"
+    },
+    {
+      "grade": 1,
+      "domain": "Aardrijkskunde",
+      "theme": "Weer en water"
+    },
+    {
+      "grade": 1,
+      "domain": "Geschiedenis",
+      "theme": "De prehistorie"
+    },
+    {
+      "grade": 1,
+      "domain": "Wetenschap en techniek",
+      "theme": "Fit en gezond"
+    },
+    {
+      "grade": 1,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Ik, jij en wij"
+    },
+    {
+      "grade": 2,
+      "domain": "Aardrijkskunde",
+      "theme": "Op stap in onze gemeente"
+    },
+    {
+      "grade": 2,
+      "domain": "Wetenschap en techniek",
+      "theme": "Het bos, mijn vriend"
+    },
+    {
+      "grade": 2,
+      "domain": "Geschiedenis",
+      "theme": "Het eerste schrift"
+    },
+    {
+      "grade": 2,
+      "domain": "Wetenschap en techniek",
+      "theme": "Speuren naar kracht en licht"
+    },
+    {
+      "grade": 2,
+      "domain": "Aardrijkskunde",
+      "theme": "Zon en planeet aarde"
+    },
+    {
+      "grade": 2,
+      "domain": "Geschiedenis",
+      "theme": "De Grieken"
+    },
+    {
+      "grade": 2,
+      "domain": "Wetenschap en techniek",
+      "theme": "Groeien en bloeien"
+    },
+    {
+      "grade": 2,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Iedereen anders, iedereen gelijk"
+    },
+    {
+      "grade": 3,
+      "domain": "Aardrijkskunde",
+      "theme": "Op reis door België"
+    },
+    {
+      "grade": 3,
+      "domain": "Wetenschap en techniek",
+      "theme": "Eet je goed? Beweeg je goed?"
+    },
+    {
+      "grade": 3,
+      "domain": "Geschiedenis",
+      "theme": "De Romeinen"
+    },
+    {
+      "grade": 3,
+      "domain": "Wetenschap en techniek",
+      "theme": "Van trilling tot beweging"
+    },
+    {
+      "grade": 3,
+      "domain": "Aardrijkskunde",
+      "theme": "Landschap, water en weer"
+    },
+    {
+      "grade": 3,
+      "domain": "Geschiedenis",
+      "theme": "De vroege middeleeuwen"
+    },
+    {
+      "grade": 3,
+      "domain": "Wetenschap en techniek",
+      "theme": "Lentekriebels"
+    },
+    {
+      "grade": 3,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Samen kiezen, samen leven"
+    },
+    {
+      "grade": 4,
+      "domain": "Aardrijkskunde",
+      "theme": "Reis door de wereld"
+    },
+    {
+      "grade": 4,
+      "domain": "Wetenschap en techniek",
+      "theme": "Natuurlijk!"
+    },
+    {
+      "grade": 4,
+      "domain": "Geschiedenis",
+      "theme": "De hoge en late middeleeuwen"
+    },
+    {
+      "grade": 4,
+      "domain": "Wetenschap en techniek",
+      "theme": "Van magneet tot duurzame energie"
+    },
+    {
+      "grade": 4,
+      "domain": "Aardrijkskunde",
+      "theme": "Boeiende landschappen"
+    },
+    {
+      "grade": 4,
+      "domain": "Geschiedenis",
+      "theme": "De vroegmoderne tijd: Europa"
+    },
+    {
+      "grade": 4,
+      "domain": "Wetenschap en techniek",
+      "theme": "Over mijn lijf"
+    },
+    {
+      "grade": 4,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Wij, samen wereldburgers"
+    },
+    {
+      "grade": 5,
+      "domain": "Aardrijkskunde",
+      "theme": "Welkom in Europa"
+    },
+    {
+      "grade": 5,
+      "domain": "Wetenschap en techniek",
+      "theme": "Gezond en gewerveld"
+    },
+    {
+      "grade": 5,
+      "domain": "Geschiedenis",
+      "theme": "De vroegmoderne tijd: koninkrijken en ontdekkingen"
+    },
+    {
+      "grade": 5,
+      "domain": "Wetenschap en techniek",
+      "theme": "Natuur en techniek in beweging"
+    },
+    {
+      "grade": 5,
+      "domain": "Aardrijkskunde",
+      "theme": "Wonderlijke wereldbol"
+    },
+    {
+      "grade": 5,
+      "domain": "Geschiedenis",
+      "theme": "De moderne tijd: stroom en strijd"
+    },
+    {
+      "grade": 5,
+      "domain": "Wetenschap en techniek",
+      "theme": "Groene vingers en kriebelpoten"
+    },
+    {
+      "grade": 5,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Andere bril, andere wereld"
+    },
+    {
+      "grade": 6,
+      "domain": "Aardrijkskunde",
+      "theme": "Krachtige aarde"
+    },
+    {
+      "grade": 6,
+      "domain": "Wetenschap en techniek",
+      "theme": "'t Zit van binnen"
+    },
+    {
+      "grade": 6,
+      "domain": "Geschiedenis",
+      "theme": "De moderne tijd: wet en vrijheid"
+    },
+    {
+      "grade": 6,
+      "domain": "Wetenschap en techniek",
+      "theme": "Stroom nodig?"
+    },
+    {
+      "grade": 6,
+      "domain": "Aardrijkskunde",
+      "theme": "Van de kustlijn tot het heelal"
+    },
+    {
+      "grade": 6,
+      "domain": "Geschiedenis",
+      "theme": "De hedendaagse tijd"
+    },
+    {
+      "grade": 6,
+      "domain": "Wetenschap en techniek",
+      "theme": "Natuur in balans"
+    },
+    {
+      "grade": 6,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Mijn stem, onze staat"
+    }
   ],
   "plantynThemeSource": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-taal/thema-overzicht",
   "plantynPreviews": [
-    { "grade": 2, "kind": "leerwerkboek", "url": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-2-lwb/" },
-    { "grade": 2, "kind": "handleiding", "url": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-2-deel-a-thema-1-handleiding/" },
-    { "grade": 3, "kind": "leerwerkboek", "url": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-3-lwb/" },
-    { "grade": 3, "kind": "handleiding", "url": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-3-deel-a-thema-1-handleiding/" }
+    {
+      "grade": 2,
+      "kind": "leerwerkboek",
+      "url": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-2-lwb/page/2-3",
+      "previewPage": "2-3"
+    },
+    {
+      "grade": 2,
+      "kind": "handleiding",
+      "url": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-2-deel-a-thema-1-handleiding/page/2-3",
+      "previewPage": "2-3"
+    },
+    {
+      "grade": 3,
+      "kind": "leerwerkboek",
+      "url": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-3-lwb/page/2-3",
+      "previewPage": "2-3"
+    },
+    {
+      "grade": 3,
+      "kind": "handleiding",
+      "url": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-3-deel-a-thema-1-handleiding/page/2-3",
+      "previewPage": "2-3"
+    }
   ],
   "resources": [
     {
@@ -417,7 +629,7 @@
         "het ecosysteem",
         "de atmosfeer",
         "de energiebron",
-        "de biodiversiteit",
+        "de kringloop",
         "de oceaan",
         "het broeikaseffect",
         "de milieubescherming"
@@ -443,6 +655,1016 @@
         "wellicht"
       ],
       "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    }
+  ],
+  "plantynPracticeSets": [
+    {
+      "id": "plantyn-own-l1-1",
+      "grade": 1,
+      "domain": "Aardrijkskunde",
+      "theme": "Mijn klas, mijn school, mijn buurt",
+      "kind": "woordenschat",
+      "title": "Leerjaar 1 · Mijn klas, mijn school, mijn buurt · eigen oefenwoorden",
+      "focus": "Korte en eenvoudige klankwoorden",
+      "words": [
+        "de klas",
+        "de bel",
+        "de bus",
+        "het huis",
+        "de straat",
+        "de juf",
+        "het hek",
+        "de tas"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l1-2",
+      "grade": 1,
+      "domain": "Wetenschap en techniek",
+      "theme": "Beest en bos",
+      "kind": "woordenschat",
+      "title": "Leerjaar 1 · Beest en bos · eigen oefenwoorden",
+      "focus": "Korte klanken en beginclusters",
+      "words": [
+        "de kat",
+        "de mus",
+        "het bos",
+        "de tak",
+        "de spin",
+        "het nest",
+        "de boom",
+        "de vos"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l1-3",
+      "grade": 1,
+      "domain": "Geschiedenis",
+      "theme": "Tijd!",
+      "kind": "woordenschat",
+      "title": "Leerjaar 1 · Tijd! · eigen oefenwoorden",
+      "focus": "Tijdwoorden en korte klanken",
+      "words": [
+        "de dag",
+        "de week",
+        "de klok",
+        "de maan",
+        "de zon",
+        "de nacht",
+        "het jaar",
+        "nu"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l1-4",
+      "grade": 1,
+      "domain": "Wetenschap en techniek",
+      "theme": "Kracht, licht en warmte",
+      "kind": "woordenschat",
+      "title": "Leerjaar 1 · Kracht, licht en warmte · eigen oefenwoorden",
+      "focus": "Klankwoorden rond licht en warmte",
+      "words": [
+        "de lamp",
+        "het vuur",
+        "de kaars",
+        "de zon",
+        "de wind",
+        "de vlam",
+        "het licht",
+        "warm"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l1-5",
+      "grade": 1,
+      "domain": "Aardrijkskunde",
+      "theme": "Weer en water",
+      "kind": "woordenschat",
+      "title": "Leerjaar 1 · Weer en water · eigen oefenwoorden",
+      "focus": "Korte klanken in weerwoorden",
+      "words": [
+        "de wolk",
+        "de regen",
+        "de wind",
+        "de plas",
+        "de mist",
+        "de beek",
+        "de zon",
+        "nat"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l1-6",
+      "grade": 1,
+      "domain": "Geschiedenis",
+      "theme": "De prehistorie",
+      "kind": "woordenschat",
+      "title": "Leerjaar 1 · De prehistorie · eigen oefenwoorden",
+      "focus": "Korte klanken in prehistoriewoorden",
+      "words": [
+        "de grot",
+        "de man",
+        "de steen",
+        "het vuur",
+        "de bot",
+        "de huid",
+        "de beer",
+        "de mammoet"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l1-7",
+      "grade": 1,
+      "domain": "Wetenschap en techniek",
+      "theme": "Fit en gezond",
+      "kind": "woordenschat",
+      "title": "Leerjaar 1 · Fit en gezond · eigen oefenwoorden",
+      "focus": "Eenvoudige woorden over je lichaam",
+      "words": [
+        "de arm",
+        "het been",
+        "de buik",
+        "de tand",
+        "de soep",
+        "de sport",
+        "de rug",
+        "fit"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l1-8",
+      "grade": 1,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Ik, jij en wij",
+      "kind": "woordenschat",
+      "title": "Leerjaar 1 · Ik, jij en wij · eigen oefenwoorden",
+      "focus": "Korte woorden en persoonlijke voornaamwoorden",
+      "words": [
+        "ik",
+        "jij",
+        "wij",
+        "de vriend",
+        "de groep",
+        "de hand",
+        "samen",
+        "lief"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l2-1",
+      "grade": 2,
+      "domain": "Aardrijkskunde",
+      "theme": "Op stap in onze gemeente",
+      "kind": "woordenschat",
+      "title": "Leerjaar 2 · Op stap in onze gemeente · eigen oefenwoorden",
+      "focus": "Korte klanken; lange klanken; tweetekenklanken; leestekens",
+      "words": [
+        "de bus",
+        "het plein",
+        "de straat",
+        "de maan",
+        "de hoek",
+        "de post",
+        "de school",
+        "de wijk"
+      ],
+      "provenance": "Eigen oefenwoorden. Het spellingaccent is gebaseerd op de zichtbare inhoudsopgave van Plantyns openbare voorbeeldpreview; dit is geen officiële woordenlijst.",
+      "source": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-2-lwb/page/2-3"
+    },
+    {
+      "id": "plantyn-own-l2-2",
+      "grade": 2,
+      "domain": "Wetenschap en techniek",
+      "theme": "Het bos, mijn vriend",
+      "kind": "woordenschat",
+      "title": "Leerjaar 2 · Het bos, mijn vriend · eigen oefenwoorden",
+      "focus": "Beginclusters; aai/ooi/oei; eeuw/ieuw; woorden op -ng en -nk; alfabet",
+      "words": [
+        "de spin",
+        "het gras",
+        "de kraai",
+        "de leeuw",
+        "de slang",
+        "de bank",
+        "de bloem",
+        "de struik"
+      ],
+      "provenance": "Eigen oefenwoorden. Het spellingaccent is gebaseerd op de zichtbare inhoudsopgave van Plantyns openbare voorbeeldpreview; dit is geen officiële woordenlijst.",
+      "source": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-2-lwb/page/2-3"
+    },
+    {
+      "id": "plantyn-own-l2-3",
+      "grade": 2,
+      "domain": "Geschiedenis",
+      "theme": "Het eerste schrift",
+      "kind": "woordenschat",
+      "title": "Leerjaar 2 · Het eerste schrift · eigen oefenwoorden",
+      "focus": "Tweetekenklanken en eenvoudige samengestelde woorden",
+      "words": [
+        "het schrift",
+        "de letter",
+        "het woord",
+        "de pen",
+        "de inkt",
+        "de regel",
+        "het boek",
+        "de naam"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l2-4",
+      "grade": 2,
+      "domain": "Wetenschap en techniek",
+      "theme": "Speuren naar kracht en licht",
+      "kind": "woordenschat",
+      "title": "Leerjaar 2 · Speuren naar kracht en licht · eigen oefenwoorden",
+      "focus": "Korte/lange klanken en tweetekenklanken",
+      "words": [
+        "de magneet",
+        "de lamp",
+        "het licht",
+        "de kracht",
+        "de schaduw",
+        "de batterij",
+        "de spiegel",
+        "de vonk"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l2-5",
+      "grade": 2,
+      "domain": "Aardrijkskunde",
+      "theme": "Zon en planeet aarde",
+      "kind": "woordenschat",
+      "title": "Leerjaar 2 · Zon en planeet aarde · eigen oefenwoorden",
+      "focus": "Korte/lange klanken en tweetekenklanken",
+      "words": [
+        "de aarde",
+        "de maan",
+        "de zon",
+        "de planeet",
+        "de ster",
+        "de wolk",
+        "de zee",
+        "de ruimte"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l2-6",
+      "grade": 2,
+      "domain": "Geschiedenis",
+      "theme": "De Grieken",
+      "kind": "woordenschat",
+      "title": "Leerjaar 2 · De Grieken · eigen oefenwoorden",
+      "focus": "Tweetekenklanken en medeklinkerclusters",
+      "words": [
+        "de Griek",
+        "de tempel",
+        "de koning",
+        "de god",
+        "de vaas",
+        "de sport",
+        "het schip",
+        "de markt"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l2-7",
+      "grade": 2,
+      "domain": "Wetenschap en techniek",
+      "theme": "Groeien en bloeien",
+      "kind": "woordenschat",
+      "title": "Leerjaar 2 · Groeien en bloeien · eigen oefenwoorden",
+      "focus": "Tweetekenklanken en ng/nk",
+      "words": [
+        "het zaad",
+        "de bloem",
+        "de wortel",
+        "de stengel",
+        "het blad",
+        "de tuin",
+        "de bij",
+        "de groei"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l2-8",
+      "grade": 2,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Iedereen anders, iedereen gelijk",
+      "kind": "woordenschat",
+      "title": "Leerjaar 2 · Iedereen anders, iedereen gelijk · eigen oefenwoorden",
+      "focus": "Korte/lange klanken en medeklinkerclusters",
+      "words": [
+        "de jongen",
+        "het meisje",
+        "de taal",
+        "de kleur",
+        "de hobby",
+        "de regel",
+        "samen",
+        "gelijk"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l3-1",
+      "grade": 3,
+      "domain": "Aardrijkskunde",
+      "theme": "Op reis door België",
+      "kind": "woordenschat",
+      "title": "Leerjaar 3 · Op reis door België · eigen oefenwoorden",
+      "focus": "ei/ij; au/ou; ng/nk; hoofdletters en leestekens",
+      "words": [
+        "de trein",
+        "de wijk",
+        "de pauze",
+        "de autobus",
+        "de vrouw",
+        "de kring",
+        "de bank",
+        "België"
+      ],
+      "provenance": "Eigen oefenwoorden. Het spellingaccent is gebaseerd op de zichtbare inhoudsopgave van Plantyns openbare voorbeeldpreview; dit is geen officiële woordenlijst.",
+      "source": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-3-lwb/page/2-3"
+    },
+    {
+      "id": "plantyn-own-l3-2",
+      "grade": 3,
+      "domain": "Wetenschap en techniek",
+      "theme": "Eet je goed? Beweeg je goed?",
+      "kind": "woordenschat",
+      "title": "Leerjaar 3 · Eet je goed? Beweeg je goed? · eigen oefenwoorden",
+      "focus": "aai/ooi/oei; eeuw/ieuw/uw; clusters; -eren/-enen/-elen; be-/ge-/ver-",
+      "words": [
+        "de leeuw",
+        "de kooi",
+        "het ontbijt",
+        "de melk",
+        "wandelen",
+        "fietsen",
+        "gezond",
+        "bestellen"
+      ],
+      "provenance": "Eigen oefenwoorden. Het spellingaccent is gebaseerd op de zichtbare inhoudsopgave van Plantyns openbare voorbeeldpreview; dit is geen officiële woordenlijst.",
+      "source": "https://view.publitas.com/plantyn-lo/taalkanjers-spelling-3-lwb/page/2-3"
+    },
+    {
+      "id": "plantyn-own-l3-3",
+      "grade": 3,
+      "domain": "Geschiedenis",
+      "theme": "De Romeinen",
+      "kind": "woordenschat",
+      "title": "Leerjaar 3 · De Romeinen · eigen oefenwoorden",
+      "focus": "ng/nk en clusters",
+      "words": [
+        "de Romein",
+        "de soldaat",
+        "de helm",
+        "de muur",
+        "de weg",
+        "de munt",
+        "de koning",
+        "het rijk"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l3-4",
+      "grade": 3,
+      "domain": "Wetenschap en techniek",
+      "theme": "Van trilling tot beweging",
+      "kind": "woordenschat",
+      "title": "Leerjaar 3 · Van trilling tot beweging · eigen oefenwoorden",
+      "focus": "Tweetekenklanken en medeklinkerclusters",
+      "words": [
+        "het geluid",
+        "de trilling",
+        "de motor",
+        "de fiets",
+        "de beweging",
+        "de snelheid",
+        "de kracht",
+        "de rem"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l3-5",
+      "grade": 3,
+      "domain": "Aardrijkskunde",
+      "theme": "Landschap, water en weer",
+      "kind": "woordenschat",
+      "title": "Leerjaar 3 · Landschap, water en weer · eigen oefenwoorden",
+      "focus": "ei/ij; au/ou; ng/nk",
+      "words": [
+        "de rivier",
+        "de berg",
+        "de regen",
+        "de storm",
+        "de kust",
+        "de lucht",
+        "het landschap",
+        "de beek"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l3-6",
+      "grade": 3,
+      "domain": "Geschiedenis",
+      "theme": "De vroege middeleeuwen",
+      "kind": "woordenschat",
+      "title": "Leerjaar 3 · De vroege middeleeuwen · eigen oefenwoorden",
+      "focus": "ng/nk en clusters",
+      "words": [
+        "de ridder",
+        "het kasteel",
+        "de markt",
+        "de boer",
+        "de akker",
+        "de koning",
+        "de kerk",
+        "het dorp"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l3-7",
+      "grade": 3,
+      "domain": "Wetenschap en techniek",
+      "theme": "Lentekriebels",
+      "kind": "woordenschat",
+      "title": "Leerjaar 3 · Lentekriebels · eigen oefenwoorden",
+      "focus": "aai/ooi/oei; eeuw/ieuw",
+      "words": [
+        "de lente",
+        "de bloem",
+        "de vlinder",
+        "de bij",
+        "de knop",
+        "het nest",
+        "de regen",
+        "de tuin"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l3-8",
+      "grade": 3,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Samen kiezen, samen leven",
+      "kind": "woordenschat",
+      "title": "Leerjaar 3 · Samen kiezen, samen leven · eigen oefenwoorden",
+      "focus": "Hoofdletters en leestekens",
+      "words": [
+        "de stem",
+        "de keuze",
+        "de groep",
+        "de regel",
+        "de klas",
+        "de buurt",
+        "samen",
+        "de afspraak"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l4-1",
+      "grade": 4,
+      "domain": "Aardrijkskunde",
+      "theme": "Reis door de wereld",
+      "kind": "woordenschat",
+      "title": "Leerjaar 4 · Reis door de wereld · eigen oefenwoorden",
+      "focus": "Open en gesloten lettergrepen",
+      "words": [
+        "de wereldkaart",
+        "de hoofdstad",
+        "de grens",
+        "het werelddeel",
+        "de oceaan",
+        "de reiziger",
+        "de route",
+        "de bestemming"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l4-2",
+      "grade": 4,
+      "domain": "Wetenschap en techniek",
+      "theme": "Natuurlijk!",
+      "kind": "woordenschat",
+      "title": "Leerjaar 4 · Natuurlijk! · eigen oefenwoorden",
+      "focus": "Meervouden en verkleinwoorden",
+      "words": [
+        "de natuur",
+        "de plant",
+        "het dier",
+        "de voedselketen",
+        "de waarneming",
+        "de omgeving",
+        "de bescherming",
+        "de ontdekking"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l4-3",
+      "grade": 4,
+      "domain": "Geschiedenis",
+      "theme": "De hoge en late middeleeuwen",
+      "kind": "woordenschat",
+      "title": "Leerjaar 4 · De hoge en late middeleeuwen · eigen oefenwoorden",
+      "focus": "Open en gesloten lettergrepen",
+      "words": [
+        "de middeleeuwen",
+        "de ridder",
+        "het kasteel",
+        "de ambachtsman",
+        "de stadsmuur",
+        "de handel",
+        "de markt",
+        "het klooster"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l4-4",
+      "grade": 4,
+      "domain": "Wetenschap en techniek",
+      "theme": "Van magneet tot duurzame energie",
+      "kind": "woordenschat",
+      "title": "Leerjaar 4 · Van magneet tot duurzame energie · eigen oefenwoorden",
+      "focus": "Samenstellingen en tussenletters",
+      "words": [
+        "de magneet",
+        "de elektriciteit",
+        "de energie",
+        "de batterij",
+        "de stroomkring",
+        "de schakelaar",
+        "de windmolen",
+        "de zonnecel"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l4-5",
+      "grade": 4,
+      "domain": "Aardrijkskunde",
+      "theme": "Boeiende landschappen",
+      "kind": "woordenschat",
+      "title": "Leerjaar 4 · Boeiende landschappen · eigen oefenwoorden",
+      "focus": "Meervouden en verkleinwoorden",
+      "words": [
+        "het landschap",
+        "de vallei",
+        "de heuvel",
+        "de kust",
+        "de rivier",
+        "de vlakte",
+        "het gebergte",
+        "de waterval"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l4-6",
+      "grade": 4,
+      "domain": "Geschiedenis",
+      "theme": "De vroegmoderne tijd: Europa",
+      "kind": "woordenschat",
+      "title": "Leerjaar 4 · De vroegmoderne tijd: Europa · eigen oefenwoorden",
+      "focus": "Achtervoegsels en samenstellingen",
+      "words": [
+        "de ontdekkingsreiziger",
+        "de zeilboot",
+        "de drukpers",
+        "de handelaar",
+        "de kaart",
+        "de haven",
+        "de kolonie",
+        "de uitvinding"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l4-7",
+      "grade": 4,
+      "domain": "Wetenschap en techniek",
+      "theme": "Over mijn lijf",
+      "kind": "woordenschat",
+      "title": "Leerjaar 4 · Over mijn lijf · eigen oefenwoorden",
+      "focus": "Werkwoorden in de tegenwoordige tijd",
+      "words": [
+        "het lichaam",
+        "de spier",
+        "het skelet",
+        "de ademhaling",
+        "de bloedsomloop",
+        "het gebit",
+        "de gezondheid",
+        "de beweging"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l4-8",
+      "grade": 4,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Wij, samen wereldburgers",
+      "kind": "woordenschat",
+      "title": "Leerjaar 4 · Wij, samen wereldburgers · eigen oefenwoorden",
+      "focus": "Samenstellingen en hoofdletters",
+      "words": [
+        "de wereldburger",
+        "de cultuur",
+        "de traditie",
+        "de taal",
+        "de grens",
+        "de samenwerking",
+        "de mening",
+        "de afspraak"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l5-1",
+      "grade": 5,
+      "domain": "Aardrijkskunde",
+      "theme": "Welkom in Europa",
+      "kind": "woordenschat",
+      "title": "Leerjaar 5 · Welkom in Europa · eigen oefenwoorden",
+      "focus": "Open/gesloten lettergrepen en leenwoorden",
+      "words": [
+        "Europa",
+        "de hoofdstad",
+        "de grens",
+        "het land",
+        "de rivier",
+        "het gebergte",
+        "de bevolking",
+        "de Europese Unie"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l5-2",
+      "grade": 5,
+      "domain": "Wetenschap en techniek",
+      "theme": "Gezond en gewerveld",
+      "kind": "woordenschat",
+      "title": "Leerjaar 5 · Gezond en gewerveld · eigen oefenwoorden",
+      "focus": "Meervouden, verkleinwoorden en samenstellingen",
+      "words": [
+        "het gewervelde dier",
+        "het skelet",
+        "de wervelkolom",
+        "de leefomgeving",
+        "de ademhaling",
+        "de huid",
+        "de voedselketen",
+        "de bescherming"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l5-3",
+      "grade": 5,
+      "domain": "Geschiedenis",
+      "theme": "De vroegmoderne tijd: koninkrijken en ontdekkingen",
+      "kind": "woordenschat",
+      "title": "Leerjaar 5 · De vroegmoderne tijd: koninkrijken en ontdekkingen · eigen oefenwoorden",
+      "focus": "Werkwoorden en persoonsvormen",
+      "words": [
+        "het koninkrijk",
+        "de ontdekkingsreis",
+        "de zeevaarder",
+        "de handel",
+        "de kaart",
+        "de specerij",
+        "de uitvinding",
+        "de drukpers"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l5-4",
+      "grade": 5,
+      "domain": "Wetenschap en techniek",
+      "theme": "Natuur en techniek in beweging",
+      "kind": "woordenschat",
+      "title": "Leerjaar 5 · Natuur en techniek in beweging · eigen oefenwoorden",
+      "focus": "Samenstellingen en tussenletters",
+      "words": [
+        "de beweging",
+        "de techniek",
+        "de machine",
+        "de kracht",
+        "de hefboom",
+        "de tandwielen",
+        "de energiebron",
+        "de constructie"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l5-5",
+      "grade": 5,
+      "domain": "Aardrijkskunde",
+      "theme": "Wonderlijke wereldbol",
+      "kind": "woordenschat",
+      "title": "Leerjaar 5 · Wonderlijke wereldbol · eigen oefenwoorden",
+      "focus": "Leenwoorden en hoofdletters",
+      "words": [
+        "de wereldbol",
+        "de evenaar",
+        "het halfrond",
+        "de breedtegraad",
+        "de lengtegraad",
+        "het klimaat",
+        "de oceaan",
+        "het werelddeel"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l5-6",
+      "grade": 5,
+      "domain": "Geschiedenis",
+      "theme": "De moderne tijd: stroom en strijd",
+      "kind": "woordenschat",
+      "title": "Leerjaar 5 · De moderne tijd: stroom en strijd · eigen oefenwoorden",
+      "focus": "Werkwoordspelling in verleden en tegenwoordige tijd",
+      "words": [
+        "de stoommachine",
+        "de fabriek",
+        "de spoorweg",
+        "de elektriciteit",
+        "de staking",
+        "de uitvinding",
+        "de arbeider",
+        "de verandering"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l5-7",
+      "grade": 5,
+      "domain": "Wetenschap en techniek",
+      "theme": "Groene vingers en kriebelpoten",
+      "kind": "woordenschat",
+      "title": "Leerjaar 5 · Groene vingers en kriebelpoten · eigen oefenwoorden",
+      "focus": "Samenstellingen en voorvoegsels",
+      "words": [
+        "de biodiversiteit",
+        "de kriebelpoot",
+        "de bestuiving",
+        "de compost",
+        "de moestuin",
+        "de bodem",
+        "de kringloop",
+        "de voedselpiramide"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l5-8",
+      "grade": 5,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Andere bril, andere wereld",
+      "kind": "woordenschat",
+      "title": "Leerjaar 5 · Andere bril, andere wereld · eigen oefenwoorden",
+      "focus": "Achtervoegsels en hoofdletters",
+      "words": [
+        "het standpunt",
+        "de gewoonte",
+        "de cultuur",
+        "het vooroordeel",
+        "de ontmoeting",
+        "de samenleving",
+        "de diversiteit",
+        "de gelijkheid"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l6-1",
+      "grade": 6,
+      "domain": "Aardrijkskunde",
+      "theme": "Krachtige aarde",
+      "kind": "woordenschat",
+      "title": "Leerjaar 6 · Krachtige aarde · eigen oefenwoorden",
+      "focus": "Werkwoorden en persoonsvormen",
+      "words": [
+        "de aardkorst",
+        "de aardbeving",
+        "de vulkaan",
+        "de aardplaat",
+        "de erosie",
+        "de aardlaag",
+        "de tsunami",
+        "de aardverschuiving"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l6-2",
+      "grade": 6,
+      "domain": "Wetenschap en techniek",
+      "theme": "'t Zit van binnen",
+      "kind": "woordenschat",
+      "title": "Leerjaar 6 · 't Zit van binnen · eigen oefenwoorden",
+      "focus": "Samenstellingen en tussenletters",
+      "words": [
+        "het skelet",
+        "de bloedsomloop",
+        "het zenuwstelsel",
+        "de spijsvertering",
+        "de longen",
+        "de hartslag",
+        "het orgaan",
+        "de lichaamstemperatuur"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l6-3",
+      "grade": 6,
+      "domain": "Geschiedenis",
+      "theme": "De moderne tijd: wet en vrijheid",
+      "kind": "woordenschat",
+      "title": "Leerjaar 6 · De moderne tijd: wet en vrijheid · eigen oefenwoorden",
+      "focus": "Werkwoordspelling en persoonsvormen",
+      "words": [
+        "de grondwet",
+        "de vrijheid",
+        "het mensenrecht",
+        "de verkiezing",
+        "de rechtsstaat",
+        "de gelijkheid",
+        "de wetgeving",
+        "de democratie"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l6-4",
+      "grade": 6,
+      "domain": "Wetenschap en techniek",
+      "theme": "Stroom nodig?",
+      "kind": "woordenschat",
+      "title": "Leerjaar 6 · Stroom nodig? · eigen oefenwoorden",
+      "focus": "Samenstellingen en leenwoorden",
+      "words": [
+        "de elektriciteit",
+        "de stroomkring",
+        "de spanningsbron",
+        "de geleider",
+        "de isolator",
+        "het elektriciteitsnet",
+        "de energie",
+        "de schakelaar"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l6-5",
+      "grade": 6,
+      "domain": "Aardrijkskunde",
+      "theme": "Van de kustlijn tot het heelal",
+      "kind": "woordenschat",
+      "title": "Leerjaar 6 · Van de kustlijn tot het heelal · eigen oefenwoorden",
+      "focus": "Hoofdletters en afkortingen",
+      "words": [
+        "de kustlijn",
+        "de horizon",
+        "de sterrenhemel",
+        "het zonnestelsel",
+        "de planeet",
+        "de telescoop",
+        "de aardbol",
+        "het heelal"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l6-6",
+      "grade": 6,
+      "domain": "Geschiedenis",
+      "theme": "De hedendaagse tijd",
+      "kind": "woordenschat",
+      "title": "Leerjaar 6 · De hedendaagse tijd · eigen oefenwoorden",
+      "focus": "Leenwoorden en samenstellingen",
+      "words": [
+        "de hedendaagse tijd",
+        "de uitvinding",
+        "de migratie",
+        "de samenleving",
+        "de communicatie",
+        "de verandering",
+        "de technologie",
+        "de ontwikkeling"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l6-7",
+      "grade": 6,
+      "domain": "Wetenschap en techniek",
+      "theme": "Natuur in balans",
+      "kind": "woordenschat",
+      "title": "Leerjaar 6 · Natuur in balans · eigen oefenwoorden",
+      "focus": "Achtervoegsels en samenstellingen",
+      "words": [
+        "het ecosysteem",
+        "de voedselketen",
+        "de biodiversiteit",
+        "de leefomgeving",
+        "de kringloop",
+        "de bedreiging",
+        "de bescherming",
+        "het evenwicht"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
+    },
+    {
+      "id": "plantyn-own-l6-8",
+      "grade": 6,
+      "domain": "Geschiedenis en burgerschap",
+      "theme": "Mijn stem, onze staat",
+      "kind": "woordenschat",
+      "title": "Leerjaar 6 · Mijn stem, onze staat · eigen oefenwoorden",
+      "focus": "Werkwoordspelling en hoofdletters",
+      "words": [
+        "de stemgerechtigde",
+        "de gemeenteraad",
+        "de verkiezing",
+        "het parlement",
+        "de vertegenwoordiger",
+        "de meerderheid",
+        "de minderheid",
+        "de besluitvorming"
+      ],
+      "provenance": "Eigen, thematisch samengestelde oefenwoorden. Het leerjaaraccent is een inschatting; voor dit thema is geen spellingfocus uit een openbare Plantyn-preview afgelezen. Dit is geen officiële woordenlijst.",
+      "source": "https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-spelling"
     }
   ]
 }
