@@ -27,7 +27,14 @@ header.topbar { border-radius: 0 0 var(--lf-radius) var(--lf-radius); }
 .progress-header { border: 0; }
 .progress-header p, .progress-header a { color: #fff !important; }
 .back-link, .back, .progress-header a {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .5rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .22);
   color: #fff !important;
+  text-decoration: none;
 }
 .panel, .settings, .settings-panel, .game, .kaart, .nickname-card,
 .notice, .stat, .delta-card, .result, .summary {
