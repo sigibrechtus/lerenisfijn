@@ -351,6 +351,7 @@
       setFeedback(`${pick(PRAISE)} ${current.a} ${current.sign} ${current.b} = ${current.answer}`, 'good');
       hideHint();
       animate('pop');
+      window.lerenEffects?.correct(els.feedback);
       setTimeout(() => {
         locked = false;
         newExercise();
@@ -360,6 +361,7 @@
       locked = true;
       setFeedback(`Ik lees: ${read}. Dat is niet juist. Probeer opnieuw!`, 'bad');
       animate('shake');
+      window.lerenEffects?.incorrect(els.feedback);
       if (attempts >= 2) showHint();
       setTimeout(() => {
         if (inputMode !== 'keyboard') clearPad();
@@ -794,3 +796,4 @@
   resizeCanvas();
   newExercise();
 })();
+

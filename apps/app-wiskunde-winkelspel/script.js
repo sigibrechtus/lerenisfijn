@@ -11,7 +11,7 @@
     const stock=wallet.find(item=>item.value===value);
     if(id!==null){const index=placed.findIndex(item=>item.id===id);if(index<0)return;placed.splice(index,1);stock.count++;}
     else {if(!stock||stock.count===0)return;stock.count--;placed.push({value,id:pieceId++});}
-    renderMoney();
+    renderMoney();window.lerenEffects?.tap();
   }
   function pieceButton(value,count,id){
     const button=document.createElement('button');button.type='button';
@@ -25,7 +25,7 @@
     button.addEventListener('pointerdown',event=>{
       if(locked||drag||event.button!==0)return;
       event.preventDefault();button.setPointerCapture(event.pointerId);
-      const ghost=document.createElement('div');ghost.className=button.className+' drag-ghost';ghost.textContent=pieceLabel(value);ghost.hidden=true;document.body.append(ghost);
+      const ghost=document.createElement('div');ghost.className=button.className+' drag-ghost';ghost.dataset.value=value;ghost.textContent=pieceLabel(value);ghost.hidden=true;document.body.append(ghost);
       drag={pointer:event.pointerId,startX:event.clientX,startY:event.clientY,value,id,ghost,moved:false};
     });
     button.addEventListener('pointermove',event=>{
@@ -75,7 +75,7 @@
     level=Number($('level').value);$('summary').hidden=true;$('quiz').hidden=false;showQuestion();
   }
   function finishRound(){
-    $('quiz').hidden=true;$('summary').hidden=false;
+    $('quiz').hidden=true;$('summary').hidden=false;window.lerenEffects?.complete($('summary'));
     const next=game.nextLevel(level,score);
     $('summary-text').textContent=score+' van de 10 goed in één keer. '+(next>level?'Goed gedaan! Je gaat naar niveau '+next+'.':score>=8?'Je beheerst het hoogste niveau! Blijf oefenen met nieuwe winkelmandjes.':'We oefenen nog een reeks op niveau '+level+'. Neem rustig je tijd.');
     $('level').value=next;$('continue').textContent=next>level?'Naar niveau '+next:'Nog een reeks';$('continue').focus();
@@ -86,7 +86,8 @@
     const answer=buildsMoney()?placed.reduce((total,item)=>total+item.value,0):game.parseMoney($('answer').value);
     if(answer===null){$('feedback').textContent='Typ een bedrag zoals 3 of 3,50, zonder euroteken.';$('feedback').className='try';$('answer').focus();return;}
     attempts++;
-    if(answer!==question.answer){$('feedback').textContent=buildsMoney()?'Nog niet. Kijk naar de prijs en pas je geld in het betaalvak aan.':level===5?'Nog niet. Tel eerst de prijzen op en trek het totaal af van het bedrag dat je betaalt.':'Nog niet. Kijk nog eens naar de prijzen en tel ze op.';$('feedback').className='try';if(!buildsMoney())$('answer').select();return;}
+    if(answer!==question.answer){window.lerenEffects?.incorrect($('quiz'));$('feedback').textContent=buildsMoney()?'Nog niet. Kijk naar de prijs en pas je geld in het betaalvak aan.':level===5?'Nog niet. Tel eerst de prijzen op en trek het totaal af van het bedrag dat je betaalt.':'Nog niet. Kijk nog eens naar de prijzen en tel ze op.';$('feedback').className='try';if(!buildsMoney())$('answer').select();return;}
+    window.lerenEffects?.correct($('quiz'));
     locked=true;if(attempts===1)score++;$('score').textContent=score;
     $('answer').disabled=true;$('check').disabled=true;$('check').textContent='Volgende vraag…';
     stopDrag();if(buildsMoney())renderMoney();
@@ -99,3 +100,4 @@
   $('clear-money').addEventListener('click',()=>{if(locked)return;stopDrag();placed.forEach(item=>wallet.find(stock=>stock.value===item.value).count++);placed=[];renderMoney();});
   startRound();
 })();
+

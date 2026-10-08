@@ -174,11 +174,13 @@ function controleer(waarde) {
         updateTeller();
         dropzone.className = "bol juist";
         melding("Goed!", "goed");
+        window.lerenEffects?.correct(dropzone);
         setTimeout(() => { if (bezig) nieuweSplitsing(); }, 450);
     } else {
         fout++;
         dropzone.className = "bol fout";
         melding("Probeer opnieuw!", "fout");
+        window.lerenEffects?.incorrect(dropzone);
         setTimeout(() => {
             if (!bezig) return;
             dropzone.className = "bol leeg";
@@ -243,6 +245,7 @@ function eindeSpel() {
     if (nieuwRecord && goed > 0) tekst += "<br><b>Nieuwe beste score!</b>";
     $("eindTekst").innerHTML = tekst;
     toonScherm("einde");
+    window.lerenEffects?.complete($("einde"));
 }
 
 /* ---------- Knoppen ---------- */
@@ -258,3 +261,4 @@ $("menuBtn").addEventListener("click", () => { updateStartscherm(); toonScherm("
 $("stopBtn").addEventListener("click", () => { stopSpel(); updateStartscherm(); toonScherm("start"); });
 
 updateStartscherm();
+

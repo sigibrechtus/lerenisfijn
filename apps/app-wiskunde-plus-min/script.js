@@ -150,6 +150,7 @@
   }
 
   function showSummary() {
+    window.lerenEffects?.complete(summary);
     quiz.hidden = true;
     summary.hidden = false;
     summaryTitle.textContent = correctAnswers === QUESTION_COUNT ? "Perfect gedaan!" : "Reeks klaar!";
@@ -208,10 +209,12 @@
       duration_ms: Math.max(0, Date.now() - questionStartedAt)
     });
     if (correct) {
+      window.lerenEffects?.correct(quiz);
       correctAnswers += 1;
       feedback.textContent = "Juist! " + currentQuestionText.replace(" = ?", "") + " = " + currentAnswer + ".";
       feedback.className = "feedback feedback--good";
     } else {
+      window.lerenEffects?.incorrect(quiz);
       feedback.textContent = "Nog niet. Het juiste antwoord is " + currentAnswer + ".";
       feedback.className = "feedback feedback--try";
     }
@@ -306,7 +309,7 @@
 
   pad.addEventListener('pointerdown', e => {
     e.preventDefault();
-    if (locked || !current) return;
+    if (locked || !currentQuestionText) return;
 
     if (e.pointerType === 'pen') {
       if (!penSeen) {
@@ -646,3 +649,4 @@
   resizeCanvas();
   startRound();
 })();
+

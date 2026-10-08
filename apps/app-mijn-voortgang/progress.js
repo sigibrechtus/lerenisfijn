@@ -1,6 +1,6 @@
 (() => {
  const client=window.lerenSupabase, signedOut=document.getElementById("signedOut"),content=document.getElementById("progressContent"),pageStatus=document.getElementById("pageStatus"),form=document.getElementById("nicknameForm"),nickname=document.getElementById("nickname"),nicknameStatus=document.getElementById("nicknameStatus"),profileSettingsLink=document.getElementById("profileSettingsLink");
- const names={"app-wiskunde-winkelspel":"Het winkelspel","app-taal-spelling":"Themadictee","app-wiskunde-splitsingen":"Splitsingen","app-wiskunde-plus-min":"Plus en min","app-wiskunde-maaldeeltafels":"Maal- en deeltafels","app-wiskunde-kloklezen":"Kloklezen"};
+ const names={"app-taal-zinnenbouwer":"Zinnenbouwer","app-logica-patronen":"Patroon detective","app-wiskunde-winkelspel":"Het winkelspel","app-taal-spelling":"Themadictee","app-wiskunde-splitsingen":"Splitsingen","app-wiskunde-plus-min":"Plus en min","app-wiskunde-maaldeeltafels":"Maal- en deeltafels","app-wiskunde-kloklezen":"Kloklezen"};
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  function render(rows){
   document.getElementById("totalCount").textContent=rows.length;

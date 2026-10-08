@@ -428,6 +428,7 @@
       setFeedback(`${pick(PRAISE)} Het is ${current.hour}:${pad2(current.minute)}`, 'good');
       hideHint();
       animate('pop');
+      window.lerenEffects?.correct(els.feedback);
       setTimeout(() => {
         locked = false;
         newExercise();
@@ -437,6 +438,7 @@
       locked = true;
       setFeedback(`Je antwoord is ${readHour}:${pad2(readMinute)}. Dat is niet juist. Probeer opnieuw!`, 'bad');
       animate('shake');
+      window.lerenEffects?.incorrect(els.feedback);
       if (attempts >= 2) showHint();
       setTimeout(() => { locked = false; }, 1200);
     }
@@ -453,3 +455,4 @@
      ========================================================= */
   setMode('read');
 })();
+

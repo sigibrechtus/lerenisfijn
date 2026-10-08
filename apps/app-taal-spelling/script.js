@@ -482,6 +482,7 @@ function showAutoResult(ok, read, item) {
   box.hidden = false;
   box.classList.toggle('ok', ok);
   box.classList.toggle('bad', !ok);
+  window.lerenEffects?.[ok ? 'correct' : 'incorrect'](box);
 
   $('read-text').textContent = read || '(niets herkend)';
   $('target-text').textContent = item.full;
@@ -567,6 +568,7 @@ function finish() {
   $('end-difficult-wrap').hidden = !hasDifficult;
   $('btn-practice-difficult').hidden = !hasDifficult;
   showScreen('end');
+  window.lerenEffects?.complete($('screen-end')); 
 }
 
 function stopSession() {
@@ -659,3 +661,4 @@ $('btn-home').addEventListener('click', () => showScreen('start'));
 
 /* ================= Start ================= */
 applyTitle();
+
