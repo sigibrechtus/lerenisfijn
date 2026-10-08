@@ -135,6 +135,7 @@
     answerInput.value = "";
     answerInput.disabled = false;
     submitButton.textContent = "Controleer";
+    submitButton.disabled = false;
     clearPad();
     updateInputModeButtons();
     if (inputMode === "keyboard") answerInput.focus();
@@ -215,7 +216,16 @@
       feedback.className = "feedback feedback--try";
     }
     updateScore();
-    submitButton.textContent = questionNumber + 1 >= QUESTION_COUNT ? "Bekijk resultaat" : "Volgende vraag";
+    submitButton.disabled = true;
+    submitButton.textContent = questionNumber + 1 >= QUESTION_COUNT ? "Reeks afronden…" : "Volgende vraag…";
+    window.setTimeout(() => {
+      if (!answered) return;
+      if (questionNumber + 1 >= QUESTION_COUNT) showSummary();
+      else {
+        questionNumber += 1;
+        showQuestion();
+      }
+    }, 1400);
   }
 
   answerInput.addEventListener("input", () => {
