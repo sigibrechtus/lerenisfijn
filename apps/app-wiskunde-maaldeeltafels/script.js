@@ -322,7 +322,7 @@
     let read, value;
     if (inputMode === 'keyboard') {
       read = els.keyboardAnswer.value.trim();
-      if (!/^\\d{1,3}$/.test(read)) {
+      if (!/^\d{1,3}$/.test(read)) {
         setFeedback('Typ eerst een antwoord van maximaal drie cijfers.', 'info');
         els.keyboardAnswer.focus();
         return;
