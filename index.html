@@ -4,20 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leren is fijn – Kies een oefening</title>
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
   <script defer src="supabase-client.js"></script>
-  <script defer src="auth.js?v=2"></script>
+  <script defer src="auth.js?v=3"></script>
 </head>
 <body>
 
   <header class="topbar">
-    <h1>Leren is fijn</h1>
-    <p class="subtitle">Kies een oefening om te starten.</p>
+    <div class="topbar-title">
+      <h1>Leren is fijn</h1>
+      <p class="subtitle">Kies een oefening om te starten.</p>
+    </div>
+    <div id="accountState" class="account-indicator" hidden>
+      <span class="account-indicator__icon" aria-hidden="true">✓</span>
+      <span id="accountGreeting" class="account-indicator__greeting"></span>
+      <button id="signOut" class="account-indicator__signout" type="button">Uitloggen</button>
+    </div>
   </header>
 
   <main>
-    <section class="auth-panel" aria-labelledby="authHeading">
+    <section id="authPanel" class="auth-panel" aria-labelledby="authHeading">
       <div class="auth-copy">
         <h2 id="authHeading">Je account</h2>
         <p>Maak een account of log in om je profiel te bewaren.</p>
@@ -48,10 +55,6 @@
           </form>
         </div>
 
-        <div id="accountState" class="account-state" hidden>
-          <p id="accountGreeting"></p>
-          <button id="signOut" class="auth-submit auth-submit--secondary" type="button">Uitloggen</button>
-        </div>
       </div>
     </section>
 
