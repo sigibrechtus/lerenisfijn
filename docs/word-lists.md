@@ -4,7 +4,8 @@ Open **Instellingen** of **Woorden kiezen of TXT laden**.
 
 - Kies leerjaar 1–6, een thema en eventueel **Bijwoorden en uitdrukkingen**. Klik **Laad deze oefenset** en daarna **Klaar**.
 - De ingebouwde online bibliotheek bevat 18 zelfgeschreven voorbeeldreeksen. Dit zijn geen officiële woordpakketten van Plantyn of VAN IN en geen garantie op aansluiting bij een specifieke boekeditie.
-- Kies een lesmethode om bronlinks naar de uitgever en KlasCement te zien. Directe links naar lerarenmateriaal zijn beschikbaar voor De Taalkanjers 2, 3 en 4 en Tijd voor Taal accent 5. TALENT heeft een eigen keuze met de uitgeversvoorbeeldlessen. Controleer daar het leerjaar, de editie en het woordpakket van de klas. Sommige downloads vereisen een KlasCement-account; deze lijsten worden niet automatisch ingeladen of als officiële uitgeverslijsten aangeboden.
+- Bij **Plantyn · De Taalkanjers** kun je daarnaast de officiële thema's per leerjaar 1–6 bekijken. Dat zijn thema- en domeinnamen uit Plantyns openbare overzicht, geen spellingwoordenlijsten. De productpagina biedt openbare voorbeeldlessen voor leerjaar 2 en 3 (één lesweek per leerjaar); ze bevat geen complete woordsets voor alle thema's. De app linkt rechtstreeks naar die voorbeelden.
+- Kies een lesmethode om bronlinks naar de uitgever en KlasCement te zien. Controleer altijd het leerjaar, de editie en het woordpakket van de klas. Sommige downloads vereisen een KlasCement-account; deze lijsten worden niet automatisch ingeladen of als officiële uitgeverslijsten aangeboden.
 - Importeer de klaslijst als een UTF-8 TXT-bestand: één woord of korte uitdrukking per regel, maximaal 200 woorden en 128 KB. Dubbele regels worden verwijderd.
 - Woorden met `de` of `het`, bijwoorden en uitdrukkingen kunnen in dezelfde lijst staan. Alleen `de` en `het` worden als lidwoord behandeld.
 - De gekozen lijst wordt op dit toestel bewaard. **Download woordenlijst als TXT** maakt een uitwisselbaar bestand.
