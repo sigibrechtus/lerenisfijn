@@ -190,3 +190,38 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .app-header-metrics { gap: .35rem; }
   .app-header-metrics > .app-header-metric { padding: .45rem .65rem; font-size: .82rem; }
 }
+
+
+/* Header actions stay grouped on the right when an app has both settings and a score. */
+.app-header-actions {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.app-header-actions > .score-badge,
+.app-header-actions > .score-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  min-height: 42px;
+  padding: .55rem .95rem;
+  border: 1px solid rgba(255, 255, 255, .55);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--lf-text) !important;
+  box-shadow: var(--lf-shadow);
+  font: 700 .95rem/1.2 var(--lf-font);
+  white-space: nowrap;
+}
+.app-header-actions .app-settings-button { margin: 0; }
+@media (max-width: 560px) {
+  .app-header-actions { grid-column: 2; gap: .35rem; }
+  .app-header-actions > .score-badge,
+  .app-header-actions > .score-box { padding: .45rem .65rem; font-size: .82rem; }
+}
+@media (max-width: 380px) {
+  .app-header-actions { display: grid; justify-items: end; gap: .25rem; }
+}
