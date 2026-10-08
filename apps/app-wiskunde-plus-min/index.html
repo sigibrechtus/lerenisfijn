@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ff7a45">
   <title>Plus en min – Leren is fijn</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
   
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script defer src="../../supabase-client.js"></script>
-<script defer src="script.js"></script>
+<script defer src="script.js?v=2"></script>
 </head>
 <body>
   <header class="topbar">
@@ -39,9 +39,32 @@
 
         <h2 id="question-title" class="question" aria-live="polite">Klaar voor de eerste vraag?</h2>
 
+        <div class="operation-options" role="group" aria-label="Soort oefening">
+          <button type="button" class="operation-btn operation-plus" data-operation="plus" aria-pressed="false">＋ Plus</button>
+          <button type="button" class="operation-btn operation-minus" data-operation="minus" aria-pressed="false">− Min</button>
+          <button type="button" class="operation-btn operation-mix" data-operation="mix" aria-pressed="true">Beide</button>
+        </div>
+
+        <div class="input-options" role="group" aria-label="Antwoord geven met">
+          <button type="button" class="input-mode-btn input-mode-pen" data-input-mode="pen" aria-pressed="false">✎ Potlood</button>
+          <button type="button" class="input-mode-btn input-mode-hand" data-input-mode="hand" aria-pressed="false">☝ Vinger</button>
+          <button type="button" class="input-mode-btn input-mode-keyboard" data-input-mode="keyboard" aria-pressed="true">⌨ Toetsenbord</button>
+        </div>
+        <p id="mode-hint" class="mode-hint" aria-live="polite"></p>
+
+        <div id="canvasWrap" class="canvas-wrap keyboard-mode">
+          <canvas id="pad" aria-label="Schrijf hier je antwoord"></canvas>
+          <span class="placeholder">Schrijf hier je antwoord</span>
+          <div id="keyboardWrap" class="keyboard-wrap">
+            <label class="sr-only" for="answer">Typ je antwoord</label>
+            <input id="answer" name="answer" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="done" aria-describedby="feedback">
+          </div>
+        </div>
+        <div class="writing-controls">
+          <button class="button button--quiet" id="undo-button" type="button" hidden>Stap terug</button>
+          <button class="button button--quiet" id="clear-button" type="button" hidden>Wissen</button>
+        </div>
         <form id="answer-form" class="answer-form">
-          <label class="sr-only" for="answer">Jouw antwoord</label>
-          <input id="answer" name="answer" type="number" inputmode="numeric" step="1" required autocomplete="off" aria-describedby="feedback">
           <button class="button" id="submit-button" type="submit">Controleer</button>
         </form>
 
