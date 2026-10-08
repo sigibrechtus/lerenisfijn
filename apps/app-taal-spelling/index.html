@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>OLV SGR L2 - Taal - Spelling - Themadictee 1 – Leren is fijn</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="../../app-theme.css?v=7">
+  <link rel="stylesheet" href="../../app-theme.css?v=8">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script defer src="../../supabase-client.js"></script>
 <script defer src="script.js"></script>
@@ -17,10 +17,10 @@
   <section id="screen-start" class="screen">
     <header class="topbar app-header-layout">
       <a class="app-home-link" href="../../index.html">← Overzicht</a>
+      <div class="app-header-title"><h1 id="app-title">OLV SGR L2 - Taal - Spelling - Themadictee 1 – Leren is fijn</h1></div>
       <button id="btn-open-settings" class="app-settings-button" type="button">Instellingen</button>
     </header>
 
-    <h1 id="app-title">OLV SGR L2 - Taal - Spelling - Themadictee 1 – Leren is fijn</h1>
     <p class="subtitle">Kies een oefening.</p>
 
     <div class="mode-grid">
@@ -117,10 +117,13 @@
 
   <!-- ============ OEFENEN ============ -->
   <section id="screen-practice" class="screen" hidden>
-    <header class="topbar">
-      <button id="btn-stop" class="btn btn-ghost" type="button">Stoppen</button>
-      <span id="progress">Woord 1 van 1</span>
-      <span id="stars" class="stars">★ 0</span>
+    <header class="topbar app-header-layout">
+      <button id="btn-stop" class="app-home-link" type="button">← Startscherm</button>
+      <h2 id="practice-title" class="app-header-title">Themadictee</h2>
+      <div class="app-header-metrics" aria-label="Voortgang en score">
+        <span id="progress" class="app-header-metric">Woord 1 van 1</span>
+        <span id="stars" class="stars app-header-metric">Score: ★ 0</span>
+      </div>
     </header>
 
     <div class="prompt">
