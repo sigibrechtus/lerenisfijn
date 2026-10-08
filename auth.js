@@ -42,6 +42,8 @@
     setStatus("", "");
   }
 
+  setMode("signin");
+
   async function saveProfile(user, version) {
     const nickname = (user.user_metadata && user.user_metadata.nickname) || "";
     let { data, error } = await client.from("profiles").select("nickname").eq("id", user.id).maybeSingle();
