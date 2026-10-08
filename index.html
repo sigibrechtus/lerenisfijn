@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leren is fijn – Kies een oefening</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
   <script defer src="supabase-client.js"></script>
   <script defer src="auth.js"></script>
@@ -55,69 +55,85 @@
       </div>
     </section>
 
-    <section class="card-grid" aria-label="Oefeningen">
-      <a href="./apps/app-taal-spelling/index.html" class="card card--taal">
-        <span class="card-icon" aria-hidden="true">abc</span>
-        <div class="card-body">
-          <h2>Themadictee</h2>
-          <p>OLV SGR L2 – Taal – Spelling</p>
-        </div>
-        <div class="card-tags">
-          <span class="tag">L2</span>
-          <span class="tag tag--subject">Taal</span>
-        </div>
-      </a>
+    <section class="app-section" aria-labelledby="language-heading">
+      <div class="section-heading">
+        <span class="section-kicker">Per vak</span>
+        <h2 id="language-heading">Taal</h2>
+      </div>
+      <div class="card-grid" aria-label="Taal oefeningen">
+        <a href="./apps/app-taal-spelling/index.html" class="card card--taal">
+          <span class="card-icon" aria-hidden="true">abc</span>
+          <div class="card-body">
+            <h3>Themadictee</h3>
+            <p>OLV SGR L2 – Spelling</p>
+          </div>
+          <div class="card-tags">
+            <span class="tag">L2</span>
+            <span class="tag tag--subject">Taal</span>
+          </div>
+        </a>
+      </div>
+    </section>
 
-      <a href="./apps/app-wiskunde-splitsingen/index.html" class="card card--wiskunde">
-        <span class="card-icon" aria-hidden="true">2+3</span>
-        <div class="card-body">
-          <h2>Splitsingen</h2>
-          <p>OLV SGR L2 – Wiskunde</p>
-        </div>
-        <div class="card-tags">
-          <span class="tag">L2</span>
-          <span class="tag tag--subject">Wiskunde</span>
-        </div>
-      </a>
+    <section class="app-section" aria-labelledby="math-heading">
+      <div class="section-heading">
+        <span class="section-kicker">Per vak</span>
+        <h2 id="math-heading">Wiskunde</h2>
+      </div>
+      <div class="card-grid" aria-label="Wiskunde oefeningen">
+        <a href="./apps/app-wiskunde-splitsingen/index.html" class="card card--wiskunde">
+          <span class="card-icon" aria-hidden="true">2+3</span>
+          <div class="card-body">
+            <h3>Splitsingen</h3>
+            <p>OLV SGR L2</p>
+          </div>
+          <div class="card-tags"><span class="tag">L2</span><span class="tag tag--subject">Wiskunde</span></div>
+        </a>
 
-      <a href="./apps/app-wiskunde-plus-min/index.html" class="card card--wiskunde">
-        <span class="card-icon" aria-hidden="true">±</span>
-        <div class="card-body">
-          <h2>Plus en min</h2>
-          <p>OLV SGR L2 – Wiskunde</p>
-        </div>
-        <div class="card-tags">
-          <span class="tag">L2</span>
-          <span class="tag tag--subject">Wiskunde</span>
-        </div>
-      </a>
+        <a href="./apps/app-wiskunde-plus-min/index.html" class="card card--wiskunde">
+          <span class="card-icon" aria-hidden="true">±</span>
+          <div class="card-body">
+            <h3>Plus en min</h3>
+            <p>OLV SGR L2</p>
+          </div>
+          <div class="card-tags"><span class="tag">L2</span><span class="tag tag--subject">Wiskunde</span></div>
+        </a>
 
-      <a href="./apps/app-wiskunde-maaldeeltafels/index.html" class="card card--wiskunde">
-        <span class="card-icon" aria-hidden="true">&times;&divide;</span>
-        <div class="card-body">
-          <h2>Maal- en deeltafels</h2>
-          <p>OLV SGR L2 – Wiskunde</p>
-        </div>
-        <div class="card-tags">
-          <span class="tag">L2</span>
-          <span class="tag tag--subject">Wiskunde</span>
-        </div>
-      </a>
+        <a href="./apps/app-wiskunde-maaldeeltafels/index.html" class="card card--wiskunde">
+          <span class="card-icon" aria-hidden="true">&times;&divide;</span>
+          <div class="card-body">
+            <h3>Maal- en deeltafels</h3>
+            <p>OLV SGR L2</p>
+          </div>
+          <div class="card-tags"><span class="tag">L2</span><span class="tag tag--subject">Wiskunde</span></div>
+        </a>
 
-      <a href="./apps/app-wiskunde-kloklezen/index.html" class="card card--wiskunde">
-        <span class="card-icon" aria-hidden="true"><span class="clock"></span></span>
-        <div class="card-body">
-          <h2>Kloklezen</h2>
-          <p>OLV SGR L3 – Wiskunde</p>
-        </div>
-        <div class="card-tags">
-          <span class="tag">L3</span>
-          <span class="tag tag--subject">Wiskunde</span>
-        </div>
-      </a>
-      <a href="./apps/app-mijn-voortgang/index.html" class="card card--progress">
-        <span class="card-icon" aria-hidden="true">★</span><div class="card-body"><h2>Mijn voortgang</h2><p>Bekijk je persoonlijke oefenresultaten</p></div><div class="card-tags"><span class="tag">Persoonlijk</span></div>
-      </a>
+        <a href="./apps/app-wiskunde-kloklezen/index.html" class="card card--wiskunde">
+          <span class="card-icon" aria-hidden="true"><span class="clock"></span></span>
+          <div class="card-body">
+            <h3>Kloklezen</h3>
+            <p>OLV SGR L3</p>
+          </div>
+          <div class="card-tags"><span class="tag">L3</span><span class="tag tag--subject">Wiskunde</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="app-section app-section--personal" aria-labelledby="personal-heading">
+      <div class="section-heading">
+        <span class="section-kicker">Jouw account</span>
+        <h2 id="personal-heading">Persoonlijk</h2>
+      </div>
+      <div class="card-grid" aria-label="Persoonlijke pagina's">
+        <a href="./apps/app-mijn-voortgang/index.html" class="card card--progress">
+          <span class="card-icon" aria-hidden="true">★</span>
+          <div class="card-body">
+            <h3>Mijn voortgang</h3>
+            <p>Bekijk je persoonlijke oefenresultaten</p>
+          </div>
+          <div class="card-tags"><span class="tag">Persoonlijk</span></div>
+        </a>
+      </div>
     </section>
   </main>
 
