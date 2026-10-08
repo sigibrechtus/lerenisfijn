@@ -110,3 +110,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   }
   .app-header-layout > .app-header-spacer { display: none; }
 }
+
+
+.app-header-layout > .score-badge,
+.app-header-layout > .score-box {
+  padding: .5rem 1rem;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--lf-text) !important;
+  box-shadow: var(--lf-shadow);
+  font-weight: 700;
+  white-space: nowrap;
+}
