@@ -93,3 +93,9 @@ h2 { margin: 0.5rem 0 0; }
 .game-header .doelbalk { display: none; }
 .game-header #stopBtn { position: static; bottom: auto; left: auto; z-index: auto; margin: 0; }
 #spel { padding-top: 20px; }
+
+.game-header #stopBtn {
+  background: rgba(255, 255, 255, .2);
+  border: 1px solid rgba(255, 255, 255, .35);
+  color: #fff;
+}
