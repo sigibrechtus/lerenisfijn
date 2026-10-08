@@ -76,15 +76,6 @@ button { font-family: inherit; }
   border-radius: 999px;
   box-shadow: 0 3px 0 #ca8a04;
 }
-.score-box span {
-  display: inline-block;
-  min-width: 1.6em;
-  margin-left: 6px;
-  padding: 0 6px;
-  background: #fff;
-  border-radius: 999px;
-  text-align: center;
-}
 
 /* ---------- Layout ---------- */
 .layout {
