@@ -61,3 +61,31 @@ test('Plantyn catalogue contains every published theme, grouped by grade, withou
   for (const preview of library.plantynPreviews) assert.equal(new URL(preview.url).hostname, 'view.publitas.com');
   assert.match(library.plantynThemeSource, /plantyn\.com/);
 });
+
+test('Plantyn themes load original, valid practice lists with preview-based spelling focuses', () => {
+  const library = JSON.parse(fs.readFileSync(path.join(__dirname, '../apps/app-taal-spelling/word-library.json')));
+  assert.equal(library.plantynPracticeSets.length, 48);
+  assert.equal(new Set(library.plantynPracticeSets.map(set => set.id)).size, 48);
+  for (let grade = 1; grade <= 6; grade++) {
+    const sets = library.plantynPracticeSets.filter(set => set.grade === grade);
+    assert.equal(sets.length, 8);
+    assert.deepEqual(new Set(sets.map(set => set.theme)), new Set(library.plantynThemes.filter(theme => theme.grade === grade).map(theme => theme.theme)));
+    for (const set of sets) {
+      assert.equal(set.words.length, 8);
+      assert.equal(parseText(set.words.join('\n')).words.length, set.words.length);
+      assert.ok(set.title.includes('eigen oefenwoorden'));
+      assert.ok(set.provenance.includes('geen officiële woordenlijst'));
+    }
+  }
+  for (const [grade, themes] of [[2, ['Op stap in onze gemeente', 'Het bos, mijn vriend']], [3, ['Op reis door België', 'Eet je goed? Beweeg je goed?']]]) {
+    for (const theme of themes) {
+      const set = library.plantynPracticeSets.find(item => item.grade === grade && item.theme === theme);
+      assert.ok(set.source.includes('view.publitas.com'));
+      assert.ok(set.provenance.includes('zichtbare inhoudsopgave'));
+      assert.ok(set.focus.length > 0);
+    }
+  }
+  for (const set of library.plantynPracticeSets.filter(item => ![2, 3].includes(item.grade) || !['Op stap in onze gemeente', 'Het bos, mijn vriend', 'Op reis door België', 'Eet je goed? Beweeg je goed?'].includes(item.theme))) {
+    assert.ok(set.provenance.includes('inschatting'));
+  }
+});
