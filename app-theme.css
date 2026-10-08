@@ -82,6 +82,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* Every app keeps navigation left and a secondary action or status right. */
 .app-header-layout {
+  width: 100%;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
