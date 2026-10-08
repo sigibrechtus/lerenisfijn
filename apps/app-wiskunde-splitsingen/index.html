@@ -11,21 +11,22 @@
 <script defer src="../../supabase-client.js"></script>
 <script defer src="script.js"></script>
 <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="../../app-theme.css?v=3">
+  <link rel="stylesheet" href="../../app-theme.css?v=4">
 </head>
 <body>
 
 <!-- STARTSCHERM -->
 <section id="start" class="scherm actief">
-    <header class="topbar">
+    <header class="topbar app-header-layout">
       <a class="app-home-link" href="../../index.html">← Overzicht</a>
+      <span class="app-header-spacer" aria-hidden="true"></span>
+      <button id="instelBtn" class="app-settings-button" type="button">Instellingen</button>
     </header>
 
     <h1 id="startTitel">Splitsen tot 10</h1>
     <div id="startTekst" class="kaart"></div>
     <div>
         <button id="startBtn" class="knop groen">Start</button>
-        <button id="instelBtn" class="app-settings-button">Instellingen</button>
     </div>
     <p id="record"></p>
 </section>
