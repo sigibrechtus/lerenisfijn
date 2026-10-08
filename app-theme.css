@@ -1,0 +1,43 @@
+/* Shared Leren is fijn app theme */
+:root {
+  --lf-bg: #fff8ec;
+  --lf-card: #ffffff;
+  --lf-primary: #ff7a45;
+  --lf-primary-dark: #e8622c;
+  --lf-accent: #4dabf7;
+  --lf-text: #2b2d42;
+  --lf-muted: #6c757d;
+  --lf-radius: 18px;
+  --lf-shadow: 0 6px 18px rgba(0, 0, 0, .08);
+  --lf-shadow-hover: 0 12px 26px rgba(0, 0, 0, .14);
+  --lf-font: "Comic Sans MS", "Chalkboard SE", "Segoe UI", Arial, sans-serif;
+}
+body {
+  background: var(--lf-bg) !important;
+  color: var(--lf-text);
+  font-family: var(--lf-font) !important;
+}
+button, input, select, textarea { font-family: var(--lf-font); }
+header.topbar, header.top, .progress-header {
+  background: var(--lf-primary) !important;
+  color: #fff !important;
+  box-shadow: var(--lf-shadow);
+}
+header.topbar { border-radius: 0 0 var(--lf-radius) var(--lf-radius); }
+.progress-header { border: 0; }
+.progress-header p, .progress-header a { color: #fff !important; }
+.back-link, .back, .progress-header a {
+  color: #fff !important;
+}
+.panel, .settings, .settings-panel, .game, .kaart, .nickname-card,
+.notice, .stat, .delta-card, .result, .summary {
+  background-color: var(--lf-card);
+  border-radius: var(--lf-radius);
+  box-shadow: var(--lf-shadow);
+}
+input, select, textarea {
+  border-radius: 12px;
+}
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline-color: var(--lf-accent);
+}
