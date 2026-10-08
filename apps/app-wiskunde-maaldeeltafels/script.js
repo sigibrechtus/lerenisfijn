@@ -187,7 +187,7 @@
       btn.setAttribute('aria-pressed', btn.dataset.mode === inputMode ? 'true' : 'false');
     });
     const keyboard = inputMode === 'keyboard';
-    els.canvasWrap.hidden = keyboard;
+    els.canvasWrap.classList.toggle('keyboard-mode', keyboard);
     els.keyboardWrap.hidden = !keyboard;
     els.undoBtn.hidden = keyboard;
     els.clearBtn.hidden = keyboard;
