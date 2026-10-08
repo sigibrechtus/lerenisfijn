@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Het winkelspel – Leren is fijn</title>
+  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="../../app-theme.css?v=12">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+  <script defer src="../../supabase-client.js"></script>
+  <script defer src="game.js"></script><script defer src="script.js"></script>
+</head>
+<body>
+  <header class="topbar app-header-layout">
+    <a class="app-home-link" href="../../index.html">← Overzicht</a>
+    <div class="app-header-title"><h1>Het winkelspel</h1><p>Rekenen met euro's en centen</p></div>
+    <div class="app-header-actions"><button class="app-settings-button" id="settings-button" type="button" aria-expanded="false" aria-controls="settings">Instellingen</button><div class="score-badge">Score: <span id="score">0</span> / 10</div></div>
+  </header>
+  <main>
+    <section class="panel" id="settings" hidden>
+      <h2>Instellingen</h2><label for="level">Kies een niveau</label>
+      <select id="level"><option value="1">1 · Eén artikel, hele euro's</option><option value="2">2 · Twee artikelen, hele euro's</option><option value="3">3 · Eén artikel met centen</option><option value="4">4 · Drie artikelen met centen</option><option value="5">5 · Wisselgeld berekenen</option></select>
+      <p>Na een reeks met minstens 8 van de 10 antwoorden goed in één keer ga je een niveau hoger. Bij minder blijf je oefenen op hetzelfde niveau.</p>
+      <button id="restart" type="button">Nieuwe reeks</button>
+    </section>
+    <section class="panel" id="quiz" aria-labelledby="question">
+      <div class="round-info"><strong id="level-name"></strong><span id="progress"></span></div>
+      <progress id="round-progress" value="0" max="10" aria-label="Afgeronde vragen"></progress>
+      <h2 id="question"></h2><div id="basket" class="basket"></div><p id="payment"></p>
+      <form id="answer-form" novalidate>
+        <label for="answer">Je antwoord in euro</label><div class="money-input"><span aria-hidden="true">€</span><input id="answer" type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" aria-describedby="answer-help feedback"></div>
+        <p id="answer-help">Typ bijvoorbeeld 3 of 3,50. Druk op Enter of Controleer.</p>
+        <button id="check" type="submit">Controleer</button>
+      </form>
+      <p id="feedback" role="status" aria-live="polite"></p>
+      <p class="note">Ingelogd? Je afgeronde vragen worden bewaard in Mijn voortgang.</p>
+    </section>
+    <section class="panel" id="summary" hidden aria-labelledby="summary-title">
+      <div class="star" aria-hidden="true">★</div><h2 id="summary-title">Reeks klaar!</h2><p id="summary-text"></p><button id="continue" type="button">Verder oefenen</button>
+    </section>
+  </main>
+</body></html>
