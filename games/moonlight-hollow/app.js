@@ -215,6 +215,6 @@ document.addEventListener('pointerdown',unlockAudio,{once:true});document.addEve
 document.addEventListener('visibilitychange',()=>{if(!audio)return;if(document.hidden)audio.suspend().catch(()=>{});else audio.resume().catch(()=>{});});
 window.addEventListener('pagehide',()=>{if(q&&!solved)draft();else save();});
 for(let i=0;i<18;i++){const s=el('span','spark');s.style.left=(8+Math.random()*84)+'%';s.style.top=(20+Math.random()*70)+'%';s.style.animationDelay=(-Math.random()*5)+'s';$('particles').append(s);}
-if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
 localize();show('welcome');
 

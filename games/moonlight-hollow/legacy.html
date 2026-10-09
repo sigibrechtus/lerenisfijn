@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="nl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#151b35"><title>Moonlight Hollow 2D · Leren is fijn</title><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css?v=2"><script defer src="engine.js?v=1"></script><script defer src="app.js?v=2"></script></head>
+<body>
+<div class="landscape" aria-hidden="true"></div><div class="mist" aria-hidden="true"></div><div id="particles" aria-hidden="true"></div>
+<header class="topbar"><a href="../../index.html" id="back" class="nav-button"></a><button id="village" class="nav-button"></button><span class="logo">Moonlight <em>Hollow</em></span><button id="fullscreen" class="nav-button"></button><button id="settings-open" class="nav-button"></button></header>
+<main>
+<section id="welcome" class="welcome"><span id="eyebrow" class="eyebrow"></span><h1>Moonlight<br><em>Hollow</em></h1><p id="welcome-copy"></p><div class="welcome-buttons"><button id="start" class="gold"></button><button id="welcome-settings"></button></div><small id="session-note"></small><div class="pip welcome-pip" aria-hidden="true"><i></i><b></b></div></section>
+<section id="map" hidden><div class="map-title"><span class="eyebrow" id="map-kicker"></span><h1 id="map-heading"></h1><p id="map-copy"></p></div><div id="locations" class="locations"></div><div class="festival-tree" id="festival-tree" aria-hidden="true"></div><div class="map-bottom"><div class="pip" aria-hidden="true"><i></i><b></b></div><div><strong id="pip-line"></strong><p id="save-status" role="status"></p></div><button id="progress-open"></button></div></section>
+<section id="game" hidden aria-labelledby="mission-title">
+<div class="mission"><span id="area-name" class="eyebrow"></span><h1 id="mission-title" tabindex="-1"></h1><p id="howto"></p></div>
+<div id="stage" class="stage"></div>
+<div class="game-bottom"><div class="pip" aria-hidden="true"><i></i><b></b></div><div class="feedback-wrap"><p id="feedback" role="status" aria-live="polite"></p><div id="hint-text" hidden></div></div><div class="actions"><button id="hint"></button><button id="reset"></button><button id="check" class="gold"></button><button id="continue" class="gold" hidden></button></div></div>
+</section>
+</main>
+<dialog id="settings"><form method="dialog" class="dialog-top"><h2 id="settings-title"></h2><button id="settings-close" value="close">×</button></form><div class="settings-grid"><label><span id="language-label"></span><select id="language"><option value="nl">Nederlands</option><option value="fr">Français</option></select></label><label><span id="profile-label"></span><select id="profile"></select></label><label><span id="music-label"></span><input id="music-volume" type="range" min="0" max="100"></label><label><span id="effects-label"></span><input id="effects-volume" type="range" min="0" max="100"></label><label class="check-label"><input id="motion" type="checkbox"><span id="motion-label"></span></label></div><form id="profile-form"><label for="nickname" id="nickname-label"></label><div class="add-row"><input id="nickname" maxlength="24" required autocomplete="off"><button id="profile-add"></button></div></form><p id="privacy"></p><p id="profile-status" role="status"></p></dialog>
+<dialog id="progress"><form method="dialog" class="dialog-top"><h2 id="progress-title"></h2><button id="progress-close" value="close">×</button></form><div id="stats"></div><p id="progress-note"></p></dialog>
+<div id="travel" hidden aria-live="polite"><div class="pip"><i></i><b></b></div><p id="travel-copy"></p><button id="skip"></button></div>
+<div id="drag-ghost" hidden aria-hidden="true"></div>
+<noscript>Activeer JavaScript om te spelen. / Activez JavaScript pour jouer.</noscript>
+</body></html>
+
