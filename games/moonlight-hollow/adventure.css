@@ -5,3 +5,13 @@
 .audio-settings{margin-top:20px;padding:14px;border:1px solid #b9d6df44;border-radius:14px}.audio-settings summary{cursor:pointer;color:var(--gold);margin-bottom:12px}.audio-check{display:flex;gap:10px;align-items:center;font-size:13px;margin:12px 0}.audio-settings button{font-size:12px}
 
 @media(max-width:420px){header{flex-wrap:wrap}.brand{order:-1;flex:1;text-align:left}nav{flex-wrap:wrap;justify-content:flex-end}#sound-toggle{white-space:nowrap}}
+
+/* Reserve an unobstructed camera frame above the exercise controls. */
+.puzzle{max-height:44dvh;overflow:auto;overscroll-behavior:contain}
+.puzzle .world-options{position:static;display:flex;margin:8px 0;max-width:100%;width:fit-content;flex-wrap:wrap}
+.puzzle-mode header .brand{display:none}
+.puzzle-mode #journal-open,.puzzle-mode #fullscreen{display:none}
+.puzzle-mode header{padding:8px 12px;flex-wrap:nowrap}
+.puzzle-mode header nav{flex-wrap:nowrap}
+.puzzle-mode .puzzle{bottom:max(10px,env(safe-area-inset-bottom))}
+@media(max-height:500px){.puzzle{max-height:43dvh}.puzzle .world-options{margin:4px 0;padding:4px}.puzzle-mode header button,.puzzle-mode #home{min-height:32px;padding:6px;font-size:11px}}

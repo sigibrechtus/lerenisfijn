@@ -13,6 +13,7 @@ Thirty persistent discoveries form five six-quest chapters. Nine puzzle families
 - `engine.js`: existing arithmetic, language, time and reflection validation.
 - `campaign.js`: original chapter structure, deterministic task generation, skill adaptation and completion state.
 - `world.js`: 3D artwork, animated player/ghost, camera, movement, picking, dragging, world puzzle objects, reduced motion and quality scaling.
+- `camera.js`: tight third-person tracking, safe activity viewport and perspective fit of all exercise objects.
 - `adventure.js`: Dutch/French interface, quest dialogue, profiles, avatar choices, narration and storage.
 - `audio.js`: original recorded soundtrack/effects, browser audio startup, regional mixing and playback diagnostics.
 - `sw.js`: same-origin offline caching after a successful initial load/cache installation.
@@ -49,3 +50,13 @@ The visible Sound button and the Enable sound action in Settings explicitly unmu
 On browsers exposing `navigator.audioSession`, the audio engine requests `playback` before creating its AudioContext. Safari also receives a synchronous silent source start and `resume()` during the user gesture, with touchend/click recovery as well as pointer/keyboard activation. Unsupported audio-session APIs do not block playback. Regional loop loads are deduplicated; leaving a region cancels stale transitions. Hiding the page cancels pending effects and stops active one-shots.
 
 Settings previews measure the output signal after the master compressor. A detected signal confirms browser audio processing; it cannot confirm device volume, speaker routing, or what a child actually hears. Blocked contexts, mute/zero-volume settings, silent output and file-loading errors have distinct messages. Nine additional playback regression tests cover gesture ordering, suspended contexts, delayed loads, region changes, destination routing, background cancellation and preview diagnostics. Browser/real-device checks remain separate from these tests.
+
+## Follow and exercise framing (v7)
+
+The exploration camera keeps its orbit offset while moving its target with the player, rather than recalculating the orbit around a moving target. Follow smoothing catches 95% of a positional change in approximately 125 ms; orbit-input inertia is reduced and the default chase distance is 14 world units.
+
+Entering an activity makes a 550 ms eased move into a framing view calculated from every exercise mesh, including its labels, choices, draggable sources and destination objects. The platform fits the activity rather than imposing one fixed board size. Perspective fitting includes object depth and a 12% margin. The active viewport excludes the header and the exercise panel; object selection controls now sit inside that panel. ResizeObserver refits the view after hints, layout changes and screen rotation. The framing envelope can expand for new objects, but does not shrink or bounce after each answer.
+
+Unrelated village geometry and the avatar are excluded from the close-up layer to avoid obstructing the activity. All world state is retained. Leaving restores the full-screen world, collision checks and the player's orbit with a 450 ms transition. Reduced-motion mode applies the new view immediately.
+
+`node --test tests/*.test.cjs` checks the pure calculations and existing learning/audio logic. `NODE_PATH="$CODEX_PRIMARY_RUNTIME_NODE_MODULES" node tests/moonlight-camera-scenes.cjs` additionally checks real Babylon NullEngine geometry and projections for all 30 quests, both languages, three levels, initial and solved states across six desktop/phone/tablet layouts, plus animated entry and resizing. These checks verify that mesh corners lie inside the intended frame; they do not constitute GPU or real-device visual validation.
