@@ -11,7 +11,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script defer src="../../supabase-client.js"></script>
 <script defer src="../../app-effects.js?v=3"></script>
-<script defer src="script.js?v=20"></script>
+<script defer src="script.js?v=21"></script>
 </head>
 <body>
   <header class="topbar app-header-layout">
@@ -27,6 +27,7 @@
         <select id="limit" aria-label="Kies het hoogste getal">
           <option value="20">20</option>
           <option value="100">100</option>
+          <option value="1000">1.000</option>
         </select>
         <button class="button button--quiet" id="new-round" type="button">Nieuwe reeks</button>
       </div>
@@ -59,7 +60,7 @@
           <span class="placeholder">Schrijf hier je antwoord</span>
           <div id="keyboardWrap" class="keyboard-wrap">
             <label class="sr-only" for="answer">Typ je antwoord</label>
-            <input id="answer" name="answer" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="done" aria-describedby="feedback">
+            <input id="answer" name="answer" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" enterkeyhint="done" aria-describedby="feedback">
           </div>
         </div>
         <div class="writing-controls">
