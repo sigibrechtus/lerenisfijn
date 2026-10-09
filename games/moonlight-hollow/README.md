@@ -13,14 +13,15 @@ Thirty persistent discoveries form five six-quest chapters. Nine puzzle families
 - `engine.js`: existing arithmetic, language, time and reflection validation.
 - `campaign.js`: original chapter structure, deterministic task generation, skill adaptation and completion state.
 - `world.js`: 3D artwork, animated player/ghost, camera, movement, picking, dragging, world puzzle objects, reduced motion and quality scaling.
-- `adventure.js`: Dutch/French interface, quest dialogue, profiles, avatar choices, narration, original synthesized music/effects and storage.
+- `adventure.js`: Dutch/French interface, quest dialogue, profiles, avatar choices, narration and storage.
+- `audio.js`: original recorded soundtrack/effects, browser audio startup, regional mixing and playback diagnostics.
 - `sw.js`: same-origin offline caching after a successful initial load/cache installation.
 
 The prior v1 save remains intact. Its valid practice events are imported into the v3 profile and legacy draft retained for recovery; the new story begins at quest one because the previous app did not track campaign quests. Distinct v3 child profiles retain appearance, position, events and unfinished tasks. No account synchronization. Save failures are reported in the star map. The prior 2D game remains available at `legacy.html` as a clearly labelled compatibility option when WebGL is unavailable; it retains its prior save key.
 
 ## Audio and rendering
 
-Audio begins after interaction, with separate music/effects controls. Three original oscillator-based musical arrangements vary by area; effects use stereo panning. No downloaded music or licensed character assets. Speech uses available device voices; availability varies.
+Audio begins after interaction, with separate music/effects controls. Eight original locally rendered musical arrangements vary by area; effects use stereo panning. No third-party recordings or licensed character assets. Speech uses available device voices; availability varies.
 
 High quality uses device-aware rendering with anti-aliasing, shadows, glow and soft fog. Economy quality lowers resolution and disables glow. Automatic quality falls back when sustained frame rate is low. Full HD is a target on suitable displays/devices, not a performance guarantee. Artwork is stylised procedural geometry rather than externally modelled film-quality assets. No combat, timers, loss of earned progress or daily streaks.
 
@@ -40,3 +41,11 @@ Eight original 16-bar instrumental music loops: menu, village, woods, garden, li
 `audio.js` provides gesture-unlocked Web Audio playback, crossfaded regional music/ambience, separate buses and volume controls, master mute, narration ducking, stereo effects, rate-limited footsteps, bounded voices, background suspension and cached offline playback. Settings include previews for all tracks/effects. The compatibility game also uses the new soundtrack and effect bank.
 
 33 repository tests pass. All fourteen MP3 tracks decode and have finite bounded samples; all thirty WAV cues are validated for format, silence/clipping and quiet endings. Device speaker output and 3D spatial triggers require real-device validation.
+
+## Browser audio startup (v6)
+
+The visible Sound button and the Enable sound action in Settings explicitly unmute the game and restore either zero-volume channel to an audible default. Nonzero saved volumes are preserved. New profiles start at music 45% / effects 65%. All child progress remains unchanged.
+
+On browsers exposing `navigator.audioSession`, the audio engine requests `playback` before creating its AudioContext. Safari also receives a synchronous silent source start and `resume()` during the user gesture, with touchend/click recovery as well as pointer/keyboard activation. Unsupported audio-session APIs do not block playback. Regional loop loads are deduplicated; leaving a region cancels stale transitions. Hiding the page cancels pending effects and stops active one-shots.
+
+Settings previews measure the output signal after the master compressor. A detected signal confirms browser audio processing; it cannot confirm device volume, speaker routing, or what a child actually hears. Blocked contexts, mute/zero-volume settings, silent output and file-loading errors have distinct messages. Nine additional playback regression tests cover gesture ordering, suspended contexts, delayed loads, region changes, destination routing, background cancellation and preview diagnostics. Browser/real-device checks remain separate from these tests.

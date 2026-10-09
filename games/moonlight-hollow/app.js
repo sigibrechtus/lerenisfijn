@@ -204,7 +204,7 @@ document.addEventListener('pointerup',e=>endDrag(e));document.addEventListener('
 const legacyAudio=MoonAudio.create({prefs:()=>state.prefs});
 function unlockAudio(){legacyAudio.unlock();}
 function sound(kind){legacyAudio.play(kind==='good'?'solve':kind==='soft'?'retry':q?.area==='garden'?'pour':q?.area==='library'?'letter':q?.area==='clock'?'clock':q?.area==='lights'?'mirror':'place');}
-document.addEventListener('pointerdown',unlockAudio);document.addEventListener('keydown',unlockAudio);
+for(const event of ['pointerdown','touchend','click','keydown'])document.addEventListener(event,unlockAudio,{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)legacyAudio.suspend();else legacyAudio.resume();});
 window.addEventListener('pagehide',()=>{if(q&&!solved)draft();else save();});
 for(let i=0;i<18;i++){const s=el('span','spark');s.style.left=(8+Math.random()*84)+'%';s.style.top=(20+Math.random()*70)+'%';s.style.animationDelay=(-Math.random()*5)+'s';$('particles').append(s);}

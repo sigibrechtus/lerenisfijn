@@ -3,3 +3,5 @@
 #fallback{position:fixed;top:60%;left:50%;transform:translateX(-50%);background:#edc984;color:#2d281f;padding:14px 24px;border-radius:12px;text-decoration:none;z-index:16;font-weight:700;white-space:nowrap}
 
 .audio-settings{margin-top:20px;padding:14px;border:1px solid #b9d6df44;border-radius:14px}.audio-settings summary{cursor:pointer;color:var(--gold);margin-bottom:12px}.audio-check{display:flex;gap:10px;align-items:center;font-size:13px;margin:12px 0}.audio-settings button{font-size:12px}
+
+@media(max-width:420px){header{flex-wrap:wrap}.brand{order:-1;flex:1;text-align:left}nav{flex-wrap:wrap;justify-content:flex-end}#sound-toggle{white-space:nowrap}}
