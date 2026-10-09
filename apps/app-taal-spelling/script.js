@@ -726,7 +726,7 @@ $('set-words').addEventListener('input',()=>{settings.words=$('set-words').value
 $('set-title').addEventListener('input',()=>{settings.title=$('set-title').value;});
 $('btn-choose-words').addEventListener('click',openSettings);
 async function loadWordLibrary(){
-  try {const response=await fetch('word-library.json?v=4');if(!response.ok)throw new Error();const data=await response.json();wordLibrary=data.sets;plantynPracticeSets=data.plantynPracticeSets||[];wordResources=data.resources||[];plantynPreviews=data.plantynPreviews||[];plantynThemeSource=data.plantynThemeSource||'https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-taal/thema-overzicht';refreshLibraryChoices();}
+  try {const response=await fetch('word-library.json?v=6');if(!response.ok)throw new Error();const data=await response.json();wordLibrary=data.sets;plantynPracticeSets=data.plantynPracticeSets||[];wordResources=data.resources||[];plantynPreviews=data.plantynPreviews||[];plantynThemeSource=data.plantynThemeSource||'https://www.plantyn.com/lager-onderwijs/taal/taalkanjers-taal/thema-overzicht';refreshLibraryChoices();}
   catch(_){$('library-status').textContent='De voorbeeldbibliotheek kon niet worden geladen. Je kunt wel een TXT-bestand laden of woorden typen.';}
 }
 loadWordLibrary();
