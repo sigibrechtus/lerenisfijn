@@ -29,7 +29,7 @@ body {
 
 .app {
   width: 100%;
-  max-width: 900px;
+  max-width: 1180px;
   padding: 1.5rem 1.25rem 3rem;
 }
 
@@ -80,8 +80,8 @@ body {
 
 .mode-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .55rem;
 }
 
 .mode-card {
@@ -89,14 +89,15 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .4rem;
+  gap: .25rem;
   background: #f8f9fc;
   border: 3px solid transparent;
   border-radius: 14px;
-  padding: 1rem;
+  padding: .55rem .35rem;
   cursor: pointer;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: .85rem;
+  line-height: 1.2;
   color: var(--text);
   transition: transform .15s ease, border-color .15s ease, background .15s ease;
 }
@@ -104,7 +105,9 @@ body {
 .mode-card[data-mode="read"] { --card-color: #4b7bec; }
 .mode-card[data-mode="set"] { --card-color: #f7b731; }
 .mode-card[data-mode="calc"] { --card-color: #20bf6b; }
-.mode-card .mode-icon { font-size: 1.8rem; }
+.mode-card[data-mode="set5"] { --card-color: #a855f7; }
+.mode-card[data-mode="textDigital"] { --card-color: #0f9a8a; }
+.mode-card .mode-icon { font-size: 1.35rem; }
 
 .mode-card[aria-pressed="true"] {
   border-color: var(--card-color);
@@ -118,16 +121,26 @@ body {
 .exercise {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  gap: 1rem;
   background: var(--card-bg);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 1.5rem;
+  padding: 1rem;
   margin-bottom: 1.25rem;
 }
 
 @media (max-width: 640px) {
   .exercise { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+  .mode-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .mode-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .settings-panel { padding: 1rem; }
+  .clock-wrap { width: min(100%, 280px); }
 }
 
 .clock-col, .answer-col {
@@ -144,7 +157,7 @@ body {
 }
 
 .clock-wrap {
-  width: 180px;
+  width: min(100%, 250px);
   max-width: 100%;
 }
 
@@ -300,3 +313,4 @@ body {
 
 .exercise.pop { animation: pop .35s ease; }
 .exercise.shake { animation: shake .35s ease; }
+
