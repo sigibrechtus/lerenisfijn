@@ -49,7 +49,7 @@
   /* =========================================================
      Status
      ========================================================= */
-  let mode = 'read';          // 'read' | 'set' | 'calc'
+  let mode = 'read';          // 'read' | 'set' | 'calc' | 'set5' | 'textDigital'
   let current = null;         // oefening-gegevens
   let score = 0;
   let attempts = 0;
@@ -84,17 +84,19 @@
     });
 
     // Linkerkant: klok, tekst of delta-kaart
-    els.leftClockWrap.hidden = (mode === 'set');
-    els.phraseDisplay.hidden = (mode !== 'set');
+    const phraseMode = mode === 'set' || mode === 'set5' || mode === 'textDigital';
+    const digitalMode = mode === 'read' || mode === 'textDigital';
+    els.leftClockWrap.hidden = phraseMode;
+    els.phraseDisplay.hidden = !phraseMode;
     els.deltaCard.hidden = (mode !== 'calc');
 
     // Rechterkant: spinners (enkel 'read') of sleepbare klok ('set' / 'calc')
-    els.digitalInput.hidden = (mode !== 'read');
-    els.answerClockWrap.hidden = (mode === 'read');
+    els.digitalInput.hidden = !digitalMode;
+    els.answerClockWrap.hidden = digitalMode;
 
     // Extra zekerheid: spinners volledig uitschakelen buiten modus 'read'
     document.querySelectorAll('.spin-btn').forEach(btn => {
-      btn.disabled = (mode !== 'read');
+      btn.disabled = !digitalMode;
     });
 
     if (mode === 'read') {
@@ -103,6 +105,12 @@
     } else if (mode === 'set') {
       els.leftLabel.textContent = 'Welke tijd staat hier?';
       els.rightLabel.textContent = 'Zet de wijzers';
+    } else if (mode === 'set5') {
+      els.leftLabel.textContent = 'Lees de tijd in stappen van 5 minuten';
+      els.rightLabel.textContent = 'Zet de wijzers';
+    } else if (mode === 'textDigital') {
+      els.leftLabel.textContent = 'Lees de Nederlandse tijd';
+      els.rightLabel.textContent = 'Zet de digitale klok';
     } else {
       els.leftLabel.textContent = 'Starttijd';
       els.rightLabel.textContent = 'Wat is de nieuwe tijd?';
@@ -114,8 +122,8 @@
   /* =========================================================
      Tijd-hulpfuncties
      ========================================================= */
-  function randomTime() {
-    return { hour: 1 + Math.floor(Math.random() * 12), minute: pick(QUARTERS) };
+  function randomTime(step = 15) {
+    return { hour: 1 + Math.floor(Math.random() * 12), minute: Math.floor(Math.random() * (60 / step)) * step };
   }
 
   function addMinutes(hour, minute, delta) {
@@ -127,14 +135,21 @@
     return { hour: resultHour0 === 0 ? 12 : resultHour0, minute: resultMinute };
   }
 
-  // Nederlandse tijdsaanduiding: kwart over/voor, half, of heel uur
+  // Nederlandse tijdsaanduiding, ook voor intervallen van vijf minuten.
   function toDutchPhrase(hour, minute) {
     const next = hour === 12 ? 1 : hour + 1;
     if (minute === 0) return `${hour} uur`;
+    if (minute === 5) return `vijf over ${hour}`;
+    if (minute === 10) return `tien over ${hour}`;
     if (minute === 15) return `kwart over ${hour}`;
+    if (minute === 20) return `twintig over ${hour}`;
+    if (minute === 25) return `vijf voor half ${next}`;
     if (minute === 30) return `half ${next}`;
+    if (minute === 35) return `vijf over half ${next}`;
+    if (minute === 40) return `twintig voor ${next}`;
     if (minute === 45) return `kwart voor ${next}`;
-    return `${hour} uur`;
+    if (minute === 50) return `tien voor ${next}`;
+    return `vijf voor ${next}`;
   }
 
   /* =========================================================
@@ -164,6 +179,20 @@
       dragHour = 12;
       dragMinute = 0;
       drawClock(els.clockRight, dragHour, dragMinute, { interactive: true, onChange: onDragChange });
+
+    } else if (mode === 'set5' || mode === 'textDigital') {
+      const t = randomTime(5);
+      current = t;
+      els.phraseDisplay.textContent = toDutchPhrase(t.hour, t.minute);
+      if (mode === 'set5') {
+        dragHour = 12;
+        dragMinute = 0;
+        drawClock(els.clockRight, dragHour, dragMinute, { interactive: true, minuteStep: 5, onChange: onDragChange });
+      } else {
+        answerHour = 12;
+        answerMinute = 0;
+        updateSpinnerDisplay();
+      }
 
     } else { // calc
       const start = randomTime();
@@ -206,14 +235,14 @@
 
   document.querySelectorAll('.spin-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (locked || mode !== 'read') return;
+      if (locked || (mode !== 'read' && mode !== 'textDigital')) return;
       const target = btn.dataset.target;
       const dir = Number(btn.dataset.dir);
       if (target === 'hour') {
         answerHour = ((answerHour - 1 + dir + 12) % 12) + 1;
       } else {
-        const idx = QUARTERS.indexOf(answerMinute);
-        answerMinute = QUARTERS[(idx + dir + QUARTERS.length) % QUARTERS.length];
+        const step = mode === 'textDigital' ? 5 : 15;
+        answerMinute = (answerMinute + dir * step + 60) % 60;
       }
       updateSpinnerDisplay();
     });
@@ -286,7 +315,7 @@
       svg.appendChild(hourHit);
       svg.appendChild(minuteHit);
       svg.appendChild(el('circle', { class: 'center-dot', cx: CENTER, cy: CENTER, r: 5 }));
-      makeDraggable(svg, hourHand, minuteHand, hourHit, minuteHit, hour, minute, opts.onChange);
+      makeDraggable(svg, hourHand, minuteHand, hourHit, minuteHit, hour, minute, opts.onChange, opts.minuteStep || 15);
     } else {
       svg.appendChild(el('circle', { class: 'center-dot', cx: CENTER, cy: CENTER, r: 5 }));
     }
@@ -303,7 +332,7 @@
   }
 
   /* ---------- Sleepbare wijzers ---------- */
-  function makeDraggable(svg, hourHand, minuteHand, hourHit, minuteHit, initHour, initMinute, onChange) {
+  function makeDraggable(svg, hourHand, minuteHand, hourHit, minuteHit, initHour, initMinute, onChange, minuteStep) {
     let hour = initHour % 12 || 12;
     let minute = initMinute;
     let draggingHand = null;
@@ -332,8 +361,9 @@
         let idx = Math.round(deg / 30) % 12;
         hour = idx === 0 ? 12 : idx;
       } else if (draggingHand === 'minute') {
-        let idx = Math.round(deg / 90) % 4; // 90° per kwartier
-        minute = QUARTERS[idx];
+        const slots = 60 / minuteStep;
+        const idx = Math.round(deg / (360 / slots)) % slots;
+        minute = idx * minuteStep;
       }
       setHandTransforms(hourHand, minuteHand, hourHit, minuteHit, hour, minute);
       if (onChange) onChange(hour, minute);
@@ -383,7 +413,7 @@
   }
 
   function showHint() {
-    if (mode === 'read') {
+    if (mode === 'read' || mode === 'textDigital') {
       els.hint.textContent = 'Tip: de grote wijzer wijst de minuten aan, de kleine het uur.';
 
     } else if (mode === 'set') {
@@ -397,6 +427,8 @@
         els.hint.textContent = `Tip: dit is een heel uur, de grote wijzer staat op 12.`;
       }
 
+    } else if (mode === 'set5') {
+      els.hint.textContent = `Tip: ${toDutchPhrase(current.hour, current.minute)} is ${current.hour}:${pad2(current.minute)}.`;
     } else { // calc
       const startText = `${current.startHour}:${pad2(current.startMinute)}`;
       const endText = `${current.hour}:${pad2(current.minute)}`;
@@ -416,8 +448,9 @@
     if (locked || !current) return;
 
     // Enkel in modus 'read' tellen de spinners; anders enkel de sleepbare klok
-    const readHour = (mode === 'read') ? answerHour : dragHour;
-    const readMinute = (mode === 'read') ? answerMinute : dragMinute;
+    const digitalMode = mode === 'read' || mode === 'textDigital';
+    const readHour = digitalMode ? answerHour : dragHour;
+    const readMinute = digitalMode ? answerMinute : dragMinute;
     const correct = (readHour === current.hour) && (readMinute === current.minute);
 
     if (correct) {
