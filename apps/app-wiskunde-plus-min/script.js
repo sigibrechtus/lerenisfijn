@@ -173,8 +173,8 @@
     let userAnswer;
     if (inputMode === "keyboard") {
       read = answerInput.value.trim();
-      if (!read.length || read.length > 3 || Array.from(read).some(char => char < "0" || char > "9")) {
-        feedback.textContent = "Typ eerst een antwoord van maximaal drie cijfers.";
+      if (!read.length || read.length > 4 || Array.from(read).some(char => char < "0" || char > "9")) {
+        feedback.textContent = "Typ eerst een antwoord van maximaal vier cijfers.";
         feedback.className = "feedback feedback--try";
         answerInput.focus();
         return;
@@ -630,7 +630,7 @@
 
   function recognizeNumber(allStrokes) {
     const groups = segment(allStrokes);
-    if (!groups.length || groups.length > 3) return null;
+    if (!groups.length || groups.length > 4) return null;
     let result = '';
     for (const g of groups) {
       const d = recognizeDigit(g);
