@@ -2,14 +2,25 @@
   'use strict';
   const levels=['','Vormen en kleuren','Getallenreeksen','Slimme patronen'];
   const symbols=['🔴','🔵','🟡','🟢','⭐','🔺','🟪','🔶'];
+  const simplePatterns=[[0,1],[0,1,2],[0,0,1],[0,1,1],[0,0,1,1]];
+  const advancedPatterns=[[0,0,0,1],[0,1,1,1],[0,0,0,1,1],[0,0,1,1,1],[0,0,0,1,1,1],[0,0,1,2],[0,1,1,2],[0,0,1,1,2,2]];
   function shuffle(values,rng){const a=[...values];for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
   function makeQuestion(level,rng=Math.random){
-    const int=(a,b)=>a+Math.floor(rng()*(b-a+1));let sequence,options,hint;
-    if(level===1){const palette=shuffle(symbols,rng),period=int(2,3);sequence=Array.from({length:7},(_,i)=>palette[i%period]);options=palette.slice(0,4);hint='Kijk welk groepje vormen zich steeds herhaalt.';}
+    const int=(a,b)=>a+Math.floor(rng()*(b-a+1));let sequence,options,hint,missing;
+    const shapeQuestion=level===1||(level===3&&rng()<.5);
+    if(shapeQuestion){
+      const palette=shuffle(symbols,rng),patterns=level===1?simplePatterns:advancedPatterns,pattern=patterns[int(0,patterns.length-1)],period=pattern.length;
+      // Show two repetitions plus one tile; keep the first repetition complete.
+      sequence=Array.from({length:period*2+1},(_,i)=>palette[pattern[i%period]]);
+      missing=int(period,sequence.length-1);
+      options=palette.slice(0,4);
+      hint='Kijk welk groepje vormen zich steeds herhaalt. Soms staan twee of drie dezelfde vormen naast elkaar.';
+    }
     else if(level===2){const step=int(1,5),down=rng()<.35,start=down?int(30,60):int(0,20);sequence=Array.from({length:6},(_,i)=>String(start+(down?-step:step)*i));hint='Tel hoeveel erbij komt of eraf gaat tussen twee getallen.';}
     else {const type=int(0,2),start=int(1,5),step=int(3,10);sequence=Array.from({length:6},(_,i)=>String(type===0?start+step*i:type===1?start*2**i:start+i*(i+1)/2));hint=type===0?'Zoek de vaste sprong tussen de getallen.':type===1?'Kijk of elk getal wordt verdubbeld.':'De sprongen worden telkens één groter.';}
-    const missing=int(3,sequence.length-1),answer=sequence[missing];
-    if(level!==1){const target=Number(answer),unique=new Set([answer]);for(const offset of shuffle([-stepSafe(level),-2,-1,1,2,3,5,10],rng)){const value=target+offset;if(value>=0)unique.add(String(value));if(unique.size===4)break;}options=[...unique];}
+    if(missing===undefined)missing=int(3,sequence.length-1);
+    const answer=sequence[missing];
+    if(!shapeQuestion){const target=Number(answer),unique=new Set([answer]);for(const offset of shuffle([-stepSafe(level),-2,-1,1,2,3,5,10],rng)){const value=target+offset;if(value>=0)unique.add(String(value));if(unique.size===4)break;}options=[...unique];}
     sequence[missing]=null;
     return {sequence,answer,options:shuffle(options,rng),hint};
   }
