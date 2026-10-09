@@ -144,8 +144,8 @@ select:focus, input:focus { outline: 3px solid rgba(28, 126, 214, .22); border-c
 .canvas-wrap {
   position: relative;
   width: 100%;
-  max-width: 440px;
-  height: 190px;
+  max-width: 520px;
+  height: 210px;
   margin: 0 auto;
   overflow: hidden;
   border: 4px solid #2563eb;
@@ -202,6 +202,7 @@ select:focus, input:focus { outline: 3px solid rgba(28, 126, 214, .22); border-c
   .answer-form { flex-direction: column; }
   .answer-form .button { width: 100%; }
   .operation-options, .input-options { gap: .35rem; }
-  .canvas-wrap { height: 170px; }
+  .canvas-wrap { height: 190px; }
   .question { margin: .9rem 0; }
 }
+
