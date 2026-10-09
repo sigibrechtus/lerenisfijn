@@ -23,3 +23,5 @@ Run node --test tests/moonlight-hollow.test.cjs and node --check games/moonlight
 
 This is a playable first release, not the full production scope in the design document. Multiple unique environment paintings, walkable character navigation, decorative inventory customization and optional parent-account synchronization remain future extensions. Educational effectiveness and unassisted usability must be established with children; automated checks do not demonstrate learning improvement.
 
+
+Live browser checks passed for all five introductory puzzles, world unlocks through the five-lantern festival, pattern dragging, French localization, separate profile progress and persistence after reload. Real iOS/Android touch interaction and offline-disconnection behavior remain device validation items.

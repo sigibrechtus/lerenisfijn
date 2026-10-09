@@ -44,7 +44,7 @@ const s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttrib
 const icons={bridge:'pumpkin',garden:'potion',library:'book',clock:'clock',lights:'lantern'};
 function show(name){view=name;['welcome','map','game'].forEach(id=>$(id).hidden=id!==name);$('village').hidden=name==='welcome';if(name!=='game')document.body.dataset.area='';}
 function localize(){
-document.documentElement.lang=state.prefs.lang;
+document.documentElement.lang=state.prefs.lang;$('profile-status').textContent='';
 const map={back:'back',village:'village',fullscreen:'full','settings-open':'settings','welcome-settings':'settings',eyebrow:'eyebrow','welcome-copy':'welcome','session-note':'session-note','map-kicker':'mapKicker','map-heading':'mapTitle','map-copy':'mapCopy','progress-open':'progress','settings-title':'settings','language-label':'language','profile-label':'profile','music-label':'music','effects-label':'effects','motion-label':'motion','nickname-label':'nickname','profile-add':'add',privacy:'privacy','progress-title':'progress','progress-note':'progressNote',hint:'hint',reset:'reset',check:'check',continue:'continue','travel-copy':'travel',skip:'skip'};
 Object.entries(map).forEach(([id,key])=>$(id).textContent=t(key==='session-note'?'session':key));
 $('start').textContent=t(profile().draft?'resume':'start');
@@ -135,7 +135,7 @@ const controls=el('div','clock-controls');[[t('hour')+' −',-60],[t('hour')+' +
 }
 if(q.area==='lights'&&q.kind==='pattern'){
 const row=el('div','pattern');
-q.sequence.forEach((v,i)=>{const cell=el('div','pattern-cell'+(i===q.missing?' missing':'')+(hints&&i<q.unit.length?' unit':''));if(i===q.missing){dropZone(cell,{type:'missing'});if(a===null)cell.textContent='?';else cell.append(icon(['moon','star','leaf'][a]));}else cell.append(icon(['moon','star','leaf'][v]));row.append(cell);});stage.append(row);
+q.sequence.forEach((v,i)=>{const cell=el('div','pattern-cell'+(i===q.missing?' missing':'')+(hints&&i<q.unit.length?' unit':''));cell.setAttribute('role','img');cell.setAttribute('aria-label',i===q.missing?(a===null?'?':L[state.prefs.lang].symbols[a]):L[state.prefs.lang].symbols[v]);if(i===q.missing){dropZone(cell,{type:'missing'});if(a===null)cell.textContent='?';else cell.append(icon(['moon','star','leaf'][a]));}else cell.append(icon(['moon','star','leaf'][v]));row.append(cell);});stage.append(row);
 const supply=el('div','supply');[0,1,2].forEach(v=>{const b=token(['moon','star','leaf'][v],L[state.prefs.lang].symbols[v],{type:'symbol',value:v},()=>applyDrop({type:'symbol',value:v},{type:'missing'}),a===v?'selected':'');b.setAttribute('aria-pressed',String(a===v));b.disabled=solved;supply.append(b);});stage.append(supply);
 }
 if(q.area==='lights'&&q.kind==='mirror'){
