@@ -32,3 +32,11 @@ Campaign tests cover 18,000 generated tasks across 30 quests, both languages and
 The cloud browser reports WebGL unavailable. Live 3D rendering/performance remains unverified there. Scene/puzzle construction is checked separately using Babylon NullEngine and actual canvas text textures; this is not visual proof.
 
 Release checks: 28 repository tests pass; 18,000 generated campaign tasks checked. Babylon NullEngine constructed the world and all 180 quest/language/difficulty combinations successfully (1,006 base scene meshes). NullEngine exercises scene logic and geometry, not GPU rendering. AI Music Maker returned insufficient credits; original synthesized music remains active. Animation Maker and Image to Video supplied motion guidance; no video-render API was exposed. The custom outdoor environment uses original procedural meshes, with no paid Meshy submission.
+
+## Complete audio release
+
+Eight original 16-bar instrumental music loops: menu, village, woods, garden, library, tower, castle and festival. Six ambient beds and thirty distinct Foley/magical effects. All files are rendered locally with deterministic original synthesis; `tools/render-moonlight-audio.py` reproduces them. The audio manifest records duration, tempo and provenance. No external music-generation account or samples are required.
+
+`audio.js` provides gesture-unlocked Web Audio playback, crossfaded regional music/ambience, separate buses and volume controls, master mute, narration ducking, stereo effects, rate-limited footsteps, bounded voices, background suspension and cached offline playback. Settings include previews for all tracks/effects. The compatibility game also uses the new soundtrack and effect bank.
+
+33 repository tests pass. All fourteen MP3 tracks decode and have finite bounded samples; all thirty WAV cues are validated for format, silence/clipping and quiet endings. Device speaker output and 3D spatial triggers require real-device validation.

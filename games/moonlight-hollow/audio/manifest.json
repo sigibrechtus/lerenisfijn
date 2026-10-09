@@ -1,0 +1,255 @@
+{
+  "version": 1,
+  "sampleRate": 22050,
+  "provenance": "Original compositions and deterministic procedural sound design; no third-party samples.",
+  "music": {
+    "menu": {
+      "file": "menu.mp3",
+      "duration": 51.892,
+      "loop": true,
+      "bpm": 74,
+      "bars": 16,
+      "instrument": "bell"
+    },
+    "village": {
+      "file": "village.mp3",
+      "duration": 49.231,
+      "loop": true,
+      "bpm": 78,
+      "bars": 16,
+      "instrument": "harp"
+    },
+    "woods": {
+      "file": "woods.mp3",
+      "duration": 54.857,
+      "loop": true,
+      "bpm": 70,
+      "bars": 16,
+      "instrument": "flute"
+    },
+    "garden": {
+      "file": "garden.mp3",
+      "duration": 46.829,
+      "loop": true,
+      "bpm": 82,
+      "bars": 16,
+      "instrument": "bell"
+    },
+    "library": {
+      "file": "library.mp3",
+      "duration": 56.471,
+      "loop": true,
+      "bpm": 68,
+      "bars": 16,
+      "instrument": "harp"
+    },
+    "tower": {
+      "file": "tower.mp3",
+      "duration": 48.0,
+      "loop": true,
+      "bpm": 80,
+      "bars": 16,
+      "instrument": "bell"
+    },
+    "castle": {
+      "file": "castle.mp3",
+      "duration": 58.182,
+      "loop": true,
+      "bpm": 66,
+      "bars": 16,
+      "instrument": "flute"
+    },
+    "festival": {
+      "file": "festival.mp3",
+      "duration": 43.636,
+      "loop": true,
+      "bpm": 88,
+      "bars": 16,
+      "instrument": "bell"
+    }
+  },
+  "ambience": {
+    "ambient-village": {
+      "file": "ambient-village.mp3",
+      "duration": 12.0,
+      "loop": true
+    },
+    "ambient-woods": {
+      "file": "ambient-woods.mp3",
+      "duration": 12.0,
+      "loop": true
+    },
+    "ambient-garden": {
+      "file": "ambient-garden.mp3",
+      "duration": 12.0,
+      "loop": true
+    },
+    "ambient-library": {
+      "file": "ambient-library.mp3",
+      "duration": 12.0,
+      "loop": true
+    },
+    "ambient-tower": {
+      "file": "ambient-tower.mp3",
+      "duration": 12.0,
+      "loop": true
+    },
+    "ambient-castle": {
+      "file": "ambient-castle.mp3",
+      "duration": 12.0,
+      "loop": true
+    }
+  },
+  "effects": {
+    "ui": {
+      "file": "ui.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "back": {
+      "file": "back.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "pickup": {
+      "file": "pickup.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "place": {
+      "file": "place.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "remove": {
+      "file": "remove.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "tile": {
+      "file": "tile.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "stone": {
+      "file": "stone.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "pour": {
+      "file": "pour.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "bubble": {
+      "file": "bubble.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "bottle": {
+      "file": "bottle.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "letter": {
+      "file": "letter.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "page": {
+      "file": "page.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "clock": {
+      "file": "clock.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "mirror": {
+      "file": "mirror.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "pattern": {
+      "file": "pattern.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "hint": {
+      "file": "hint.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "retry": {
+      "file": "retry.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "solve": {
+      "file": "solve.wav",
+      "duration": 0.95,
+      "loop": false
+    },
+    "lantern": {
+      "file": "lantern.wav",
+      "duration": 0.95,
+      "loop": false
+    },
+    "path": {
+      "file": "path.wav",
+      "duration": 1.5,
+      "loop": false
+    },
+    "chapter": {
+      "file": "chapter.wav",
+      "duration": 2.8,
+      "loop": false
+    },
+    "festival": {
+      "file": "festival.wav",
+      "duration": 2.8,
+      "loop": false
+    },
+    "train": {
+      "file": "train.wav",
+      "duration": 1.5,
+      "loop": false
+    },
+    "ghost": {
+      "file": "ghost.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "reset": {
+      "file": "reset.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "riddle": {
+      "file": "riddle.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "leaf": {
+      "file": "leaf.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "footstep-stone": {
+      "file": "footstep-stone.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "footstep-leaves": {
+      "file": "footstep-leaves.wav",
+      "duration": 0.45,
+      "loop": false
+    },
+    "footstep-wood": {
+      "file": "footstep-wood.wav",
+      "duration": 0.45,
+      "loop": false
+    }
+  }
+}
