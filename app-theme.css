@@ -228,11 +228,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 [hidden] { display: none !important; }
 
-/* Compact sound control and feedback shared by the exercise apps. */
-.app-sound-button{width:42px;min-width:42px;padding:.5rem;font-size:1.1rem}
-.app-sound-button{width:auto;min-width:44px;font-size:.85rem;white-space:nowrap}
-.lf-sound-tools{max-width:860px;margin:18px auto;padding:14px 18px;border-radius:14px;background:var(--lf-card);box-shadow:var(--lf-shadow);font-size:.9rem}
-.lf-sound-tools summary{cursor:pointer;font-weight:bold;color:var(--lf-primary-dark)}.lf-sound-tests{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.lf-sound-tests button{border:0;border-radius:999px;padding:9px 16px;background:var(--lf-primary);color:#fff;font:700 .9rem var(--lf-font);cursor:pointer}.lf-sound-tools label{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.lf-sound-tools input[type=range]{width:180px;padding:0;accent-color:var(--lf-primary)}.lf-sound-status{margin:10px 0 0;color:var(--lf-muted)}
+/* Sound controls live inside each app's main settings area. */
+.lf-sound-tools{box-sizing:border-box;width:100%;max-width:100%;flex:0 0 100%;margin:14px 0 0;padding:12px 16px;border-radius:14px;background:#fff8ec;box-shadow:var(--lf-shadow);font-size:.9rem}
+.lf-sound-tools summary{cursor:pointer;font-weight:bold;color:var(--lf-primary-dark)}
+.lf-sound-toggle{min-height:36px;margin:12px 0 2px;padding:7px 12px;border:1px solid #ffd6c3;border-radius:999px;background:#fff;color:var(--lf-primary-dark);font:700 .9rem var(--lf-font);cursor:pointer}
+.lf-sound-toggle[aria-pressed="false"]{background:#f1f3f5;color:#495057}
+.lf-sound-tests{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.lf-sound-tests button{border:0;border-radius:999px;padding:9px 16px;background:var(--lf-primary);color:#fff;font:700 .9rem var(--lf-font);cursor:pointer}
+.lf-sound-tools label{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.lf-sound-tools input[type=range]{width:180px;padding:0;accent-color:var(--lf-primary)}
+.lf-sound-status{margin:10px 0 0;color:var(--lf-muted)}
 .app-header-layout{grid-template-columns:auto minmax(0,1fr) auto;box-sizing:border-box}
 .app-header-title{min-width:0}
 @media(max-width:800px){.app-header-layout{grid-template-columns:minmax(0,1fr) auto}.app-header-layout>.app-header-title{grid-column:1/-1;grid-row:2}.app-header-actions,.app-header-metrics{grid-column:2;flex-wrap:wrap;justify-content:flex-end}}

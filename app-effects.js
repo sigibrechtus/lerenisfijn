@@ -3,12 +3,13 @@
   const KEY='lerenisfijn-sound';
   let enabled=true,volume=.8,request=0;
   try {enabled=localStorage.getItem(KEY)!=='off';const saved=localStorage.getItem(KEY+'-volume');if(saved!==null)volume=Math.max(.1,Math.min(1,Number(saved)||.8));} catch (_) {}
-  const buttons=[];
   const scriptURL=document.currentScript?.src||new URL('app-effects.js',document.baseURI).href;
   const sources=Object.fromEntries(['tap','correct','incorrect','complete','back'].map(kind=>[kind,new URL('sounds/'+kind+'.wav',scriptURL).href]));
   const player=document.createElement('audio');player.id='lf-effects-audio';player.preload='auto';player.src=sources.tap;player.hidden=true;player.setAttribute('aria-hidden','true');player.volume=volume;document.body.append(player);
   const tools=document.createElement('details');tools.className='lf-sound-tools';
-  const summary=document.createElement('summary');summary.textContent='Geluid testen en volume';tools.append(summary);
+  const summary=document.createElement('summary');summary.textContent='Geluid';tools.append(summary);
+  const toggle=document.createElement('button');toggle.type='button';toggle.className='lf-sound-toggle';
+  toggle.addEventListener('click',()=>{setEnabled(!enabled);if(enabled)play('correct',{test:true});});
   const group=document.createElement('div');group.className='lf-sound-tests';
   const status=document.createElement('p');status.className='lf-sound-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   const volumeLabel=document.createElement('label');volumeLabel.textContent='Volume geluidseffecten';
@@ -27,7 +28,9 @@
   }
   player.addEventListener('ended',()=>{player.dataset.playback='ended';});
   for(const [kind,label] of [['correct','Test goed'],['incorrect','Test fout'],['back','Test terug']]){const button=document.createElement('button');button.type='button';button.textContent=label;button.addEventListener('click',()=>{setEnabled(true);play(kind,{test:true});});group.append(button);}
-  tools.append(group,volumeLabel,status);document.body.append(tools);
+  tools.append(toggle,group,volumeLabel,status);
+  const settingsRoot=document.querySelector('#screen-settings .settings, #screen-settings, #instellingen, #app-settings, #exercise-settings, #settings, #options');
+  (settingsRoot||document.body).append(tools);
   function feedback(kind,target){
     play(kind);
     const element=typeof target==='string'?document.querySelector(target):target;
@@ -39,15 +42,7 @@
       document.body.append(burst);setTimeout(()=>burst.remove(),1000);
     }
   }
-  function refresh(){buttons.forEach(button=>{button.textContent=enabled?'🔊 Geluid':'🔇 Stil';button.setAttribute('aria-pressed',String(enabled));button.setAttribute('aria-label',enabled?'Geluid uitzetten':'Geluid aanzetten');button.title=enabled?'Geluid aan':'Geluid uit';});}
-  document.querySelectorAll('.app-header-layout').forEach(header=>{
-    let actions=header.querySelector(':scope > .app-header-actions, :scope > .app-header-metrics');
-    if(!actions){actions=document.createElement('div');actions.className='app-header-actions';const existing=header.querySelector(':scope > .app-settings-button, :scope > .score-badge, :scope > .score-box');if(existing)actions.append(existing);header.append(actions);}
-    const button=document.createElement('button');button.type='button';button.className='app-settings-button app-sound-button';
-    button.addEventListener('click',()=>{setEnabled(!enabled);if(enabled)play('correct',{test:true});});
-    button.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' ')event.stopPropagation();});
-    actions.append(button);buttons.push(button);
-  });
+  function refresh(){toggle.textContent=enabled?'🔊 Geluid aan':'🔇 Geluid uit';toggle.setAttribute('aria-pressed',String(enabled));toggle.setAttribute('aria-label',enabled?'Geluid uitzetten':'Geluid aanzetten');}
   refresh();
   const isBack=control=>control.classList.contains('app-home-link')||/^(←|terug|overzicht|startscherm)/i.test(control.textContent.trim());
   // A click is activated after a touch is released. Starting media on touch

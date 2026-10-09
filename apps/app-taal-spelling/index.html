@@ -6,12 +6,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>OLV SGR L2 - Taal - Spelling - Themadictee 1 – Leren is fijn</title>
   <link rel="stylesheet" href="styles.css?v=2">
-  <link rel="stylesheet" href="../../app-theme.css?v=14">
+  <link rel="stylesheet" href="../../app-theme.css?v=15">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script defer src="../../supabase-client.js"></script>
-<script defer src="../../app-effects.js?v=3"></script>
+<script defer src="../../app-effects.js?v=4"></script>
 <script defer src="word-lists.js?v=1"></script>
-<script defer src="script.js?v=25"></script>
+<script defer src="script.js?v=26"></script>
 </head>
 <body>
 
@@ -102,11 +102,11 @@
 
       <section class="word-library" aria-labelledby="word-library-heading">
         <h3 id="word-library-heading">Woordenbibliotheek</h3>
-        <p>Voor Plantyn zijn er per officieel thema eigen, gegenereerde oefenwoorden. Bij de eerste twee thema's van leerjaar 2 en 3 sluiten de spellingaandachtspunten aan bij de openbare voorbeeldinhoudsopgaven; de overige accenten zijn herkenbaar als inschattingen. Het zijn geen officiële woordenlijsten.</p>
+        <p>Voor de thema's die in de previews zichtbaar zijn, zijn er meerdere kleine, eigen oefensets per lesfocus. De focus en het thema zijn naast de inhoudsopgaven gecontroleerd; de woorden zelf zijn nieuwe voorbeelden. Andere Plantyn-thema's hebben een thematische voorbeeldset met een herkenbaar vermelde inschatting, geen officiële woordenlijst.</p>
         <div class="library-filters">
           <label>Methode / bronlinks<select id="library-method"><option value="eigen">Eigen oefensets</option><option value="plantyn">Plantyn · De Taalkanjers</option><option value="vanin">VAN IN · Tijd voor Taal accent</option><option value="talent">VAN IN · TALENT</option></select></label>
           <label>Leerjaar<select id="library-grade"><option value="1">1e leerjaar</option><option value="2">2e leerjaar</option><option value="3">3e leerjaar</option><option value="4">4e leerjaar</option><option value="5">5e leerjaar</option><option value="6">6e leerjaar</option></select></label>
-          <label>Woordsoort<select id="library-kind"><option value="all">Alle woorden</option><option value="woordenschat">Woordenschat</option><option value="bijwoorden">Bijwoorden en uitdrukkingen</option></select></label>
+          <label>Woordsoort<select id="library-kind"><option value="all">Alle sets</option><option value="woordenschat">Woordenschat</option><option value="bijwoorden">Bijwoorden en uitdrukkingen</option><option value="zinnen">Zinnen met leestekens</option></select></label>
           <label>Thema<select id="library-theme" disabled><option>Bibliotheek laden…</option></select></label>
         </div>
         <button id="btn-load-word-set" class="btn" type="button" disabled>Laad deze oefenset</button>
