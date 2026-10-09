@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ff7a45">
+  <title>Brug naar 10 – Leren is fijn</title>
+  <link rel="stylesheet" href="../../learning-games.css?v=1">
+  <link rel="stylesheet" href="../../app-theme.css?v=15">
+  <link rel="stylesheet" href="style.css?v=1">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
+  <script defer src="../../supabase-client.js"></script>
+  <script defer src="../../app-effects.js?v=4"></script>
+  <script defer src="game.js?v=1"></script>
+  <script defer src="script.js?v=1"></script>
+  <script defer src="../../learning-round.js?v=2"></script>
+</head>
+<body>
+  <header class="topbar app-header-layout">
+    <a class="app-home-link" href="../../index.html">← Overzicht</a>
+    <div class="app-header-title"><h1>Brug naar 10</h1><p>L2 · Optellen over het tiental</p></div>
+    <div class="app-header-actions">
+      <button id="settings-button" class="app-settings-button" type="button" aria-expanded="false" aria-controls="settings">Instellingen</button>
+      <div class="score-badge">Score: <span id="score">0</span> / 10</div>
+    </div>
+  </header>
+  <main>
+    <section id="settings" class="panel" hidden>
+      <h2>Instellingen</h2>
+      <div class="settings-form">
+        <label for="level">Kies een niveau</label>
+        <select id="level">
+          <option value="1">1 · Kleur en splits</option>
+          <option value="2">2 · Splits zonder hokjes</option>
+          <option value="3">3 · Reken vlot</option>
+        </select>
+        <button id="restart" type="button">Nieuwe reeks</button>
+      </div>
+      <p>Na minstens 8 van de 10 antwoorden goed in één keer ga je een niveau hoger. Je kunt ook zelf een niveau kiezen.</p>
+    </section>
+    <section id="quiz" class="panel">
+      <div class="round-info"><strong id="level-name"></strong><span id="progress"></span></div>
+      <progress id="round-progress" value="0" max="10" aria-label="Afgeronde vragen"></progress>
+      <h2>Maak eerst 10!</h2>
+      <form id="answer-form" novalidate autocomplete="off">
+        <div id="game-area">
+          <p id="instructions" class="instructions"></p>
+          <div id="coloring">
+            <p class="legend"><span><i class="blue-swatch" aria-hidden="true"></i><span id="blue-label"></span></span><span><i class="orange-swatch" aria-hidden="true"></i><span id="orange-label"></span></span></p>
+            <div id="twenty-frame" class="twenty-frame" role="group" aria-label="Twintig hokjes: tien bovenaan en tien onderaan"></div>
+            <div class="color-tools"><span id="color-count" role="status" aria-live="polite"></span><button id="clear-colors" class="quiet" type="button">Wis oranje hokjes</button></div>
+          </div>
+          <p id="sum" class="sum" aria-label="De oefening"></p>
+          <div id="splitting" class="splitting">
+            <p class="split-caption">Splits <strong id="split-number"></strong></p>
+            <svg class="split-fork" viewBox="0 0 200 40" aria-hidden="true"><path d="M100 2 L45 38 M100 2 L155 38" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+            <div class="split-fields">
+              <label><span>Eerst tot 10</span><input id="fill" class="number-input" type="text" inputmode="numeric" maxlength="2" aria-label="Eerste deel: aanvullen tot 10"></label>
+              <label><span>Wat overblijft</span><input id="rest" class="number-input" type="text" inputmode="numeric" maxlength="2" aria-label="Tweede deel: wat overblijft"></label>
+            </div>
+            <div class="bridge-steps" aria-label="Rekenstappen"><p><span id="step-a"></span> + <span id="step-fill">?</span> = 10</p><p>10 + <span id="step-rest">?</span> = ?</p></div>
+          </div>
+          <label class="answer-label" for="answer">Wat is de uitkomst?</label>
+          <input id="answer" class="number-input answer-input" type="text" inputmode="numeric" maxlength="2" aria-describedby="feedback">
+        </div>
+        <div class="game-actions"><button id="check" type="submit">Controleer</button></div>
+      </form>
+      <p id="feedback" role="status" aria-live="polite"></p>
+      <p class="note">Ingelogd? Je afgeronde vragen worden bewaard in Mijn voortgang.</p>
+    </section>
+    <section id="summary" class="panel" hidden>
+      <div class="star" aria-hidden="true">★</div><h2>Reeks klaar!</h2><p id="summary-text"></p><button id="continue" type="button">Nog een reeks</button>
+    </section>
+  </main>
+</body>
+</html>
