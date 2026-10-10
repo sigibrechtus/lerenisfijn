@@ -4,7 +4,7 @@ const base=path.join(__dirname,'../games/moonlight-hollow'),B=require(path.join(
 global.OffscreenCanvas=class{constructor(w,h){return createCanvas(w,h)}};
 global.window=global;global.matchMedia=()=>({matches:true});global.devicePixelRatio=3;
 global.addEventListener=()=>{};global.removeEventListener=()=>{};global.document={hidden:false,createElement:()=>createCanvas(512,512),addEventListener(){},removeEventListener(){}};global.BABYLON=B;
-for(const name of ['engine','camera','campaign','controls','graphics','railway','atmosphere'])require(path.join(base,name+'.js'));
+for(const name of ['engine','camera','campaign','controls','graphics','landscape','railway','atmosphere','puzzle-actions'])require(path.join(base,name+'.js'));
 const source=fs.readFileSync(path.join(base,'world.js'),'utf8').replace("if(!B||!B.Engine.isSupported())throw Error('WebGL');",'').replace("new B.Engine(canvas,true,{preserveDrawingBuffer:false,stencil:true,powerPreference:'high-performance'})","new B.NullEngine({renderWidth:390,renderHeight:844})").replaceAll('camera.attachControl(canvas,true);','').replace('engine.runRenderLoop(()=>{','engine.runRenderLoop=fn=>{global.frame=fn;};engine.runRenderLoop(()=>{');vm.runInThisContext(source);
 class Target{
  constructor(width=390,height=844){this.clientWidth=width;this.clientHeight=height;this.events={};this.captured=new Set();this.style={};this.classList={add(){},remove(){}};}
@@ -63,30 +63,38 @@ const beamSegments=world.scene.meshes.filter(m=>m.name==='light-beam'&&m.parent?
 world.camera.getViewMatrix(true);const opticTransform=world.camera.getViewMatrix().multiply(world.camera.getProjectionMatrix(true)),opticViewport=world.camera.viewport.toGlobal(390,844);
 for(const mesh of world.scene.getTransformNodeByName('puzzle').getChildMeshes()){mesh.computeWorldMatrix(true);for(const corner of mesh.getBoundingInfo().boundingBox.vectorsWorld){const p=B.Vector3.Project(corner,B.Matrix.Identity(),opticTransform,opticViewport);assert(p.x>=0&&p.x<=390&&p.y>=0&&p.y<=844&&p.z>0&&p.z<1,'advanced optics and tray remain fully framed');}}
 world.leave();
-// Train motion, onboard camera and passenger attachment use the real world implementation.
-const train=world.scene.getTransformNodeByName('moon-express'),lumi=world.scene.getTransformNodeByName('Lumi');
-world.start({x:0,z:-3});assert.equal(world.ride(),false,'cannot board from across the village');
-world.start({x:8,z:0});const oldOrbit={alpha:world.camera.alpha,beta:world.camera.beta,radius:world.camera.radius};
-assert.equal(world.ride(),true);assert.equal(world.ride(),false,'double boarding cannot restart travel');
-assert.equal(world.scene.activeCamera.name,'train-first-person');assert.equal(world.scene.activeCamera.parent,train);assert.equal(world.hero.parent,train);assert.equal(lumi.parent,train);assert.equal(world.hero.isEnabled(),false);
-for(let i=0;i<72;i++)global.frame();assert(Math.abs(train.position.z)<1e-6,'boarding occurs before departure');
-const passengerLocal=world.hero.position.clone(),lumiLocal=lumi.position.clone();world.setStick(1,1);
-for(let i=0;i<300;i++){global.frame();assert(world.hero.position.equals(passengerLocal));assert(lumi.position.equals(lumiLocal));}
-assert(train.position.z>0&&train.position.z<28);world.hero.computeWorldMatrix(true);assert(Math.abs(world.hero.getAbsolutePosition().z-train.position.z)<1e-6,'passenger moves with carriage');
-const pausedZ=train.position.z;blocked=true;for(let i=0;i<60;i++)global.frame();assert.equal(train.position.z,pausedZ);blocked=false;
-const onboard=world.scene.activeCamera,yaw=onboard.rotation.y;canvas.emit('pointerdown',8,100,100);canvas.emit('pointermove',8,160,100);canvas.emit('pointerup',8,160,100);assert.notEqual(onboard.rotation.y,yaw,'swiping looks around onboard');
-for(let i=0;i<600;i++)global.frame();assert.equal(train.position.z,28);assert(Math.abs(world.scene.getMeshByName('wheel').metadata.roll+28/.32)<1e-6,'wheel rotation matches rail distance');assert.equal(world.hero.parent,null);assert(world.hero.isEnabled());assert.equal(world.scene.activeCamera,world.camera);assert.equal(world.hero.position.x,8);assert.equal(world.hero.position.z,28);assert.equal(world.camera.alpha,oldOrbit.alpha);assert.equal(world.camera.beta,oldOrbit.beta);assert.equal(world.camera.radius,oldOrbit.radius);
-for(let i=0;i<60;i++)global.frame();assert.equal(train.position.z,28,'train remains parked after arrival');
-assert.equal(world.ride(),true,'return ride boards at the destination');assert.equal(train.rotation.y,Math.PI);assert(world.scene.activeCamera.position.x>0,'return boarding starts at the same west platform');
-for(let i=0;i<900;i++)global.frame();assert.equal(train.position.z,0);assert.equal(world.hero.position.z,0);assert.equal(world.scene.activeCamera,world.camera);
-assert.equal(world.ride(),true);for(let i=0;i<150;i++)global.frame();world.teleport('garden');assert.equal(world.hero.parent,null);assert(world.hero.isEnabled());assert.equal(world.scene.activeCamera,world.camera);assert.equal(world.hero.position.x,world.sites.garden.x);assert.equal(train.position.z,28);
-world.start({x:8,z:28});assert.equal(world.ride(),true);world.start({x:0,z:-3},0);assert.equal(world.hero.parent,null);assert.equal(world.hero.position.z,-3);assert.equal(train.position.z,0);assert.equal(world.scene.activeCamera,world.camera);world.start({x:8,z:28},1);assert.equal(train.position.z,28);assert.equal(world.ride(),true,'saved station supports a return trip after reload');world.start({x:0,z:-3},0);
+// Curved route integration: calls, boarding, parented passengers, arrival, return and restoration.
+const R=MoonRailway,train=world.scene.getTransformNodeByName('moon-express'),lumi=world.scene.getTransformNodeByName('Lumi');
+world.engine.getDeltaTime=()=>1000/30;
+function stepUntilParked(){for(let i=0;i<2500&&world.railState().active;i++)global.frame();assert(!world.railState().active);}
+function atStation(i,park=i){const p=R.platform(i);world.start(p,park);global.frame();return p;}
+world.start({x:0,z:-3},0);assert.equal(world.ride(),false,'cannot board from across the village');
+for(let station=0;station<6;station++){
+ const source=(station+3)%6,p=atStation(station,source),position=world.hero.position.clone();assert(world.callTrain());assert.equal(world.callTrain(),false);assert.equal(world.ride(),false);for(let i=0;i<30;i++)global.frame();assert(world.railState().travelled>0);assert(world.hero.position.equals(position));assert.equal(world.hero.parent,null);assert.equal(world.scene.activeCamera,world.camera);
+ const pausedPosition=train.position.clone();blocked=true;for(let i=0;i<20;i++)global.frame();assert(train.position.equals(pausedPosition));blocked=false;stepUntilParked();assert.equal(world.railState().station,station);assert(Math.hypot(train.position.x-R.stations[station].x,train.position.z-R.stations[station].z)<1e-7);
+ const target=(station+1)%6,oldOrbit={alpha:world.camera.alpha,beta:world.camera.beta,radius:world.camera.radius},wheelBefore=world.scene.getMeshByName('wheel').metadata.roll;
+ assert(world.ride(target));assert.equal(world.ride(target),false);assert.equal(world.hero.parent,train);assert.equal(lumi.parent,train);assert.equal(world.scene.activeCamera.parent,train);assert.equal(world.hero.isEnabled(),false);
+ for(let i=0;i<36;i++)global.frame();assert(Math.hypot(train.position.x-R.stations[station].x,train.position.z-R.stations[station].z)<1e-6,'boarding precedes movement');
+ const heroLocal=world.hero.position.clone(),lumiLocal=lumi.position.clone();world.setStick(1,1);let turns=0,lastHeading=train.rotation.y;
+ for(let i=0;i<90;i++){global.frame();assert(world.hero.position.equals(heroLocal));assert(lumi.position.equals(lumiLocal));world.hero.computeWorldMatrix(true);const passengerError=Math.hypot(world.hero.getAbsolutePosition().x-train.position.x,world.hero.getAbsolutePosition().z-train.position.z);assert(passengerError<1e-5,'passenger matrix error '+passengerError);turns+=Math.abs(Math.atan2(Math.sin(train.rotation.y-lastHeading),Math.cos(train.rotation.y-lastHeading)));lastHeading=train.rotation.y;}
+ if(station!==3)assert(turns>.005,'carriage follows the curve');
+ const onboard=world.scene.activeCamera,yaw=onboard.rotation.y;canvas.emit('pointerdown',8,100,100);canvas.emit('pointermove',8,160,100);canvas.emit('pointerup',8,160,100);assert.notEqual(onboard.rotation.y,yaw);
+ stepUntilParked();const state=world.railState(),destination=R.platform(target);assert.equal(state.station,target);assert.equal(state.speed,0);assert(Math.abs(world.scene.getMeshByName('wheel').metadata.roll-wheelBefore+state.travelled/.32)<1e-5);assert.equal(world.hero.parent,null);assert(world.hero.isEnabled());assert.equal(world.scene.activeCamera,world.camera);assert(Math.hypot(world.hero.position.x-destination.x,world.hero.position.z-destination.z)<1e-6);assert.equal(world.camera.alpha,oldOrbit.alpha);assert.equal(world.camera.beta,oldOrbit.beta);assert.equal(world.camera.radius,oldOrbit.radius);for(let i=0;i<3;i++)global.frame();assert.equal(world.railState().station,target);
+}
+// Choosing a previous station reverses direction; interruptions safely detach passengers.
+atStation(1);assert(world.ride(0));assert.equal(world.railState().direction,-1);stepUntilParked();assert.equal(world.railState().station,0);
+assert(world.ride(1));for(let i=0;i<90;i++)global.frame();world.teleport('garden');assert.equal(world.hero.parent,null);assert(world.hero.isEnabled());assert.equal(world.scene.activeCamera,world.camera);assert.equal(world.hero.position.x,world.sites.garden.x);
+atStation(5);assert.equal(world.railState().station,5);assert(world.ride(0));world.start({x:0,z:-3},0);assert.equal(world.hero.parent,null);assert.equal(world.scene.activeCamera,world.camera);assert.equal(world.railState().station,0);
+// Terrain and the carriage route agree with the visual ground and avoid buildings/trees.
+const h=MoonLandscape.makeHeight(R.track.samples);world.start({x:95,z:12},0);assert.equal(world.hero.position.y,h(95,12));const ground=world.scene.getMeshByName('earth'),positions=ground.getVerticesData(B.VertexBuffer.PositionKind);assert(Math.max(...positions.filter((v,i)=>i%3===1))>1);assert(Math.min(...positions.filter((v,i)=>i%3===1))<-2);
+let blockers=0;for(const m of world.scene.meshes.filter(m=>m.checkCollisions)){m.computeWorldMatrix(true);const box=m.getBoundingInfo().boundingBox;for(const p of R.track.samples)if(p.x>box.minimumWorld.x-1.4&&p.x<box.maximumWorld.x+1.4&&p.z>box.minimumWorld.z-2.2&&p.z<box.maximumWorld.z+2.2){console.log('rail blocker',m.name,m.position.asArray(),p);blockers++;break;}}assert.equal(blockers,0,'track is clear of static collision geometry');
+world.engine.getDeltaTime=()=>1000/60;
 assert(world.scene.getMaterialByName('wood').diffuseTexture);assert(world.scene.getMeshByName('twilight-sky'));assert(world.scene.imageProcessingConfiguration.toneMappingEnabled);world.quality('low');assert.equal(world.scene.effectLayers.find(v=>v.name==='lantern-glow').isEnabled,false);world.quality('high');assert.equal(world.scene.effectLayers.find(v=>v.name==='lantern-glow').isEnabled,true);
 const moon=world.scene.getMeshByName('moon'),sun=world.scene.getMeshByName('sun');assert(!moon.isWorldMatrixFrozen&&!sun.isWorldMatrixFrozen);
 const beforeSun=sun.position.clone();api.prefs=()=>({motion:false});for(let i=0;i<90;i++)global.frame();assert(B.Vector3.Distance(sun.position,beforeSun)>.01);
 assert(world.scene.getMeshByName('wind-leaf').isEnabled());const meshCount=world.scene.meshes.length;world.setStick(.3,0);for(let i=0;i<90;i++)global.frame();assert(world.scene.meshes.some(m=>m.name==='walking-dust'&&m.isEnabled()));assert.equal(world.scene.meshes.length,meshCount,'movement reuses its pool');world.resetInput();
 blocked=true;const pausedSun=sun.position.clone();for(let i=0;i<20;i++)global.frame();assert.equal(B.Vector3.Distance(sun.position,pausedSun),0);blocked=false;
 world.enter(q,MoonCampaign.initial(q));global.frame();assert.equal(world.scene.fogDensity,0);assert.equal(world.scene.getLightByName('moonwash').intensity,.75);assert(!world.scene.getMeshByName('wind-leaf').isEnabled());world.leave();global.frame();assert(world.scene.fogDensity>.002);
-world.start({x:8,z:0},0);assert(world.ride());for(let i=0;i<150;i++)global.frame();assert(world.scene.meshes.some(m=>m.name==='train-mist'&&m.isEnabled()));world.start({x:0,z:-3},0);
+atStation(0);assert(world.ride());for(let i=0;i<150;i++)global.frame();assert(world.scene.meshes.some(m=>m.name==='train-mist'&&m.isEnabled()));world.start({x:0,z:-3},0);
 api.prefs=()=>({motion:true});global.frame();assert(!world.scene.getMeshByName('wind-leaf').isEnabled());assert(!world.scene.getMeshByName('walking-dust').isEnabled());assert(!world.scene.getMeshByName('distant-lightning').isEnabled());world.stop();
-console.log(JSON.stringify({proportionalMovement:true,dragDoesNotWalk:true,pinchBounds:true,puzzleViewRestored:true,materialsAndQualityTiers:true,clockOrientationAndSelection:true,trainRideAndPassengers:true,mirrorSurfaceAndInventory:true}));
+console.log(JSON.stringify({proportionalMovement:true,dragDoesNotWalk:true,pinchBounds:true,puzzleViewRestored:true,materialsAndQualityTiers:true,clockOrientationAndSelection:true,trainRideAndPassengers:true,mirrorSurfaceAndInventory:true,sixStationCallsAndRides:true,curvedTrackClear:true,terrainFollow:true}));

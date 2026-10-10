@@ -4,7 +4,7 @@ const TRACKS=['menu','village','woods','garden','library','tower','castle','fest
 const EFFECTS=['ui','back','pickup','place','remove','tile','stone','pour','bubble','bottle','letter','page','clock','mirror','pattern','hint','retry','solve','lantern','path','chapter','festival','train','ghost','reset','riddle','leaf','footstep-stone','footstep-leaves','footstep-wood','thunder'];
 const AREAS={bridge:'woods',garden:'garden',library:'library',clock:'tower',lights:'castle'};
 const SITES={bridge:[-21,-13],garden:[19,-13],library:[-22,20],clock:[20,21],lights:[0,43]};
-function environment(x,z,forced=null){if(forced&&AREAS[forced])return AREAS[forced];let area='village',best=16;for(const [key,p]of Object.entries(SITES)){const d=Math.hypot(x-p[0],z-p[1]);if(d<best){best=d;area=AREAS[key];}}return area;}
+function environment(x,z,forced=null){if(forced&&AREAS[forced])return AREAS[forced];let area='village',best=root.MoonLandscape?22:16;const sites=root.MoonLandscape?Object.fromEntries(Object.entries(root.MoonLandscape.sites).map(([k,p])=>[k,[p.x,p.z]])):SITES;for(const [key,p]of Object.entries(sites)){const d=Math.hypot(x-p[0],z-p[1]);if(d<best){best=d;area=AREAS[key];}}return area;}
 function volume(p,key){return p.muted?0:Math.max(0,Math.min(100,Number(p[key])||0))/100;}
 function create(config){let ctx=null,musicBus,effectsBus,ambienceBus,master,compressor,analyser,unlocked=false,paused=false,desired='menu',ambientDesired='village',current=null,ambient=null,musicRequest=0,ambientRequest=0,effectRequest=0,loadingMusic=null,loadingAmbient=null,duck=1,previewUntil=0,festivalLocked=false,last={};const buffers=new Map(),pending=new Map(),voices=new Set(),loops=new Set();
 const report=(msg,detail)=>config.status?.(msg,detail);

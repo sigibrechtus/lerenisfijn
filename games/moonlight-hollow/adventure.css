@@ -32,3 +32,9 @@
 .train-mode .ride:disabled{opacity:1;color:#ffe6ae;cursor:default}
 
 .world-weather{position:absolute;left:1rem;bottom:6rem;padding:.4rem .7rem;font-size:.75rem;pointer-events:none;color:#fff0d2}body.puzzle-mode .world-weather{display:none}@media(max-width:650px){.world-weather{bottom:11rem;left:.7rem}}
+
+.call-train{position:fixed;right:28px;bottom:82px;font-size:12px}.puzzle-mode .call-train{display:none}@media(max-width:650px){.call-train{right:12px;bottom:110px;max-width:55vw}}
+
+.train-destination{position:fixed;right:28px;bottom:140px;display:flex;flex-direction:column;gap:.25rem;padding:.6rem;background:#142637ed;border:1px solid #a1c4d43d;border-radius:14px;font-size:12px;max-width:260px}.train-destination select{font-size:12px}.puzzle-mode .train-destination{display:none}@media(max-width:650px){.train-destination{right:12px;bottom:170px;max-width:55vw}}
+
+.station-mode .movement-help{display:none}.station-mode .interact{bottom:235px}@media(max-width:650px){.station-mode .interact{bottom:270px}}
