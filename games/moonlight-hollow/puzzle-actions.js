@@ -1,9 +1,10 @@
 /* Shared accessible exercise actions. Rendering and DOM use the same route rules. */
 (function(root){'use strict';
-function routePosition(answer){let x=0,y=0;for(const c of answer){if(c==='E')x++;if(c==='N')y++;}return{x,y};}
-function routeStep(q,answer,direction){if(typeof answer!=='string'||!['E','N'].includes(direction))return answer;const p=routePosition(answer);if(answer.length>=q.moves||(direction==='E'?p.x>=2:p.y>=2))return answer;return answer+direction;}
+const routeDirections={E:{x:1,y:0},N:{x:0,y:1},W:{x:-1,y:0},S:{x:0,y:-1}};
+function routePosition(answer){let x=0,y=0;for(const c of answer){const d=routeDirections[c];if(d){x+=d.x;y+=d.y;}}return{x,y};}
+function routeStep(q,answer,direction){if(typeof answer!=='string'||!Object.hasOwn(routeDirections,direction))return answer;const p=routePosition(answer),d=routeDirections[direction],x=p.x+d.x,y=p.y+d.y;if(x<0||x>2||y<0||y>2)return answer;return answer+direction;}
 function actions(q,a,selected=0,lang='nl'){const fr=lang==='fr',list=[],add=(label,next,disabled=false)=>list.push({label,next,disabled}),choose=tool=>({tool});
- if(q.type==='route'){const p=routePosition(a);add(fr?'→ Droite':'→ Rechts',routeStep(q,a,'E'),a.length>=q.moves||p.x>=2);add(fr?'↑ Haut':'↑ Omhoog',routeStep(q,a,'N'),a.length>=q.moves||p.y>=2);add(fr?'↶ Annuler le pas':'↶ Stap terug',a.slice(0,-1),!a.length);add(fr?'Vider':'Maak leeg','',!a.length);}
+ if(q.type==='route'){for(const [direction,label]of [['N',fr?'↑ Haut':'↑ Omhoog'],['S',fr?'↓ Bas':'↓ Omlaag'],['E',fr?'→ Droite':'→ Rechts'],['W',fr?'← Gauche':'← Links']]){const next=routeStep(q,a,direction);add(label,next,next===a);}add(fr?'↶ Annuler le pas':'↶ Stap terug',a.slice(0,-1),!a.length);add(fr?'Vider':'Maak leeg','',!a.length);}
  if(q.type==='groups')q.targets.forEach((n,i)=>{const more=[...a],less=[...a];more[i]++;less[i]--;add((fr?'Panier ':'Mand ')+(i+1)+' +',more,a.reduce((s,n)=>s+n,0)>=q.total);add((fr?'Panier ':'Mand ')+(i+1)+' −',less,a[i]<=(i===0?q.initial:0));});
  if(q.type==='fraction'){add(fr?'Bleu':'Blauw',choose(0));add(fr?'Rouge':'Rood',choose(1));}
  if(q.type==='word'){q.tiles.forEach(t=>add(t.letter,[...a,t.id],a.includes(t.id)||a.length>=Array.from(q.word).length));add(fr?'↶ Retirer la dernière lettre':'↶ Laatste letter weg',a.slice(0,-1),!a.length);}
