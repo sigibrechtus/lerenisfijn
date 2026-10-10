@@ -15,3 +15,15 @@
 .puzzle-mode header nav{flex-wrap:nowrap}
 .puzzle-mode .puzzle{bottom:max(10px,env(safe-area-inset-bottom))}
 @media(max-height:500px){.puzzle{max-height:43dvh}.puzzle .world-options{margin:4px 0;padding:4px}.puzzle-mode header button,.puzzle-mode #home{min-height:32px;padding:6px;font-size:11px}}
+
+/* Thumb-sized controls with safe-area clearance in portrait and landscape. */
+@media(any-pointer:coarse){
+ .joystick{display:block;width:128px;height:128px;left:max(18px,env(safe-area-inset-left));bottom:max(20px,env(safe-area-inset-bottom));z-index:4;background:radial-gradient(circle,#49657955 0 30%,#132b4199 32% 100%);box-shadow:inset 0 0 24px #050f2633,0 6px 22px #05102055;user-select:none;-webkit-user-select:none}
+ .joystick span{width:46px;height:46px;left:39px;top:39px;background:radial-gradient(circle at 35% 30%,#ffe6ae,#c49b5d);border:1px solid #ffe5afaa;box-shadow:0 4px 12px #08162677}
+ .joystick.active{border-color:#f4cb7caa;background-color:#244e6266}
+ .companion{bottom:max(164px,calc(env(safe-area-inset-bottom) + 144px));max-width:260px}
+ .interact{bottom:max(150px,calc(env(safe-area-inset-bottom) + 140px))}
+ .movement-help{right:max(16px,env(safe-area-inset-right));bottom:max(22px,env(safe-area-inset-bottom));max-width:210px;line-height:1.55}
+ .ride{right:max(18px,env(safe-area-inset-right));bottom:max(92px,calc(env(safe-area-inset-bottom) + 80px))}
+}
+@media(any-pointer:coarse) and (max-height:500px){.joystick{width:108px;height:108px;bottom:max(12px,env(safe-area-inset-bottom))}.joystick span{left:31px;top:31px}.companion{display:none}.quest{top:62px;max-width:210px}.interact{left:auto;right:max(18px,env(safe-area-inset-right));bottom:max(24px,env(safe-area-inset-bottom));transform:none}.ride{bottom:82px}.movement-help{display:none}}

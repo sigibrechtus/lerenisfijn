@@ -60,3 +60,20 @@ Entering an activity makes a 550 ms eased move into a framing view calculated fr
 Unrelated village geometry and the avatar are excluded from the close-up layer to avoid obstructing the activity. All world state is retained. Leaving restores the full-screen world, collision checks and the player's orbit with a 450 ms transition. Reduced-motion mode applies the new view immediately.
 
 `node --test tests/*.test.cjs` checks the pure calculations and existing learning/audio logic. `NODE_PATH="$CODEX_PRIMARY_RUNTIME_NODE_MODULES" node tests/moonlight-camera-scenes.cjs` additionally checks real Babylon NullEngine geometry and projections for all 30 quests, both languages, three levels, initial and solved states across six desktop/phone/tablet layouts, plus animated entry and resizing. These checks verify that mesh corners lie inside the intended frame; they do not constitute GPU or real-device visual validation.
+
+## Touch controls and graphics (v8)
+
+Exploration uses a larger safe-area-aware joystick with a 12% dead zone and proportional walking speed. Keep the left thumb on the joystick while dragging anywhere in the exposed world with another finger to orbit. Spread two fingers on the world to zoom in; pinch together to zoom out. Short stationary taps retain tap-to-walk. Camera drags and pinches never issue walking destinations. Pointer ownership, capture loss, cancellation, screen rotation, backgrounding and dialogs reset movement. Dutch and French help text describes these gestures. Exercises retain their dedicated object dragging and automatic complete framing; returning restores the exploration orbit.
+
+The renderer uses original wood-grain, masonry, plaster and roof textures, a twilight gradient sky, smoother major silhouettes, ACES tone mapping, restrained contrast and FXAA. High quality uses 2048-pixel shadow maps; balanced uses 1024 and Economy uses 512. Small decorative objects retain simpler geometry. Automatic quality starts balanced regardless of touch input and may reduce or recover quality after sustained measured frame times. Pixel budgets cap framebuffer work at 4.2, 2.4 and 1.1 million pixels respectively. High-density phones can render above CSS resolution instead of being automatically downscaled to their minimum tier.
+
+Verification includes the controls/graphics regression tests, the existing campaign/audio tests, and Babylon NullEngine world-level input tests:
+
+```sh
+node --test tests/*.test.cjs
+NODE_PATH="$CODEX_PRIMARY_RUNTIME_NODE_MODULES" node tests/moonlight-touch-scenes.cjs
+NODE_PATH="$CODEX_PRIMARY_RUNTIME_NODE_MODULES" node tests/moonlight-camera-scenes.cjs
+NODE_PATH="$CODEX_PRIMARY_RUNTIME_NODE_MODULES" node tests/moonlight-world-smoke.cjs
+```
+
+NullEngine confirms movement, camera gestures, zoom limits, quality settings, scene construction and exercise projections; it does not render GPU pixels. The available cloud browser reports WebGL unavailable. GPU appearance, real touch behavior and performance on iOS/Android remain unverified on physical devices.
