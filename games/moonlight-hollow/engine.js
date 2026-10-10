@@ -2,47 +2,43 @@
 (function(root){
 'use strict';
 const areas=['bridge','garden','library','clock','lights'];
-const words={
-nl:[['maan','De ronde lamp aan de nachtelijke hemel.','moon'],['kat','Een dier dat miauw zegt.','cat'],['boom','Heeft een stam, takken en bladeren.','tree'],['ster','Een klein lichtpunt aan de hemel.','star'],['spook','Pip is een vriendelijk …','ghost'],['pompoen','Een grote oranje vrucht.','pumpkin'],['sleutel','Hiermee open je een slot.','key'],['kasteel','Een groot gebouw met torens.','castle'],['lantaarn','Een lamp die je kunt dragen.','lantern']],
-fr:[['lune','Le grand disque lumineux dans le ciel nocturne.','moon'],['chat','Un animal qui dit miaou.','cat'],['arbre','Il a un tronc, des branches et des feuilles.','tree'],['étoile','Un petit point lumineux dans le ciel.','star'],['fantôme','Pip est un gentil …','ghost'],['citrouille','Un gros fruit orange.','pumpkin'],['clé','Elle ouvre une serrure.','key'],['château','Un grand bâtiment avec des tours.','castle'],['lanterne','Une lampe que tu peux porter.','lantern']]
-};
+const Content=root.MoonLearningContent||(typeof require==='function'?require('./learning-content.js'):null);
 function shuffle(a,rng){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function make(area,level=1,lang='nl',rng=Math.random,options={}){
 if(!areas.includes(area))throw Error('Unknown area');
 level=Math.max(1,Math.min(3,level));
 const pick=a=>a[Math.floor(rng()*a.length)],q={area,level};
 if(area==='bridge'){
-q.groups=level===1?2:level===2?2:pick([3,4]);q.size=level===1?pick([2,3,4]):level===2?10:pick([2,3,4]);
-q.initial=level===2?pick([6,7,8,9]):0;
-q.targets=Array(q.groups).fill(q.size);
-if(level===2)q.targets[1]=pick([3,4,5,6]);
+q.groups=level<3?2:pick([3,4]);q.targets=Array.from({length:q.groups},()=>level===1?pick([2,3,4,5,6]):level===2?pick([4,5,6,7,8,9,10,11,12]):pick([2,3,4,5,6]));
+q.size=q.targets[0];q.initial=level===2?1+Math.floor(rng()*(q.targets[0]-1)):0;
 q.total=q.targets.reduce((a,b)=>a+b,0);q.pool=q.total-q.initial;
 }
 if(area==='garden'){
-q.den=level===1?2:level===2?4:pick([3,4]);
-q.total=q.den*pick(level===1?[2,3]:[2,3,4]);q.num=level===3?pick([1,q.den-1]):1;
-q.moon=q.total/q.den*q.num;
+q.den=level===1?2:level===2?4:pick([3,4,5,6]);
+q.total=q.den*pick(level===1?[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]:level===2?[1,2,3,4,5,6,7,8]:[1,2,3,4,5,6]);q.num=level===1?1:1+Math.floor(rng()*(q.den-1));q.moon=q.total/q.den*q.num;
 }
 if(area==='library'){
-const pool=words[lang==='fr'?'fr':'nl'].slice(level===1?0:level===2?3:6,level===1?3:level===2?6:9);
+const pool=Content.words[lang==='fr'?'fr':'nl'][level-1];
 [q.word,q.clue,q.icon]=pick(pool);
 q.tiles=shuffle(Array.from(q.word,(letter,id)=>({letter,id})),rng);
 }
 if(area==='clock'){
 q.kind=level===1?'read':level===2?'elapsed':'schedule';
-q.start=pick([15,16,17,18])*60+pick(level===1?[0,30]:[0,10,20,30,40,50]);
-q.duration=level===1?0:pick([10,15,20,25,30]);
+q.start=(2+Math.floor(rng()*18))*60+pick(level===1?[0,15,30,45]:[0,5,10,15,20,25,30,35,40,45,50,55]);
+q.duration=level===1?0:pick([5,10,15,20,25,30,35,40,45,50]);
 q.answer=q.kind==='schedule'?q.start-q.duration:q.start+q.duration;
 }
 if(area==='lights'){
 q.kind=level===1?'pattern':'mirror';
 if(q.kind==='pattern'){
-q.unit=pick([[0,1],[0,0,1],[0,1,1],[0,0,0,1]]);
+const units=[];for(let length=2;length<=5;length++)for(let mask=1;mask<2**length-1;mask++){const unit=Array.from({length},(_,i)=>(mask>>i)&1),cyclic=[...unit,...unit];let run=1,valid=true;for(let i=1;i<cyclic.length;i++){run=cyclic[i]===cyclic[i-1]?run+1:1;if(run>3)valid=false;}if(valid)units.push(unit);}q.unit=pick(units);
 q.sequence=Array.from({length:q.unit.length*3},(_,i)=>q.unit[i%q.unit.length]);q.missing=q.unit.length*2+Math.floor(rng()*q.unit.length);q.answer=q.sequence[q.missing];
 }else{
-q.mirrors=level===2?[{x:1,y:1,solution:1},{x:1,y:3,solution:1}]:[{x:1,y:1,solution:1},{x:1,y:3,solution:1},{x:3,y:3,solution:0},{x:3,y:0,solution:0}];
-q.exit={x:4,y:level===2?3:0};
-if(level===3&&options.optics===true){q.optics='splitter-v1';q.inventory={mirror:3,splitter:1};const splitter=Math.floor(rng()*4);q.targets=[{...q.exit},[{x:4,y:1},{x:1,y:4},{x:4,y:3},{x:3,y:-1}][splitter]];q.mirrors=q.mirrors.map((m,i)=>({...m,solution:{type:i===splitter?'splitter':'mirror',orientation:m.solution}}));q.initial=q.mirrors.map(()=>({type:null,orientation:0}));}
+const row=Math.floor(rng()*4),other=pick([0,1,2,3].filter(v=>v!==row)),first=Math.floor(rng()*(level===2?4:3)),orientation=other>row?1:0;
+q.source={x:-1,y:row};
+if(level===2){q.mirrors=[{x:first,y:row,solution:orientation},{x:first,y:other,solution:orientation}];q.exit={x:4,y:other};}
+else{const last=pick([1,2,3].filter(v=>v>first));q.mirrors=[{x:first,y:row,solution:orientation},{x:first,y:other,solution:orientation},{x:last,y:other,solution:1-orientation},{x:last,y:row,solution:1-orientation}];q.exit={x:4,y:row};}
+if(level===3&&options.optics===true){q.optics='splitter-v1';q.inventory={mirror:3,splitter:1};const splitter=Math.floor(rng()*4);q.mirrors=q.mirrors.map((m,i)=>({...m,solution:{type:i===splitter?'splitter':'mirror',orientation:m.solution}}));q.initial=q.mirrors.map(()=>({type:null,orientation:0}));const endpoints=trace({...q,targets:[]},q.mirrors.map(m=>m.solution)).segments.filter(s=>s.to.x<0||s.to.x>=4||s.to.y<0||s.to.y>=4).map(s=>s.to);const secondary=endpoints.find(p=>p.x!==q.exit.x||p.y!==q.exit.y);q.targets=[{...q.exit},{...secondary}];}
 else q.initial=q.mirrors.map(()=>Math.floor(rng()*2));
 if(!q.optics&&trace(q,q.initial).success)q.initial[0]=1-q.initial[0];
 }
@@ -69,9 +65,9 @@ function reflect(direction,orientation){const tangent=orientation===0?{x:Math.SQ
  const normal={x:-tangent.y,y:tangent.x},dot=direction.x*normal.x+direction.y*normal.y;
  return {x:Math.round(direction.x-2*dot*normal.x),y:Math.round(direction.y-2*dot*normal.y)};
 }
-function trace(q,a){const points=[{x:-1,y:1}],segments=[],hits=[],lit=new Set(),targets=q.targets||[q.exit],seen=new Set();
+function trace(q,a){const source=q.source||{x:-1,y:1},points=[{...source}],segments=[],hits=[],lit=new Set(),targets=q.targets||[q.exit],seen=new Set();
  if(!validOptics(q,a))return {points,segments,hits,lit:[],success:false};
- const rays=[{x:-1,y:1,dx:1,dy:0,intensity:1}];let steps=0;
+ const rays=[{...source,dx:1,dy:0,intensity:1}];let steps=0;
  while(rays.length&&steps++<256){const ray=rays.shift(),from={x:ray.x,y:ray.y},to={x:ray.x+ray.dx,y:ray.y+ray.dy};
   segments.push({from,to,intensity:ray.intensity});points.push(to);
   if(to.x<0||to.x>=4||to.y<0||to.y>=4){targets.forEach((t,i)=>{if(to.x===t.x&&to.y===t.y)lit.add(i);});continue;}
@@ -98,6 +94,6 @@ return{level,total:rows.length,independent:rows.filter(x=>x.attempts===1&&!x.ass
 }
 function unlocked(events,area){const done=new Set(events.map(x=>x.area));return area==='bridge'||(area==='garden'||area==='library'?done.has('bridge'):area==='clock'?done.has('garden')||done.has('library'):done.has('clock'));}
 function validEvent(e){return e&&areas.includes(e.area)&&[1,2,3].includes(e.level)&&Number.isInteger(e.attempts)&&e.attempts>0&&typeof e.assisted==='boolean'&&typeof e.id==='string'&&typeof e.date==='string';}
-const api={areas,make,trace,check,stats,unlocked,validEvent,optic,validOptics,remaining,placeOptic,reflect};if(typeof module!=='undefined')module.exports=api;root.MoonEngine=api;
+const api={areas,shuffle,make,trace,check,stats,unlocked,validEvent,optic,validOptics,remaining,placeOptic,reflect};if(typeof module!=='undefined')module.exports=api;root.MoonEngine=api;
 })(typeof window!=='undefined'?window:globalThis);
 

@@ -68,7 +68,7 @@ $('map-kicker').textContent=profile().name+' · '+done.size+'/5 '+t('restored');
 renderStats();
 }
 function renderStats(){const target=$('stats');target.replaceChildren();E.areas.forEach(area=>{const s=E.stats(profile().events,area),rate=list=>list.length?Math.round(list.filter(x=>x.attempts===1&&!x.assisted).length/list.length*100)+'%':'—',box=el('div','stat');box.append(el('strong','',t(area+'Name')),el('div','',t('level')+' '+s.level+' · '+t('total')+': '+s.total+' · '+t('independent')+': '+s.independent),el('div','',t('early')+': '+rate(s.early)+' · '+t('recent')+': '+rate(s.recent)));target.append(box);});}
-function initial(){if(q.area==='bridge')return q.targets.map((_,i)=>i===0?q.initial:0);if(q.area==='garden')return Array(q.total).fill(null);if(q.area==='library')return[];if(q.area==='clock')return 12*60;if(q.area==='lights')return q.kind==='pattern'?null:[...q.initial];}
+function initial(){if(q.area==='bridge')return q.targets.map((_,i)=>i===0?q.initial:0);if(q.area==='garden')return Array(q.total).fill(null);if(q.area==='library')return[];if(q.area==='clock')return q.answer%720===0?60:12*60;if(q.area==='lights')return q.kind==='pattern'?null:[...q.initial];}
 function enter(area,restore=false){
 if(!E.unlocked(profile().events,area))return;
 const d=profile().draft;
@@ -84,7 +84,7 @@ if(q.area==='bridge'){key=q.initial?'bridgeSplit':'bridgeGroup';args={g:q.groups
 if(q.area==='garden')args={total:q.total,num:q.num,den:q.den};
 if(q.area==='clock'){key='clock'+(q.kind==='read'?'Read':q.kind==='elapsed'?'Elapsed':'Schedule');args={time:time(q.start),duration:q.duration};}
 if(q.area==='lights')key=q.kind;
-$('mission-title').textContent=t(key,args);$('howto').textContent=t(q.area==='lights'?q.kind+'How':q.area+'How');
+$('mission-title').textContent=q.area==='bridge'?(state.prefs.lang==='fr'?'Remplis les paniers de gauche à droite : ':'Vul de manden van links naar rechts: ')+q.targets.join(' · ')+(q.initial?(state.prefs.lang==='fr'?' lumières. Le premier contient déjà ':' lichtjes. De eerste heeft al ')+q.initial:''):t(key,args);$('howto').textContent=t(q.area==='lights'?q.kind+'How':q.area+'How');
 }
 function change(){if(solved)return;renderStage();draft();}
 function token(kind,label,payload,fn,cls=''){
@@ -141,7 +141,7 @@ const supply=el('div','supply');[0,1,2].forEach(v=>{const b=token(['moon','star'
 if(q.area==='lights'&&q.kind==='mirror'){
 const board=el('div','mirror-stage'),ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 500 500');svg.classList.add('ray');svg.setAttribute('aria-hidden','true');
 const result=E.trace(q,a),points=result.points.map(p=>(100+p.x*100)+','+(100+p.y*100)).join(' '),line=document.createElementNS(ns,'polyline');line.setAttribute('points',points);line.setAttribute('fill','none');line.setAttribute('stroke',result.success?'#fff0a4':'#f4c567');line.setAttribute('stroke-width','6');line.setAttribute('stroke-linejoin','round');svg.append(line);board.append(svg);
-board.append(el('span','source','✦'));const dest=el('span','destination','✦');dest.style.top=(15+q.exit.y*20)+'%';dest.setAttribute('aria-label',t('target'));board.append(dest);
+const source=el('span','source','✦');source.style.top=(15+(q.source?.y??1)*20)+'%';board.append(source);const dest=el('span','destination','✦');dest.style.top=(15+q.exit.y*20)+'%';dest.setAttribute('aria-label',t('target'));board.append(dest);
 q.mirrors.forEach((m,i)=>{const b=button(a[i]===0?'/':'\\',()=>{if(!solved){a[i]=1-a[i];change();sound('tap');}},'mirror');b.style.left=(13+m.x*20)+'%';b.style.top=(13+m.y*20)+'%';b.disabled=solved;b.setAttribute('aria-label',t('mirrorLabel',{n:i+1,direction:t(a[i]===0?'slash':'backslash')}));board.append(b);});stage.append(board);
 }
 if(hadFocus&&!solved){const focusable=[...stage.querySelectorAll('button,[tabindex]')];const match=focusable.find(e=>oldLabel?e.getAttribute('aria-label')===oldLabel:e.textContent===oldText);match?.focus({preventScroll:true});}

@@ -185,3 +185,35 @@ Every enabled mini-game action has live Babylon choreography and an existing loc
 The pumpkin rally now uses a cockpit camera that follows the car position and yaw. The player sees a dashboard, bonnet, steering wheel and windshield pillars; road marks and pumpkins provide movement cues. Wheels roll, steering responds, and a quiet original synthesized engine loop changes pitch with speed. The engine uses the existing effects bus and stops on mute, pause, completion or leaving. The racing HUD keeps the arithmetic riddle and round visible above the road, shows speed/gear/gate distance, places held steering/gas/brake controls at the bottom, and puts guided-driving assistance inside an optional panel. First/third-person exploration preference is restored after leaving.
 
 Validation includes real NullEngine transformations for each operation, once-only deferred ingredient changes, frozen animation timing during pause, cockpit position/yaw and wheel/steering motion, wrong-gate recovery, reduced-motion behavior, bounded resources, speed-driven audio-loop reuse and shutdown, plus existing deterministic gameplay and projection checks. Browser GPU pixels, physical touch hardware and speaker output remain separate validation requirements.
+
+
+## v21 — First-person controls, readable signs and exercise variety
+
+Rally and broom cameras follow their vehicles. Rally keeps car steering, throttle, braking and reverse; flight uses lateral movement, forward/backward and E/Q altitude. Held touch controls sit on both sides of the screen, with flight altitude in the telemetry display. Releasing flight controls stops movement. Pause, exit and advancing to a new question neutralize input. Guided travel is labelled and kept inside optional help; tapping a ring or gate does not answer it. Driving/flying through the opening validates the answer. The mission and held-control rectangles define the unobstructed viewport, and the field of view adapts to its aspect ratio.
+
+Gate number signs use larger glyphs on 512×256 textures and stand above the openings. Key colors and symbols now match the expanded clue sets; the nine-key cabinet has separated rows. Garden signs emphasize the seed count and station signs emphasize departure time. Table activities use fixed interaction views facing the work area, with larger equivalent HTML actions for touch/keyboard and a highlighted verification button. Campaign signs and clock numerals are larger too. First/third-person exploration preferences continue to be restored on leaving an activity.
+
+All ten campaign families and six mini-game families have at least five times the distinct v20 content at each of the three difficulty levels, in both languages. The audit scans the same 20,000 seeds per family/level/language before and after the change. These are sampled distinct counts, not theoretical maxima. Semantic fingerprints exclude answer-button order, gate placement order and initial mirror rotations. The immutable v20 comparison identifies the published source commit; the v21 fixture and generator audit are in `tests/fixtures` and `tests/moonlight-variety-counts.cjs`.
+
+| Family | v20 levels 1 / 2 / 3 | v21 levels 1 / 2 / 3 (Dutch sample) |
+| --- | --- | --- |
+| Groups | 3 / 16 / 6 | 25 / 567 / 750 |
+| Riddles | 3 / 3 / 3 | 15 / 15 / 15 |
+| Fractions | 2 / 3 / 12 | 15 / 24 / 84 |
+| Time | 8 / 120 / 120 | 72 / 2,159 / 2,160 |
+| Patterns | 12 / 12 / 12 | 178 / 178 / 178 |
+| Sequences | 8 / 12 / 16 | 144 / 600 / 720 |
+| Words | 3 / 3 / 3 | 15 / 15 / 15 |
+| Deduction | 3 / 3 / 3 | 1,800 / 1,800 / 1,800 |
+| Mirrors | 1 / 1 / 4 | 48 / 48 / 288 |
+| Routes | 1 / 1 / 1 | 16 / 24 / 32 |
+| Mansion | 9 / 9 / 9 | 3,589 / 3,589 / 3,588 |
+| Potions | 9 / 16 / 25 | 81 / 144 / 225 |
+| Broom | 20 / 96 / 81 | 410 / 1,620 / 720 |
+| Garden | 4 / 4 / 4 | 72 / 1,024 / 7,756 |
+| Railway | 4 / 4 / 4 | 432 / 2,917 / 14,041 |
+| Rally | 20 / 96 / 81 | 410 / 1,620 / 720 |
+
+Recent semantic task history is stored separately per profile, location, level and language, capped at twelve entries per bucket. It includes unfinished mini-game visits. New campaign visits use a saved nonce and bounded deterministic candidate search; resuming a saved draft keeps its question and answer. No new daily requirement, timer or loss of earned progress was added. The 2D compatibility page loads the expanded content and retains its existing save key.
+
+Validation uses 121 repository tests, 18,000 campaign solvability cases, all six three-round mini-game flows, 774 arena sign framing checks, first-person glyph projection on 320/360/390-pixel portrait phones, phone landscape and desktop, plus layouts with the actual HUD space reserved. Gate glyphs exceed 20 projected screen pixels at the starting line. Additional integration checks cover 2,172 campaign camera projections, 180 constructed scenes, touch/keyboard input, train and exploration camera restoration, pause, animations and resource disposal. These are Babylon NullEngine and native-canvas checks. Game Development Studio CLI is unavailable; GPU rendering, physical-device typography and frame rates still need a WebGL-capable device check.
