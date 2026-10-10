@@ -125,3 +125,30 @@ Validation covers the actual DOM control controller with element doubles, all 18
 ## Four-direction castle routes (v15)
 
 The castle exercise now has Up, Down, Right, Left, Undo and Clear in both the touch-friendly DOM panel and the 3D board. Movement may backtrack and continue past the requested step count while exploring; only grid boundaries disable a direction. The checker validates every intermediate position and still requires the star and the exact requested number of steps. Undo removes the last move, and Clear returns to the starting dot. Existing N/E saved routes remain compatible. Dutch/French instructions explain free exploration and the exact-step solution.
+
+
+## Runtime/plugin audit — 10 October 2026
+
+Inspected production commit c062a7f and retained static GitHub Pages hosting.
+
+| Need | Existing implementation | Decision |
+| --- | --- | --- |
+| Smooth camera animation | camera.js easing and world.js interpolation | Retain; Tween.js would duplicate this behavior. |
+| Train lifecycle | railway.js explicit idle/boarding/travel/arrival phases with guarded calls | Retain; XState adds no needed behavior to this bounded system. |
+| Weather and movement effects | atmosphere.js, Babylon fog, bounded reusable dust/mist/leaf meshes | Retain; migrate to Babylon ParticleSystem only for a specific higher-density effect. |
+| Rendering | Babylon DefaultRenderingPipeline, ACES, FXAA, glow, shadows, adaptive pixel budgets | Retain and profile before adding expensive post effects. |
+| Sound | Local Web Audio buses, gesture unlock, lifecycle cancellation | Extend with PannerNode world emitters, distance attenuation and listener orientation. |
+| Physics | Terrain sampling, obstacle checks, deterministic railway motion | Retain for current gameplay; a physics engine requires a concrete rigid-body mechanic. |
+
+Spatial audio now follows the explorer position with the active view orientation, or the first-person camera aboard the train. Train sources follow the carriage during calls and rides; footsteps follow the explorer; thunder has a distant world position. Babylon left-handed Z is inverted consistently for Web Audio's right-handed coordinates. Music, ambience and UI feedback remain nonspatial. HRTF/inverse-distance panners support modern AudioParams and legacy setters; browsers without createPanner retain stereo playback. Existing volume buses, voice limits, mute, offline audio and pause cancellation are preserved.
+
+Delivery: audit → bounded audio implementation → audio and scene regression checks → cache-version update → GitHub Pages deployment. Runtime changes do not introduce external services, npm dependencies or secrets.
+
+The Game Development Studio CLI was unavailable in this session. Plugin directory discovery returned no applicable Babylon/Blender rendering integration; Render's hosting integration does not provide 3D rendering. No specialist GPU, physical-device or listening verification is claimed.
+
+Primary references:
+- https://doc.babylonjs.com/features/featuresDeepDive/animation/advanced_animations
+- https://doc.babylonjs.com/features/featuresDeepDive/particles/
+- https://developer.mozilla.org/en-US/docs/Web/API/PannerNode
+- https://stately.ai/docs/quick-start
+- https://github.com/tweenjs/tween.js

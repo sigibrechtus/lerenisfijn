@@ -1,11 +1,11 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync(require('node:path').join(__dirname,'../games/moonlight-hollow/audio.js'),'utf8');
-function harness({hold=false,blocked=false,sessionThrows=false}={}){
+function harness({hold=false,blocked=false,sessionThrows=false,spatial=false,legacy=false}={}){
   const order=[],sources=[],nodes=[],requests=[],waiting=[],statuses=[],timers=[];
   class Param{constructor(value=1){this.value=value;}setTargetAtTime(v){this.value=v;}setValueAtTime(v){this.value=v;}linearRampToValueAtTime(v){this.value=v;}cancelScheduledValues(){}}
   class Node{constructor(){this.connections=[];nodes.push(this);}connect(n){this.connections.push(n);}disconnect(){this.connections=[];}}
   class Context{
-    constructor(){order.push('context');this.state='suspended';this.currentTime=0;this.sampleRate=48000;this.destination=new Node();Context.last=this;}
+    constructor(){order.push('context');this.state='suspended';this.currentTime=0;this.sampleRate=48000;this.destination=new Node();if(spatial){this.listener=new Node();if(legacy){this.listener.setPosition=(...v)=>this.listener.position=v;this.listener.setOrientation=(...v)=>this.listener.orientation=v;}else for(const k of ['positionX','positionY','positionZ','forwardX','forwardY','forwardZ','upX','upY','upZ'])this.listener[k]=new Param(0);this.createPanner=()=>{const n=new Node();n.spatial=true;if(legacy)n.setPosition=(...v)=>n.position=v;else for(const k of ['positionX','positionY','positionZ'])n[k]=new Param(0);return n;};}Context.last=this;}
     createGain(){const n=new Node();n.gain=new Param();return n;}
     createDynamicsCompressor(){const n=new Node();for(const k of ['threshold','knee','ratio','attack','release'])n[k]=new Param();return n;}
     createAnalyser(){const n=new Node();n.fftSize=2048;n.getFloatTimeDomainData=a=>a.fill(.03);return n;}
@@ -47,4 +47,26 @@ test('music volume changed from zero starts the previously selected music',async
 });
 test('preview reports mute rather than a misleading success and verifies an output signal when enabled',async()=>{
   const h=harness();h.prefs.muted=true;assert.equal(await h.audio.testEffect('ui'),false);assert(h.statuses.some(v=>v[0]==='muted'));h.prefs.muted=false;assert.equal(await h.audio.testEffect('ui'),true);h.timers.splice(0).forEach(fn=>fn());assert(h.statuses.some(v=>v[0]==='signal'));
+});
+
+// Babylon's left-handed coordinates are reflected into Web Audio's right-handed space.
+test('world source and listener use distance-aware HRTF with consistent handedness',async()=>{
+ const h=harness({spatial:true});await h.audio.unlock();h.audio.listener({x:2,y:1.3,z:4},{x:0,y:0,z:1});
+ assert.equal(await h.audio.play('train',{point:{x:8,y:2,z:10},force:true}),true);
+ const n=h.nodes.find(n=>n.spatial),l=h.context().listener;assert.equal(n.panningModel,'HRTF');assert.equal(n.distanceModel,'inverse');assert.equal(n.refDistance,6);assert.equal(n.positionX.value,8);assert.equal(n.positionZ.value,-10);assert.equal(l.positionZ.value,-4);assert.equal(l.forwardZ.value,-1);assert.equal(l.upY.value,1);
+ // The transformed camera-right direction remains audio-right, including a reversed view.
+ assert((l.forwardY.value*l.upZ.value-l.forwardZ.value*l.upY.value)*(n.positionX.value-l.positionX.value)>0);
+ h.audio.listener({x:2,y:1.3,z:4},{x:0,y:0,z:-1});assert.equal(l.forwardZ.value,1);
+});
+test('moving train source follows its emitter and is removed when stopped',async()=>{
+ const h=harness({spatial:true});await h.audio.unlock();let p={x:1,y:2,z:3};await h.audio.play('train',{point:()=>p,force:true});const n=h.nodes.find(n=>n.spatial);p={x:12,y:2,z:30};h.audio.updateSpatial();assert.equal(n.positionX.value,12);assert.equal(n.positionZ.value,-30);
+ await h.audio.suspend();p={x:99,y:2,z:99};h.audio.updateSpatial();assert.equal(n.positionX.value,12);assert.equal(n.connections.length,0);assert.equal(h.audio.state().voices,0);
+});
+test('spatial audio supports legacy position setters and stereo fallback',async()=>{
+ const h=harness({spatial:true,legacy:true});await h.audio.unlock();h.audio.listener({x:1,y:2,z:3},{x:0,y:0,z:1});await h.audio.play('thunder',{point:{x:28,y:40,z:68},refDistance:80,force:true});const n=h.nodes.find(n=>n.spatial);assert.deepEqual(h.context().listener.position,[1,2,-3]);assert.deepEqual(n.position,[28,40,-68]);assert.equal(n.refDistance,80);
+ const fallback=harness();await fallback.audio.unlock();assert.equal(await fallback.audio.play('train',{point:{x:2,y:0,z:3},pan:.4,force:true}),true);assert(fallback.nodes.some(n=>n.pan?.value===.4));
+});
+test('mute and in-flight cancellation also apply to spatial sounds',async()=>{
+ const h=harness({spatial:true});await h.audio.unlock();await h.flush();h.prefs.muted=true;assert.equal(await h.audio.play('train',{point:{x:2,y:0,z:3},force:true}),false);assert(!h.nodes.some(n=>n.spatial));h.prefs.muted=false;
+ h.context().decodeAudioData=()=>new Promise(resolve=>h.waiting.push(()=>resolve({decoded:true})));const effect=h.audio.play('thunder',{point:{x:28,y:40,z:68},force:true});await h.flush();await h.audio.suspend();await h.audio.resume();h.waiting.splice(0).forEach(fn=>fn());assert.equal(await effect,false);assert(!h.nodes.some(n=>n.spatial));
 });
