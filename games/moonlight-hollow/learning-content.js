@@ -6,231 +6,231 @@ const words={
    [
     "maan",
     "De ronde lamp aan de nachtelijke hemel.",
-    "maan"
+    "moon"
    ],
    [
     "kat",
     "Een dier dat miauw zegt.",
-    "kat"
+    "cat"
    ],
    [
     "boom",
     "Heeft een stam, takken en bladeren.",
-    "boom"
+    "tree"
    ],
    [
     "zon",
     "Geeft overdag licht en warmte.",
-    "zon"
+    "book"
    ],
    [
     "vos",
     "Een dier met een oranje vacht en een grote staart.",
-    "vos"
+    "book"
    ],
    [
     "uil",
     "Een vogel die oehoe roept.",
-    "uil"
+    "book"
    ],
    [
     "oog",
     "Hiermee kun je kijken.",
-    "oog"
+    "book"
    ],
    [
     "vis",
     "Een dier dat onder water zwemt.",
-    "vis"
+    "book"
    ],
    [
     "bed",
     "Hierin slaap je.",
-    "bed"
+    "book"
    ],
    [
     "tas",
     "Hierin draag je je spullen.",
-    "tas"
+    "book"
    ],
    [
     "pen",
     "Hiermee schrijf je met inkt.",
-    "pen"
+    "book"
    ],
    [
     "bal",
     "Een rond voorwerp om mee te spelen.",
-    "bal"
+    "book"
    ],
    [
     "jas",
     "Die trek je aan als het buiten koud is.",
-    "jas"
+    "book"
    ],
    [
     "dak",
     "Het bovenste deel van een huis.",
-    "dak"
+    "book"
    ],
    [
     "weg",
     "Hierover rijden auto’s.",
-    "weg"
+    "book"
    ]
   ],
   [
    [
     "ster",
     "Een klein lichtpunt aan de hemel.",
-    "ster"
+    "star"
    ],
    [
     "spook",
     "Pip is een vriendelijk …",
-    "spook"
+    "ghost"
    ],
    [
     "pompoen",
     "Een grote oranje vrucht.",
-    "pompoen"
+    "pumpkin"
    ],
    [
     "regen",
     "Druppels die uit de wolken vallen.",
-    "regen"
+    "book"
    ],
    [
     "schaduw",
     "Een donkere vorm achter iets in het licht.",
-    "schaduw"
+    "book"
    ],
    [
     "bezem",
     "Hiermee veeg je de vloer.",
-    "bezem"
+    "book"
    ],
    [
     "heks",
     "Een figuur die toverspreuken kan maken.",
-    "heks"
+    "book"
    ],
    [
     "draak",
     "Een fantasiedier dat vuur kan spuwen.",
-    "draak"
+    "book"
    ],
    [
     "vleugel",
     "Hiermee kan een vogel vliegen.",
-    "vleugel"
+    "book"
    ],
    [
     "kaars",
     "Een lichtje met een lont.",
-    "kaars"
+    "book"
    ],
    [
     "spin",
     "Dit dier maakt een web.",
-    "spin"
+    "book"
    ],
    [
     "web",
     "Het dradennet van een spin.",
-    "web"
+    "book"
    ],
    [
     "blad",
     "Groeit aan een tak van een boom.",
-    "blad"
+    "book"
    ],
    [
     "water",
     "Een vloeistof die je kunt drinken.",
-    "water"
+    "book"
    ],
    [
     "steen",
     "Een hard stukje rots.",
-    "steen"
+    "book"
    ]
   ],
   [
    [
     "sleutel",
     "Hiermee open je een slot.",
-    "sleutel"
+    "key"
    ],
    [
     "kasteel",
     "Een groot gebouw met torens.",
-    "kasteel"
+    "castle"
    ],
    [
     "lantaarn",
     "Een lamp die je kunt dragen.",
-    "lantaarn"
+    "lantern"
    ],
    [
     "toverdrank",
     "Een magisch mengsel uit een ketel.",
-    "toverdrank"
+    "book"
    ],
    [
     "herfstbos",
     "Een bos met vallende bladeren in oktober.",
-    "herfstbos"
+    "book"
    ],
    [
     "maanlicht",
     "Het zachte licht van de maan.",
-    "maanlicht"
+    "book"
    ],
    [
     "vuurvlieg",
     "Een klein insect met een lichtje.",
-    "vuurvlieg"
+    "book"
    ],
    [
     "raadsel",
     "Een vraag waarvoor je goed moet nadenken.",
-    "raadsel"
+    "book"
    ],
    [
     "spiegel",
     "Hierin zie je jezelf.",
-    "spiegel"
+    "book"
    ],
    [
     "sterren",
     "Veel kleine lichtpunten aan de hemel.",
-    "sterren"
+    "book"
    ],
    [
     "tuinier",
     "Iemand die planten verzorgt.",
-    "tuinier"
+    "book"
    ],
    [
     "konijn",
     "Een dier met lange oren.",
-    "konijn"
+    "book"
    ],
    [
     "schatkist",
     "Een kist met kostbare spullen.",
-    "schatkist"
+    "book"
    ],
    [
     "nachtuil",
     "Een uil die in het donker actief is.",
-    "nachtuil"
+    "book"
    ],
    [
     "bosgeest",
     "Een vriendelijke geest die in het bos woont.",
-    "bosgeest"
+    "book"
    ]
   ]
  ],
@@ -239,231 +239,231 @@ const words={
    [
     "lune",
     "Le disque lumineux dans le ciel nocturne.",
-    "lune"
+    "moon"
    ],
    [
     "chat",
     "Un animal qui dit miaou.",
-    "chat"
+    "cat"
    ],
    [
     "arbre",
     "Il a un tronc, des branches et des feuilles.",
-    "arbre"
+    "tree"
    ],
    [
     "ciel",
     "L’espace que tu vois au-dessus de ta tête.",
-    "ciel"
+    "book"
    ],
    [
     "nuit",
     "Le moment où le ciel devient sombre.",
-    "nuit"
+    "book"
    ],
    [
     "vent",
     "L’air qui souffle et fait bouger les feuilles.",
-    "vent"
+    "book"
    ],
    [
     "eau",
     "Un liquide que tu peux boire.",
-    "eau"
+    "book"
    ],
    [
     "feu",
     "Il brûle et donne de la chaleur.",
-    "feu"
+    "book"
    ],
    [
     "lit",
     "Tu dors dedans.",
-    "lit"
+    "book"
    ],
    [
     "sac",
     "Tu y ranges tes affaires.",
-    "sac"
+    "book"
    ],
    [
     "clé",
     "Elle ouvre une serrure.",
-    "clé"
+    "key"
    ],
    [
     "nez",
     "Tu sens les odeurs avec lui.",
-    "nez"
+    "book"
    ],
    [
     "mer",
     "Une grande étendue d’eau salée.",
-    "mer"
+    "book"
    ],
    [
     "loup",
     "Un animal qui hurle et vit en meute.",
-    "loup"
+    "book"
    ],
    [
     "rose",
     "Une fleur qui peut avoir des épines.",
-    "rose"
+    "book"
    ]
   ],
   [
    [
     "étoile",
     "Un petit point lumineux dans le ciel.",
-    "étoile"
+    "star"
    ],
    [
     "fantôme",
     "Pip est un gentil …",
-    "fantôme"
+    "ghost"
    ],
    [
     "citrouille",
     "Un gros fruit orange.",
-    "citrouille"
+    "pumpkin"
    ],
    [
     "sorcière",
     "Un personnage qui prépare des sorts.",
-    "sorcière"
+    "book"
    ],
    [
     "balai",
     "Il sert à nettoyer le sol.",
-    "balai"
+    "book"
    ],
    [
     "forêt",
     "Un lieu avec beaucoup d’arbres.",
-    "forêt"
+    "book"
    ],
    [
     "hibou",
     "Un oiseau qui hulule.",
-    "hibou"
+    "book"
    ],
    [
     "renard",
     "Un animal roux avec une grande queue.",
-    "renard"
+    "book"
    ],
    [
     "dragon",
     "Un animal imaginaire qui peut cracher du feu.",
-    "dragon"
+    "book"
    ],
    [
     "bougie",
     "Une petite lumière avec une mèche.",
-    "bougie"
+    "book"
    ],
    [
     "fleur",
     "Elle pousse et peut avoir des pétales.",
-    "fleur"
+    "book"
    ],
    [
     "nuage",
     "Il flotte dans le ciel et peut apporter la pluie.",
-    "nuage"
+    "book"
    ],
    [
     "pluie",
     "Des gouttes qui tombent des nuages.",
-    "pluie"
+    "book"
    ],
    [
     "jardin",
     "Un endroit où l’on cultive des plantes.",
-    "jardin"
+    "book"
    ],
    [
     "miroir",
     "Tu peux y voir ton reflet.",
-    "miroir"
+    "book"
    ]
   ],
   [
    [
     "château",
     "Un grand bâtiment avec des tours.",
-    "château"
+    "castle"
    ],
    [
     "lanterne",
     "Une lampe que tu peux porter.",
-    "lanterne"
+    "lantern"
    ],
    [
     "potion",
     "Un mélange magique préparé dans un chaudron.",
-    "potion"
+    "book"
    ],
    [
     "grimoire",
     "Un livre de formules magiques.",
-    "grimoire"
+    "book"
    ],
    [
     "chaudron",
     "Une grande marmite pour préparer une potion.",
-    "chaudron"
+    "book"
    ],
    [
     "luciole",
     "Un petit insecte qui produit de la lumière.",
-    "luciole"
+    "book"
    ],
    [
     "mystère",
     "Quelque chose de difficile à expliquer.",
-    "mystère"
+    "book"
    ],
    [
     "chemin",
     "Un passage pour marcher vers un endroit.",
-    "chemin"
+    "book"
    ],
    [
     "cristal",
     "Une pierre brillante avec des faces.",
-    "cristal"
+    "book"
    ],
    [
     "automne",
     "La saison pendant laquelle les feuilles tombent.",
-    "automne"
+    "book"
    ],
    [
     "serrure",
     "La clé tourne dedans pour ouvrir une porte.",
-    "serrure"
+    "book"
    ],
    [
     "trésor",
     "Des objets précieux cachés.",
-    "trésor"
+    "book"
    ],
    [
     "feuille",
     "Elle pousse sur une branche.",
-    "feuille"
+    "book"
    ],
    [
     "papillon",
     "Un insecte avec deux grandes ailes colorées.",
-    "papillon"
+    "book"
    ],
    [
     "araignée",
     "Un animal à huit pattes qui tisse une toile.",
-    "araignée"
+    "book"
    ]
   ]
  ]

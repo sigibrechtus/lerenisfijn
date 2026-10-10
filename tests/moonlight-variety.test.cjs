@@ -33,3 +33,8 @@ test('fingerprints ignore shuffled riddle choices and gate positions',()=>{
  const g=G.make('rally',1,'nl',2);assert.equal(V.signature(g),V.signature({...g,items:[...g.items].reverse()}));
 });
 
+
+test('expanded vocabulary retains the original compatibility-page illustrations',()=>{
+ const content=require('../games/moonlight-hollow/learning-content.js'),expected={maan:'moon',lune:'moon',kat:'cat',chat:'cat',boom:'tree',arbre:'tree',ster:'star','étoile':'star',spook:'ghost','fantôme':'ghost',pompoen:'pumpkin',citrouille:'pumpkin',sleutel:'key','clé':'key',kasteel:'castle','château':'castle',lantaarn:'lantern',lanterne:'lantern'};
+ for(const rows of Object.values(content.words).flat())for(const [word,,icon]of rows)assert.equal(icon,expected[word]||'book');
+});
