@@ -41,7 +41,7 @@ function updateAudioStatus(code,detail){lastAudioStatus={code,detail};const fr=s
 const soundtrack=MoonAudio.create({prefs:()=>state.prefs,track(name){currentMusic=name;updateMusic();},status:updateAudioStatus});
 function audioUnlock(){return soundtrack.unlock();}
 function syncHUDLayout(){document.documentElement.style.setProperty('--hud-top',(document.querySelector('header').getBoundingClientRect().bottom+12)+'px');}
-function exerciseFrame(){const bounds=$('world').getBoundingClientRect(),header=document.querySelector('header').getBoundingClientRect(),panel=$(attractions?.active?'mini-panel':'puzzle').getBoundingClientRect();return MoonCamera.safeFrame(bounds.width,bounds.height,header.bottom-bounds.top,panel.top-bounds.top);}
+function exerciseFrame(){const bounds=$('world').getBoundingClientRect(),header=document.querySelector('header').getBoundingClientRect(),panel=$(attractions?.active?'mini-panel':'puzzle').getBoundingClientRect();return MoonCamera.safeFrame(bounds.width,bounds.height,header.bottom-bounds.top,attractions?.active==='rally'?bounds.height:panel.top-bounds.top);}
 function enableSound(){state.prefs.muted=false;if(!state.prefs.music)state.prefs.music=45;if(!state.prefs.effects)state.prefs.effects=65;$('mute').checked=false;$('music').value=state.prefs.music;$('effects').value=state.prefs.effects;save();soundtrack.update();return soundtrack.testEffect('ui');}
 function fx(kind,options={}){soundtrack.play(kind,options);}
 function placementSound(){return {groups:'pickup',fraction:'pour',word:'letter',time:'clock',sequence:'stone',riddle:'riddle',deduction:'tile',route:'tile',pattern:'pattern',mirror:'mirror'}[q?.type]||'place';}

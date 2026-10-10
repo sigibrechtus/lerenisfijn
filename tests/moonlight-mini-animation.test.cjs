@@ -1,0 +1,36 @@
+/* Babylon NullEngine verifies choreography, operation ordering and cockpit transforms, not GPU pixels. */
+const test=require('node:test'),assert=require('node:assert/strict'),B=require('../games/moonlight-hollow/vendor/babylon.js'),{createCanvas}=require('@napi-rs/canvas');
+global.document={hidden:false,createElement:()=>createCanvas(512,128),addEventListener(){},removeEventListener(){}};
+const W=require('../games/moonlight-hollow/mini-game-world.js');
+function harness(reducedMotion=false){
+ const engine=new B.NullEngine({renderWidth:844,renderHeight:390}),scene=new B.Scene(engine),main=new B.UniversalCamera('explorer',B.Vector3.Zero(),scene);scene.activeCamera=main;let paused=false,completed=0,telemetry=[],sounds=[];
+ const r=W.create({B,scene,reducedMotion,paused:()=>paused,onComplete:()=>completed++,onTelemetry:s=>telemetry.push(s),effect:(kind,options)=>sounds.push({kind,options})});
+ const drain=()=>{for(let i=0;i<500&&(r.snapshot().busy||r.snapshot().assisted);i++)r.tick(.05);assert(!r.snapshot().busy&&!r.snapshot().assisted);};
+ const perform=id=>{r.action(id);drain();};
+ return{r,scene,engine,sounds,telemetry,drain,perform,pause:v=>paused=v,get completed(){return completed;},close(){r.dispose();assert.equal(scene.activeCamera,main);assert.equal(scene.meshes.length,0);assert.equal(scene.materials.length,0);assert.equal(scene.textures.length,0);assert.equal(scene.cameras.length,1);scene.dispose();engine.dispose();}};
+}
+test('water pours, powder falls and mixing stirs before committing once; pause freezes choreography',()=>{
+ const h=harness(),r=h.r;r.start('potions',{seed:14});const bottle=h.scene.meshes.find(m=>m.name==='mini-bottle'&&m.position.x<0),start=bottle.position.clone();r.action('add:0');assert(r.snapshot().busy);assert.equal(r.snapshot().amounts[0],0);r.tick(.1);assert.notEqual(bottle.position.x,start.x);assert.notEqual(bottle.rotation.z,0);assert(h.scene.meshes.some(m=>m.name==='mini-operation-particle'&&m.isEnabled()));
+ r.action('add:0');const elapsed=r.snapshot().animation.progress;h.pause(true);for(let i=0;i<30;i++)r.tick(.1);assert.equal(r.snapshot().animation.progress,elapsed);assert.equal(r.snapshot().amounts[0],0);h.pause(false);h.drain();assert.equal(r.snapshot().amounts[0],1);assert.equal(h.sounds.filter(s=>s.kind==='pour').length,1);
+ r.action('add:1');assert.equal(r.snapshot().animation.kind,'powder');h.drain();h.perform('remove:1');assert.equal(r.snapshot().amounts[1],0);h.perform('undo');assert.equal(r.snapshot().amounts[1],1);h.perform('reset');h.perform('hint');
+ const task=r.snapshot().task;for(let i=0;i<2;i++)for(let n=0;n<task.solution[i];n++)h.perform('add:'+i);r.action('check');const spoon=h.scene.getMeshByName('mini-stirrer'),p=spoon.position.clone();r.tick(.1);assert(!spoon.position.equals(p));assert.equal(r.snapshot().progress,0);h.drain();assert.equal(r.snapshot().progress,1/3);assert(h.sounds.some(s=>s.kind==='bubble'));h.close();
+});
+test('mansion key approaches its lock and a correct key opens the door before the next round',()=>{
+ const h=harness(),r=h.r;r.start('mansion',{seed:7});const answer=r.snapshot().task.solution[0],key=h.scene.meshes.find(m=>m.name==='mini-key-bow'&&m.metadata.miniAction===answer),before=key.position.clone();r.action(answer);for(let i=0;i<6;i++)r.tick(.1);assert(!key.position.equals(before));assert(h.scene.getMeshByName('mini-door').rotation.y<-.3);assert.equal(r.snapshot().progress,0);h.drain();assert.equal(r.snapshot().progress,1/3);h.perform('hint');h.perform('reset');h.close();
+});
+test('planting animates a seed packet into the next bed and undo/reset/hints retain valid rules',()=>{
+ const h=harness(),r=h.r;r.start('garden',{seed:3,level:3});const id=r.snapshot().task.solution[0],packet=h.scene.meshes.find(m=>m.name==='mini-seed-packet'&&m.metadata.miniAction===id),z=packet.position.z;r.action(id);r.tick(.1);assert(packet.position.z>z);assert.equal(r.snapshot().selected.length,0);h.drain();assert.equal(r.snapshot().selected.length,1);h.perform('undo');assert.equal(r.snapshot().selected.length,0);h.perform('hint');h.perform('reset');for(const id of r.snapshot().task.solution)h.perform(id);h.perform('check');assert.equal(r.snapshot().progress,1/3);assert(h.sounds.some(s=>s.kind==='leaf'));h.close();
+});
+test('station selection pulses and a correctly ordered train visibly departs before completion',()=>{
+ const h=harness(),r=h.r;r.start('railway',{seed:9});const id=r.snapshot().task.solution[0],station=h.scene.meshes.find(m=>m.name==='mini-station'&&m.metadata.miniAction===id);r.action(id);r.tick(.1);assert(station.position.y>121);h.drain();h.perform('undo');h.perform('reset');h.perform('hint');for(const id of r.snapshot().task.solution)h.perform(id);r.action('check');r.tick(.1);assert(h.scene.getMeshByName('mini-train').position.z>4);assert.equal(r.snapshot().progress,0);h.drain();assert.equal(r.snapshot().progress,1/3);assert(h.sounds.some(s=>s.kind==='train'));h.close();
+});
+test('cockpit moves and turns with its car; wheels, steering, speed and gate validation follow driving',()=>{
+ const h=harness(),r=h.r;r.start('rally',{seed:12});const camera=h.scene.activeCamera;assert.equal(camera.name,'pumpkin-cockpit-camera');assert.equal(camera.fovMode,B.Camera.FOVMODE_HORIZONTAL_FIXED);const first=camera.position.clone(),rim=h.scene.getMeshByName('mini-steering-wheel'),wheel=h.scene.meshes.find(m=>m.metadata?.roadWheel);r.input(.4,1);for(let i=0;i<10;i++)r.tick(.05);const s=r.snapshot();assert(s.speed>0&&s.speedKmh>0);assert.equal(s.gear,'D');assert(!camera.position.equals(first));assert.equal(camera.rotation.y,s.vehicle.heading);assert.notEqual(rim.rotation.z,0);assert.notEqual(wheel.rotation.x,0);assert(h.telemetry.length>0);assert(s.distance<19);assert(Math.abs(camera.position.y-(120+s.vehicle.y+.9))<1e-6);
+ r.input(0,0);const limit=s.speedLimit;h.perform('slower');assert.equal(r.snapshot().speedLimit,limit-2);h.perform('faster');assert.equal(r.snapshot().speedLimit,limit);h.perform('hint');const wrong=r.snapshot().task.items.find(t=>t.id!==r.snapshot().task.solution[0]).id;h.perform(wrong);assert.equal(r.snapshot().progress,0);assert(h.sounds.some(s=>s.kind==='retry'));const answer=r.snapshot().task.solution[0];h.perform(answer);assert.equal(r.snapshot().progress,1/3);assert.equal(h.scene.activeCamera.name,'pumpkin-cockpit-camera');h.close();
+});
+test('broom gate effects and all three-round wins release the fixed effect pool and notify once',()=>{
+ const h=harness(),r=h.r;r.start('broom',{seed:5});for(let n=0;n<3;n++)h.perform(r.snapshot().task.solution[0]);assert(r.snapshot().completed);assert.equal(h.completed,1);for(let n=0;n<100;n++)r.tick(.1);assert.equal(h.completed,1);assert(h.scene.meshes.filter(m=>m.name==='mini-operation-particle').length<=24);h.close();
+});
+test('reduced motion uses brief stationary feedback; leaving cancels an unfinished operation',()=>{
+ const h=harness(true),r=h.r;r.start('potions',{seed:1});const bottle=h.scene.meshes.find(m=>m.name==='mini-bottle'&&m.position.x<0),p=bottle.position.clone();r.action('add:0');r.tick(.1);assert(bottle.position.equals(p));assert(r.snapshot().animation.duration<.3);h.drain();assert.equal(r.snapshot().amounts[0],1);r.action('check');assert(r.snapshot().busy);h.close();r.tick(.1);assert.equal(r.snapshot(),null);assert.equal(h.completed,0);
+});

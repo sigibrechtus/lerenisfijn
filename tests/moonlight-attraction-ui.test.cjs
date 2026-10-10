@@ -6,7 +6,7 @@ const source=fs.readFileSync(path.join(__dirname,'../games/moonlight-hollow/attr
 function harness(){
  const elements=new Map(),events={},documentEvents={},profiles=[{id:'one',campaign:{completed:[1,2]},attractions:{}},{id:'two',campaign:{completed:[3]},attractions:{}}];
  let current=0,blocked=false,mode='third',external=false,saveCount=0,resetCount=0,leaveCount=0,failStart=false,failCreate=false;
- const prefs={lang:'nl',difficulty:'auto',quality:'low',motion:true},runtimeCalls=[],music=[];
+ const prefs={lang:'nl',difficulty:'auto',quality:'low',motion:true},runtimeCalls=[],music=[],motors=[];
  function element(id='',tagName='DIV'){
   const classes=new Set(),listeners={};
   return {id,tagName,children:[],dataset:{},hidden:false,disabled:false,textContent:'',options:[{},{}],attributes:{},classList:{add:k=>classes.add(k),remove:k=>classes.delete(k),contains:k=>classes.has(k)},append(x){this.children.push(x);},replaceChildren(...children){this.children=children;},querySelectorAll(){return this.children;},setAttribute(k,v){this.attributes[k]=v;},addEventListener(k,fn){(listeners[k]??=[]).push(fn);},dispatch(k,e){for(const fn of listeners[k]||[])fn(e);},focus(){doc.activeElement=this;},close(){this.closed=true;}};
@@ -18,9 +18,9 @@ function harness(){
  const destinationCalls={language:[],ticks:[]};
  const win={BABYLON:{Vector3:{Up:()=>({}),TransformNormal:()=>({normalize:()=>({})})}},addEventListener:(k,fn)=>events[k]=fn,MoonMiniGames:Games,MoonDestinations:{sites:Destinations.sites,create:()=>({nearest:Destinations.nearest,language:l=>destinationCalls.language.push(l),tick:(...args)=>destinationCalls.ticks.push(args)})},MoonMiniGameWorld:{create(options){if(failCreate)throw Error('create');const rt={options,inputCalls:[],disposed:false,start(id,config){if(failStart)throw Error('start');this.id=id;this.config=config;this.previous=world.scene.activeCamera;world.scene.activeCamera={name:'mini',computeWorldMatrix(){},getForwardRay:()=>({direction:{}}),getWorldMatrix:()=>({})};this.game=Games.create(id,config);options.onUpdate(this.game.snapshot());},action(id){const snap=this.game.action(id);options.onUpdate(snap);if(snap.completed)options.onComplete(snap);},input(...axes){this.inputCalls.push(axes);},refit(){},tick(dt){this.lastTick=dt;},dispose(){this.disposed=true;world.scene.activeCamera=this.previous;}};runtimeCalls.push(rt);return rt;}}};
  vm.runInNewContext(source,{window:win,document:doc,console:{error(){}}});
- const controller=win.MoonAttractions.attach({$,world,prefs:()=>prefs,profile:()=>profiles[current],save:()=>saveCount++,blocked:()=>blocked,leaveCampaign:()=>leaveCount++,soundtrack:{weather(){},setMusic:(...args)=>music.push(args),position(){}},effect(){},frame:()=>({width:1,height:1})});
+ const controller=win.MoonAttractions.attach({$,world,prefs:()=>prefs,profile:()=>profiles[current],save:()=>saveCount++,blocked:()=>blocked,leaveCampaign:()=>leaveCount++,soundtrack:{vehicle:s=>motors.push(s),weather(){},setMusic:(...args)=>music.push(args),position(){}},effect(){},frame:()=>({width:1,height:1})});
  function finish(){const rt=runtimeCalls.at(-1);while(!rt.game.snapshot().completed){const s=rt.game.snapshot();if(s.id==='potions'){for(let i=0;i<2;i++)for(let n=0;n<s.task.solution[i];n++)rt.action('add:'+i);rt.action('check');}else{for(const id of s.task.solution)rt.action(id);if(['garden','railway'].includes(s.id))rt.action('check');}}return rt.game.snapshot();}
- return {$,doc,prefs,profiles,world,events,controller,runtimeCalls,destinationCalls,music,finish,setProfile:i=>current=i,setBlocked:v=>blocked=v,setFailStart:v=>failStart=v,setFailCreate:v=>failCreate=v,get saved(){return saveCount;},get resets(){return resetCount;},get external(){return external;},get campaignLeaves(){return leaveCount;}};
+ return {$,doc,prefs,profiles,world,events,controller,runtimeCalls,destinationCalls,music,motors,finish,setProfile:i=>current=i,setBlocked:v=>blocked=v,setFailStart:v=>failStart=v,setFailCreate:v=>failCreate=v,get saved(){return saveCount;},get resets(){return resetCount;},get external(){return external;},get campaignLeaves(){return leaveCount;}};
 }
 test('six map destinations require a started journey and offer entry after travel',()=>{
  const h=harness();assert.equal(h.$('attraction-map').children.length,6);assert(h.$('attraction-map').children.every(b=>b.disabled));assert.equal(h.controller.enter('mansion'),false);
@@ -53,4 +53,10 @@ test('runtime start failure returns to exploration and allows retry',()=>{
 
 test('runtime construction failure restores editing and external activity state',()=>{
  const h=harness();h.controller.start();h.setFailCreate(true);assert.equal(h.controller.enter('garden'),false);assert.equal(h.controller.active,null);assert.equal(h.external,false);assert(h.$('mini-panel').hidden);assert(!h.$('language').disabled);assert(!h.doc.body.classList.contains('mini-game-mode'));h.setFailCreate(false);assert(h.controller.enter('garden'));
+});
+
+test('racing HUD keeps its riddle, separates guided help and reports live telemetry; pause/exit silence the engine',()=>{
+ const h=harness();h.controller.start();h.controller.enter('rally');const rt=h.runtimeCalls.at(-1);assert(h.doc.body.classList.contains('rally-mode'));assert.equal(h.$('mini-tools').open,false);assert.equal(h.$('mini-race-telemetry').hidden,false);assert.match(h.$('mini-question').textContent,/poort/);
+ rt.options.onTelemetry({...rt.game.snapshot(),speed:5,speedKmh:18,speedLimit:6,gear:'D',distance:11});assert.equal(h.$('mini-speed').textContent,'18');assert.equal(h.$('mini-gear').textContent,'D');assert.match(h.$('mini-distance').textContent,/11 m/);assert.equal(h.motors.at(-1).active,true);
+ rt.options.onUpdate({...rt.game.snapshot(),busy:true,animation:{kind:'gate'},choices:rt.game.snapshot().choices.map(c=>({...c,disabled:true}))});assert.equal(h.$('mini-panel').attributes['aria-busy'],'true');assert(h.$('mini-choices').children.every(b=>b.disabled));assert.equal(h.motors.at(-1).active,false);h.setBlocked(true);h.controller.frame(.1,{blocked:true});assert.equal(h.motors.at(-1),null);h.controller.leave();assert(!h.doc.body.classList.contains('rally-mode'));assert(h.$('mini-race-telemetry').hidden);assert.equal(h.motors.at(-1),null);
 });

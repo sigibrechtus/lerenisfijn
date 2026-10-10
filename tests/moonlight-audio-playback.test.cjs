@@ -12,7 +12,7 @@ function harness({hold=false,blocked=false,sessionThrows=false,spatial=false,leg
     createStereoPanner(){const n=new Node();n.pan=new Param(0);return n;}
     createBuffer(channels=1,length=1){return weather?{warm:length===1,getChannelData:()=>new Float32Array(length)}:{warm:true};}
     createBiquadFilter(){if(!weather)return null;const n=new Node();n.frequency=new Param();n.Q=new Param();return n;}
-    createBufferSource(){const n=new Node();n.start=()=>{n.started=true;sources.push(n);order.push(n.buffer.warm?'warm-start':'audio-start');};n.stop=()=>{n.stopped=true;n.onended?.();};return n;}
+    createBufferSource(){const n=new Node();n.playbackRate=new Param();n.start=()=>{n.started=true;sources.push(n);order.push(n.buffer.warm?'warm-start':'audio-start');};n.stop=()=>{n.stopped=true;n.onended?.();};return n;}
     resume(){order.push('resume');if(!blocked)this.state='running';return Promise.resolve();}
     suspend(){this.state='suspended';return Promise.resolve();}
     close(){this.state='closed';return Promise.resolve();}
@@ -73,3 +73,9 @@ test('mute and in-flight cancellation also apply to spatial sounds',async()=>{
 });
 
 test('rain and wind loops use the effects volume, master mute, suspend and cleanup',async()=>{const h=harness({weather:true});h.audio.weather({rain:1,wind:.7});await h.audio.unlock();await h.flush();const noise=h.sources.filter(s=>s.buffer.getChannelData&&!s.buffer.warm);assert.equal(noise.length,2);for(const source of noise)assert(source.connections[0].gain.value>0);h.prefs.muted=true;h.audio.update();for(const source of noise)assert.equal(source.connections[0].gain.value,0);h.prefs.muted=false;await h.audio.suspend();assert.equal(h.audio.state().context,'suspended');await h.audio.resume();for(const source of noise)assert(source.connections[0].gain.value>0);h.audio.stop();assert.equal(h.audio.state().loops,0);assert(noise.every(s=>s.stopped));});
+
+test('rally engine pitch follows speed with one loop and stops for mute, pause and leaving',async()=>{
+ const h=harness({weather:true});assert.equal(h.audio.vehicle({active:true,speed:0,limit:6}),false);await h.audio.unlock();await h.flush();const initial=h.sources.length;
+ assert(h.audio.vehicle({active:true,speed:0,limit:6}));const motor=h.sources.at(-1),idle=motor.playbackRate.value;for(let n=0;n<50;n++)h.audio.vehicle({active:true,speed:6,limit:6});assert.equal(h.sources.length,initial+1);assert(motor.playbackRate.value>idle);assert(h.audio.state().vehicle);
+ h.prefs.muted=true;assert.equal(h.audio.vehicle({active:true,speed:6,limit:6}),false);assert(motor.stopped);assert(!h.audio.state().vehicle);h.prefs.muted=false;h.audio.vehicle({active:true,speed:3,limit:6});const second=h.sources.at(-1);await h.audio.suspend();assert(second.stopped);assert(!h.audio.state().vehicle);await h.audio.resume();h.audio.vehicle({active:true,speed:1,limit:6});const last=h.sources.at(-1);h.audio.vehicle(null);assert(last.stopped);assert(!h.audio.state().vehicle);
+});
