@@ -3,7 +3,7 @@ No samples, copyrighted compositions or external generation services.
 Run from the repository root: python tools/render-moonlight-audio.py
 """
 from pathlib import Path
-import json, math, subprocess, tempfile
+import json, math, subprocess, tempfile, sys
 import numpy as np
 from scipy.io import wavfile
 from scipy.signal import butter, sosfilt
@@ -123,4 +123,5 @@ for name,notes in cues.items():
   add(buf,w.astype(np.float32),0,.045)
  export(name,reverb(buf),'effects')
 (ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+subprocess.run([sys.executable,str(Path(__file__).with_name('render-moonlight-thunder.py'))],check=True)
 print(json.dumps({'musicTracks':len(manifest['music']),'ambienceLoops':len(manifest['ambience']),'effects':len(manifest['effects']),'totalBytes':sum(f.stat().st_size for f in ROOT.iterdir())}))

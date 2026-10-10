@@ -1,7 +1,7 @@
 /* Original local soundtrack + Foley playback. No external audio service or autoplay. */
 (function(root){'use strict';
 const TRACKS=['menu','village','woods','garden','library','tower','castle','festival'];
-const EFFECTS=['ui','back','pickup','place','remove','tile','stone','pour','bubble','bottle','letter','page','clock','mirror','pattern','hint','retry','solve','lantern','path','chapter','festival','train','ghost','reset','riddle','leaf','footstep-stone','footstep-leaves','footstep-wood'];
+const EFFECTS=['ui','back','pickup','place','remove','tile','stone','pour','bubble','bottle','letter','page','clock','mirror','pattern','hint','retry','solve','lantern','path','chapter','festival','train','ghost','reset','riddle','leaf','footstep-stone','footstep-leaves','footstep-wood','thunder'];
 const AREAS={bridge:'woods',garden:'garden',library:'library',clock:'tower',lights:'castle'};
 const SITES={bridge:[-21,-13],garden:[19,-13],library:[-22,20],clock:[20,21],lights:[0,43]};
 function environment(x,z,forced=null){if(forced&&AREAS[forced])return AREAS[forced];let area='village',best=16;for(const [key,p]of Object.entries(SITES)){const d=Math.hypot(x-p[0],z-p[1]);if(d<best){best=d;area=AREAS[key];}}return area;}

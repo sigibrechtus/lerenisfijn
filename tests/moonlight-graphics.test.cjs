@@ -6,7 +6,7 @@ test('new script dependencies exist and are included in the offline release',()=
   const scripts=[...html.matchAll(/<script defer src="([^"]+)"/g)].map(m=>m[1]);
   const cachedScripts=[...scripts,...[...fs.readFileSync(path.join(base,'legacy.html'),'utf8').matchAll(/<script[^>]*src="([^"]+)"/g)].map(m=>m[1])];
   for(const name of cachedScripts){assert(fs.existsSync(path.join(base,name.split('?')[0])),name);assert(sw.includes("'./"+name+"'"),name+' must be cached');}
-  for(const dependency of ['controls.js?v=8','graphics.js?v=9','railway.js?v=11'])assert(scripts.indexOf(dependency)<scripts.indexOf('world.js?v=12'));
+  for(const dependency of ['controls.js?v=8','graphics.js?v=9','railway.js?v=11','atmosphere.js?v=13'])assert(scripts.indexOf(dependency)<scripts.indexOf('world.js?v=13'));
 });
 test('graphics budgets keep phones sharp and bound framebuffer cost on large screens',()=>{
   const phone=G.profile('balanced',390,844,3);assert.equal(phone.ratio,1.5);assert.equal(phone.scaling,2/3);assert.equal(phone.glow,true);

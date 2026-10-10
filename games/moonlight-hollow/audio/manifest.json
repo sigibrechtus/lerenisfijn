@@ -250,6 +250,11 @@
       "file": "footstep-wood.wav",
       "duration": 0.45,
       "loop": false
+    },
+    "thunder": {
+      "file": "thunder.wav",
+      "duration": 3,
+      "description": "Original soft distant thunder rumble"
     }
   }
 }

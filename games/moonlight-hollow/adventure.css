@@ -30,3 +30,5 @@
 
 .train-mode .joystick,.train-mode .interact,.train-mode .quest,.train-mode .companion{display:none!important}
 .train-mode .ride:disabled{opacity:1;color:#ffe6ae;cursor:default}
+
+.world-weather{position:absolute;left:1rem;bottom:6rem;padding:.4rem .7rem;font-size:.75rem;pointer-events:none;color:#fff0d2}body.puzzle-mode .world-weather{display:none}@media(max-width:650px){.world-weather{bottom:11rem;left:.7rem}}
