@@ -7,10 +7,16 @@ function profile(tier,width,height,dpr=1){
   const ratio=Math.min(config.ratio,Math.max(1,Number(dpr)||1),Math.sqrt(config.pixels/Math.max(1,width*height)));
   return {...config,tier,ratio,scaling:1/ratio,fxaa:tier!=='low'};
 }
-function adaptive(){let tier=1,warmup=0,windowTime=0,frames=0,goodTime=0,cooldown=0;
-  function reset(){tier=1;warmup=0;windowTime=0;frames=0;goodTime=0;cooldown=0;}
+function adaptive(){let tier=1,warmup=0,windowTime=0,frames=0,goodTime=0,cooldown=0,gapGuard=0;
+  function reset(){tier=1;warmup=0;windowTime=0;frames=0;goodTime=0;cooldown=0;gapGuard=0;}
   function sample(dt){
-    if(!Number.isFinite(dt)||dt<=0||dt>.25){windowTime=0;frames=0;goodTime=0;return null;}
+    if(!Number.isFinite(dt)||dt<=0){windowTime=0;frames=0;goodTime=0;gapGuard=0;return null;}
+    // Ignore a single resume gap, but retain repeated stalls as performance evidence.
+    if(dt>1){
+      if(gapGuard<=0){gapGuard=6;windowTime=0;frames=0;goodTime=0;return null;}
+      gapGuard=6;
+      dt=Math.min(dt,2);
+    }else gapGuard=Math.max(0,gapGuard-dt);
     warmup+=dt;if(warmup<3)return null;cooldown=Math.max(0,cooldown-dt);windowTime+=dt;frames++;
     if(windowTime<2)return null;const fps=frames/windowTime,span=windowTime;windowTime=0;frames=0;
     if(cooldown)return null;

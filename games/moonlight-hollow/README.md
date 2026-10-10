@@ -77,3 +77,7 @@ NODE_PATH="$CODEX_PRIMARY_RUNTIME_NODE_MODULES" node tests/moonlight-world-smoke
 ```
 
 NullEngine confirms movement, camera gestures, zoom limits, quality settings, scene construction and exercise projections; it does not render GPU pixels. The available cloud browser reports WebGL unavailable. GPU appearance, real touch behavior and performance on iOS/Android remain unverified on physical devices.
+
+### Secondary review (v9)
+
+Automatic quality now includes repeated active-frame stalls above 250 ms in its performance measurements. An isolated resume gap above one second is ignored; recurring very long frames within six active seconds still lower quality. Regression checks cover steady slow frames, repeated stalls, recovery, and the isolated-gap guard. The graphics dependency and offline cache are versioned for this fix.
