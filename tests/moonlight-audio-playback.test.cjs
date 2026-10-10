@@ -1,16 +1,17 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync(require('node:path').join(__dirname,'../games/moonlight-hollow/audio.js'),'utf8');
-function harness({hold=false,blocked=false,sessionThrows=false,spatial=false,legacy=false}={}){
+function harness({hold=false,blocked=false,sessionThrows=false,spatial=false,legacy=false,weather=false}={}){
   const order=[],sources=[],nodes=[],requests=[],waiting=[],statuses=[],timers=[];
   class Param{constructor(value=1){this.value=value;}setTargetAtTime(v){this.value=v;}setValueAtTime(v){this.value=v;}linearRampToValueAtTime(v){this.value=v;}cancelScheduledValues(){}}
   class Node{constructor(){this.connections=[];nodes.push(this);}connect(n){this.connections.push(n);}disconnect(){this.connections=[];}}
   class Context{
-    constructor(){order.push('context');this.state='suspended';this.currentTime=0;this.sampleRate=48000;this.destination=new Node();if(spatial){this.listener=new Node();if(legacy){this.listener.setPosition=(...v)=>this.listener.position=v;this.listener.setOrientation=(...v)=>this.listener.orientation=v;}else for(const k of ['positionX','positionY','positionZ','forwardX','forwardY','forwardZ','upX','upY','upZ'])this.listener[k]=new Param(0);this.createPanner=()=>{const n=new Node();n.spatial=true;if(legacy)n.setPosition=(...v)=>n.position=v;else for(const k of ['positionX','positionY','positionZ'])n[k]=new Param(0);return n;};}Context.last=this;}
+    constructor(){order.push('context');this.state='suspended';this.currentTime=0;this.sampleRate=48000;this.destination=new Node();if(spatial){this.listener=new Node();if(legacy){this.listener.setPosition=(...v)=>this.listener.position=v;this.listener.setOrientation=(...v)=>this.listener.orientation=v;}else for(const k of ['positionX','positionY','positionZ','forwardX','forwardY','forwardZ','upX','upY','upZ'])this.listener[k]=new Param(0);this.createPanner=()=>{const n=new Node();n.spatial=true;if(legacy)n.setPosition=(...v)=>n.position=v;else for(const k of ['positionX','positionY','positionZ'])n[k]=new Param(0);return n;};}if(!weather)this.createBiquadFilter=undefined;Context.last=this;}
     createGain(){const n=new Node();n.gain=new Param();return n;}
     createDynamicsCompressor(){const n=new Node();for(const k of ['threshold','knee','ratio','attack','release'])n[k]=new Param();return n;}
     createAnalyser(){const n=new Node();n.fftSize=2048;n.getFloatTimeDomainData=a=>a.fill(.03);return n;}
     createStereoPanner(){const n=new Node();n.pan=new Param(0);return n;}
-    createBuffer(){return{warm:true};}
+    createBuffer(channels=1,length=1){return weather?{warm:length===1,getChannelData:()=>new Float32Array(length)}:{warm:true};}
+    createBiquadFilter(){if(!weather)return null;const n=new Node();n.frequency=new Param();n.Q=new Param();return n;}
     createBufferSource(){const n=new Node();n.start=()=>{n.started=true;sources.push(n);order.push(n.buffer.warm?'warm-start':'audio-start');};n.stop=()=>{n.stopped=true;n.onended?.();};return n;}
     resume(){order.push('resume');if(!blocked)this.state='running';return Promise.resolve();}
     suspend(){this.state='suspended';return Promise.resolve();}
@@ -70,3 +71,5 @@ test('mute and in-flight cancellation also apply to spatial sounds',async()=>{
  const h=harness({spatial:true});await h.audio.unlock();await h.flush();h.prefs.muted=true;assert.equal(await h.audio.play('train',{point:{x:2,y:0,z:3},force:true}),false);assert(!h.nodes.some(n=>n.spatial));h.prefs.muted=false;
  h.context().decodeAudioData=()=>new Promise(resolve=>h.waiting.push(()=>resolve({decoded:true})));const effect=h.audio.play('thunder',{point:{x:28,y:40,z:68},force:true});await h.flush();await h.audio.suspend();await h.audio.resume();h.waiting.splice(0).forEach(fn=>fn());assert.equal(await effect,false);assert(!h.nodes.some(n=>n.spatial));
 });
+
+test('rain and wind loops use the effects volume, master mute, suspend and cleanup',async()=>{const h=harness({weather:true});h.audio.weather({rain:1,wind:.7});await h.audio.unlock();await h.flush();const noise=h.sources.filter(s=>s.buffer.getChannelData&&!s.buffer.warm);assert.equal(noise.length,2);for(const source of noise)assert(source.connections[0].gain.value>0);h.prefs.muted=true;h.audio.update();for(const source of noise)assert.equal(source.connections[0].gain.value,0);h.prefs.muted=false;await h.audio.suspend();assert.equal(h.audio.state().context,'suspended');await h.audio.resume();for(const source of noise)assert(source.connections[0].gain.value>0);h.audio.stop();assert.equal(h.audio.state().loops,0);assert(noise.every(s=>s.stopped));});

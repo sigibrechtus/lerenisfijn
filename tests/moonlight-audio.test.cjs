@@ -8,3 +8,5 @@ test('service worker caches all audio required for offline play',()=>{const sw=f
 
 
 test('expanded-world sound regions use the same coordinates as the new landscape',()=>{const previous=global.MoonLandscape;global.MoonLandscape=require('../games/moonlight-hollow/landscape.js');try{for(const [key,p]of Object.entries(global.MoonLandscape.sites))assert.equal(A.environment(p.x,p.z),({bridge:'woods',garden:'garden',library:'library',clock:'tower',lights:'castle'})[key]);assert.equal(A.environment(0,0),'village');}finally{global.MoonLandscape=previous;}});
+
+test('regional hysteresis prevents music chatter at district borders',()=>{const Audio=require('../games/moonlight-hollow/audio.js'),L=require('../games/moonlight-hollow/landscape.js');global.MoonLandscape=L;const p=L.sites.garden;assert.equal(Audio.environment(p.x+24,p.z,null,'garden'),'garden');assert.equal(Audio.environment(p.x+28,p.z,null,'garden'),'village');assert.equal(Audio.environment(p.x,p.z,'lights','garden'),'castle');});

@@ -152,3 +152,16 @@ Primary references:
 - https://developer.mozilla.org/en-US/docs/Web/API/PannerNode
 - https://stately.ai/docs/quick-start
 - https://github.com/tweenjs/tween.js
+
+### Seasonal experience — release 17 (10 October 2026)
+
+- `hud.js` owns seasonal presentation tokens and bilingual exercise guides independently of the learning rules and renderer. Halloween is the default; the Christmas interface palette can be selected in Settings. This setting changes the interface styling; the adventure, models and existing soundtrack remain the Halloween campaign.
+- Every exercise presents its mission, specific instructions, labelled buttons, selected tools and live progress. The actual panel bounds continue to determine the unobstructed 3D camera viewport. Station destination, calling and boarding controls now share one panel.
+- Retained all eight original music arrangements and six location ambience beds. Regional hysteresis prevents repeated crossfades at district boundaries, and the HUD identifies the playing track. Added deterministic local rain and wind sound beds, controlled by effects volume and master mute, with pause/resume and source cleanup.
+- Added natural rain transitions and explicit clear/fog/rain/storm presets, camera-local precipitation, soft ground haze, gusting grass/leaves and wet material highlights. Particle capacity is bounded at 700; quality tiers select emission rates of 90/220/380 per second. Exercises clear rain and haze and retain steady light. Reduced motion disables animated precipitation, swaying and lightning.
+- Added derived tangent-space normal maps for timber, masonry, plaster, roofs, cobblestones and rocks. Detailed cottage roofs, shutters, timber framing and steps; castle buttresses, battlements and an arched doorway; ivy, boulders, grass clusters and lantern garlands. Canopy clusters and grass use shared instanced geometry; optional scenery is reduced in Eco mode.
+- Runtime remains the vendored Babylon.js 9.30.0, matching the upstream latest release inspected on 10 October. No new graphics CDN, build pipeline or paid asset provider was introduced. Blender and the Game Development Studio CLI were not available in this environment; the added meshes and surface maps are original procedural assets.
+
+Validation: 74 unit/controller tests; 180 constructed and solved exercise scenes across two languages and three levels; touch movement, camera gestures, railway calls/rides, inventory and scene integration; weather cleanup, normal-map presence, reduced motion and quality emission budgets. Camera fitting checks cover desktop and portrait/landscape phone aspect ratios. These scene checks use Babylon NullEngine, not GPU rendering or device frame-rate measurements. The cloud Chrome browser also fails the existing production game's WebGL capability check, so 3D appearance and device performance require a WebGL-capable browser.
+
+Framework references: https://github.com/BabylonJS/Babylon.js/releases/tag/9.30.0 ; https://doc.babylonjs.com/features/featuresDeepDive/particles/particle_system/ ; https://doc.babylonjs.com/features/featuresDeepDive/materials/using/materials_introduction/ ; https://doc.babylonjs.com/features/featuresDeepDive/mesh/copies/instances ; https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay .
