@@ -42,6 +42,27 @@ for(let n=1;n<=12;n++){
  assert.equal(pickedAnswer,180+(n%12)*5,'selecting clock number '+n+' selects its minutes');
 }
 world.scene.pick=originalPick;world.leave();
+// Verify ray reflection against the actual normals of the drawn opaque mirror faces.
+const basicOptics=MoonCampaign.make(11,2),basicSolution=basicOptics.mirrors.map(m=>m.solution);
+world.enter(basicOptics,basicSolution);
+for(const hit of MoonEngine.trace(basicOptics,basicSolution).hits){
+ const face=world.scene.meshes.find(m=>m.name==='mirror'&&m.metadata?.opticIndex===hit.index);face.computeWorldMatrix(true);
+ const normal=B.Vector3.TransformNormal(B.Vector3.Forward(),face.getWorldMatrix()).normalize(),incoming=new B.Vector3(hit.incoming.x,0,hit.incoming.y),out=hit.outgoing[0],outgoing=new B.Vector3(out.x,0,out.y);
+ const reflected=incoming.subtract(normal.scale(2*B.Vector3.Dot(incoming,normal)));
+ assert(B.Vector3.Distance(reflected,outgoing)<1e-6,'rendered mirror normal agrees with reflection law');
+ assert(B.Vector3.Dot(incoming.negate(),normal)*B.Vector3.Dot(outgoing,normal)>0,'reflection remains on incoming side of the drawn surface');assert.equal(face.material.alpha,1,'ordinary mirror is opaque');
+ assert(face.getChildMeshes().every(m=>m.layerMask===face.layerMask),'reflector frames remain visible in puzzle layer');
+}
+world.leave();
+const advancedOptics=MoonCampaign.make(22,3);let opticalAnswer,stockBlocked=0;api.change=a=>{opticalAnswer=a;};api.opticBlocked=()=>stockBlocked++;
+world.enter(advancedOptics,MoonCampaign.initial(advancedOptics));world.select(1);world.objectsUse();assert.equal(opticalAnswer[0].type,'splitter');world.objectsMove(1);world.objectsUse();assert.equal(stockBlocked,1,'cannot create a second prism');
+world.select(0);world.objectsUse();assert.equal(opticalAnswer[1].type,'mirror');world.select(2);world.objectsMove(-1);world.objectsUse();assert.equal(MoonEngine.remaining(advancedOptics,opticalAnswer).splitter,1,'returning a part refills the stock');
+const advancedSolution=advancedOptics.mirrors.map(m=>m.solution);world.change(advancedSolution);
+assert.equal(world.scene.meshes.filter(m=>m.name==='target-light'&&m.parent?.name==='puzzle'&&m.material.name==='warm-light').length,2,'both lanterns light on a correct solution');assert(world.scene.getMeshByName('beam-splitting-prism').material.alpha<1);
+const beamSegments=world.scene.meshes.filter(m=>m.name==='light-beam'&&m.parent?.name==='puzzle').map(m=>m.metadata.segment);assert(beamSegments.some(s=>s.intensity===.5));assert(world.scene.getMeshByName('beam-direction'));
+world.camera.getViewMatrix(true);const opticTransform=world.camera.getViewMatrix().multiply(world.camera.getProjectionMatrix(true)),opticViewport=world.camera.viewport.toGlobal(390,844);
+for(const mesh of world.scene.getTransformNodeByName('puzzle').getChildMeshes()){mesh.computeWorldMatrix(true);for(const corner of mesh.getBoundingInfo().boundingBox.vectorsWorld){const p=B.Vector3.Project(corner,B.Matrix.Identity(),opticTransform,opticViewport);assert(p.x>=0&&p.x<=390&&p.y>=0&&p.y<=844&&p.z>0&&p.z<1,'advanced optics and tray remain fully framed');}}
+world.leave();
 // Train motion, onboard camera and passenger attachment use the real world implementation.
 const train=world.scene.getTransformNodeByName('moon-express'),lumi=world.scene.getTransformNodeByName('Lumi');
 world.start({x:0,z:-3});assert.equal(world.ride(),false,'cannot board from across the village');
@@ -61,4 +82,4 @@ for(let i=0;i<900;i++)global.frame();assert.equal(train.position.z,0);assert.equ
 assert.equal(world.ride(),true);for(let i=0;i<150;i++)global.frame();world.teleport('garden');assert.equal(world.hero.parent,null);assert(world.hero.isEnabled());assert.equal(world.scene.activeCamera,world.camera);assert.equal(world.hero.position.x,world.sites.garden.x);assert.equal(train.position.z,28);
 world.start({x:8,z:28});assert.equal(world.ride(),true);world.start({x:0,z:-3},0);assert.equal(world.hero.parent,null);assert.equal(world.hero.position.z,-3);assert.equal(train.position.z,0);assert.equal(world.scene.activeCamera,world.camera);world.start({x:8,z:28},1);assert.equal(train.position.z,28);assert.equal(world.ride(),true,'saved station supports a return trip after reload');world.start({x:0,z:-3},0);
 assert(world.scene.getMaterialByName('wood').diffuseTexture);assert(world.scene.getMeshByName('twilight-sky'));assert(world.scene.imageProcessingConfiguration.toneMappingEnabled);world.quality('low');assert.equal(world.scene.effectLayers.find(v=>v.name==='lantern-glow').isEnabled,false);world.quality('high');assert.equal(world.scene.effectLayers.find(v=>v.name==='lantern-glow').isEnabled,true);world.stop();
-console.log(JSON.stringify({proportionalMovement:true,dragDoesNotWalk:true,pinchBounds:true,puzzleViewRestored:true,materialsAndQualityTiers:true,clockOrientationAndSelection:true,trainRideAndPassengers:true}));
+console.log(JSON.stringify({proportionalMovement:true,dragDoesNotWalk:true,pinchBounds:true,puzzleViewRestored:true,materialsAndQualityTiers:true,clockOrientationAndSelection:true,trainRideAndPassengers:true,mirrorSurfaceAndInventory:true}));
