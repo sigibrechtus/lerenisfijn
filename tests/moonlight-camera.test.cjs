@@ -14,3 +14,12 @@ test('perspective fit contains all corners of wide, tall and deep activities wit
   }
 });
 test('camera transitions take the short rotation and ease without overshooting',()=>{assert(Math.abs(F.angleDelta(Math.PI-.1,-Math.PI+.1)-.2)<1e-9);assert.equal(F.ease(-1),0);assert.equal(F.ease(2),1);let last=0;for(let i=0;i<=100;i++){const value=F.ease(i/100);assert(value>=last&&value<=1);last=value;}});
+test('low activity framing never raises the eye and constrains distance, gaze and field of view',()=>{
+  for(const supportY of [-3,.125,8])for(const aspect of [.46,.8,1.78,5.5])for(const [width,height,depth]of [[8,3,.5],[6,4.5,1],[6,1.5,8]]){
+    const bounds={min:{x:20-width/2,y:supportY,z:-depth/2},max:{x:20+width/2,y:supportY+height,z:depth/2}},p=F.lowEyeFrame(bounds,aspect,supportY);
+    assert(Math.abs(p.position.y-supportY-2.08)<1e-9);assert(p.distance>=3&&p.distance<=18);assert(p.fov<=1.2);assert(p.horizontalFov<=1.65+1e-9);assert(p.pitch<=.65);
+    const s=Math.sin(p.pitch),c=Math.cos(p.pitch),tanV=Math.tan(p.fov/2),tanH=tanV*aspect;
+    for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z]){const dx=x-p.position.x,dy=y-p.position.y,dz=z-p.position.z,depth=dz*c-dy*s;assert(depth>.2);assert(Math.abs(dx)/(depth*tanH)<.9);assert(Math.abs(dy*c+dz*s)/(depth*tanV)<.9);}
+  }
+  const narrow=F.lowEyeFrame({min:{x:-3,y:0,z:0},max:{x:3,y:3.85,z:1}},12,0,1.85,24);assert.equal(narrow.position.y,1.85);assert(narrow.distance<=24);assert(narrow.horizontalFov<=1.65+1e-9);
+});

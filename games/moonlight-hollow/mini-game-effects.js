@@ -29,22 +29,22 @@ function create({B,scene,layer,origin=120,quality='balanced',reducedMotion=false
   for(const item of o.saved){const m=item.m;m.position.copyFrom(item.p);m.rotation.copyFrom(item.r);m.scaling.copyFrom(item.s);}
   if(!reducedMotion){
    for(const item of o.saved.filter(v=>o.targets.includes(v.m))){const m=item.m;
-    if(o.kind==='pour'||o.kind==='powder'){m.position.x=item.p.x*(1-.8*e);m.position.y=item.p.y+arc*2;m.rotation.z=(item.p.x<0?-1:1)*arc*.85;}
-    else if(o.kind==='unlock'){m.position.x=item.p.x*(1-e);m.position.y=item.p.y+arc*1.5;m.position.z=item.p.z+(19-item.p.z)*e;m.rotation.y=item.r.y+e*Math.PI;}
-    else if(o.kind==='plant'){const i=o.before.selected.length,x=(i-(o.before.task.items.length-1)/2)*5;m.position.x=item.p.x+(x-item.p.x)*e;m.position.z=item.p.z+6*e;m.position.y=item.p.y*(1-.35*e)+arc;}
+    if(o.kind==='pour'||o.kind==='powder'){m.position.x=item.p.x*(1-.8*e);m.position.y=item.p.y+arc*.8;m.rotation.z=(item.p.x<0?-1:1)*arc*.85;}
+    else if(o.kind==='unlock'){m.position.x=item.p.x*(1-e);m.position.y=item.p.y+arc*.6;m.position.z=item.p.z+((name(o.meshes,'door')?.position.z||8.35)-item.p.z)*e;m.rotation.y=item.r.y+e*Math.PI;}
+    else if(o.kind==='plant'){const i=o.before.selected.length,bed=o.meshes.filter(v=>v.name==='mini-garden-bed')[i],x=bed?.position.x||0,z=bed?.position.z||9;m.position.x=item.p.x+(x-item.p.x)*e;m.position.z=item.p.z+(z-item.p.z)*e;m.position.y=item.p.y+arc*.5;}
     else if(o.kind==='remove'){m.position.y=item.p.y+arc*.65;m.scaling.scaleInPlace(1-arc*.35);}
     else if(o.kind==='reset'){m.scaling.scaleInPlace(1-arc*.45);m.rotation.y=item.r.y+arc*.35;}
     else{m.position.y=item.p.y+arc*.35;m.scaling.scaleInPlace(1+arc*.15);}
    }
    const spoon=name(o.meshes,'stirrer'),liquid=name(o.meshes,'liquid'),door=name(o.meshes,'door'),train=name(o.meshes,'train');
-   if(o.kind==='mix'&&spoon){spoon.position.x=Math.cos(t*Math.PI*6)*.8;spoon.position.z=12+Math.sin(t*Math.PI*6)*.8;spoon.rotation.z=Math.sin(t*Math.PI*6)*.35;}
+   if(o.kind==='mix'&&spoon){const base=o.saved.find(v=>v.m===spoon).p;spoon.position.x=Math.cos(t*Math.PI*6)*.55;spoon.position.z=base.z+Math.sin(t*Math.PI*6)*.55;spoon.rotation.z=Math.sin(t*Math.PI*6)*.35;}
    if(o.kind==='mix'&&liquid)liquid.rotation.y=t*Math.PI*4;
    if(o.kind==='unlock'&&door&&o.correct)door.rotation.y=-e*1.2;
-   if(o.kind==='depart'&&train&&o.correct)train.position.z=4+e*19;
+   if(o.kind==='depart'&&train&&o.correct)train.position.z=o.saved.find(v=>v.m===train).p.z+e*9;
   }
   const count=reducedMotion?3:pool.length;
   for(let i=0;i<pool.length;i++){const m=pool[i];m.setEnabled(i<count&&t<1);if(i>=count)continue;const p=(t+i/count)%1,a=i*2.4;
-   if(o.kind==='pour'||o.kind==='powder'){m.position.set(Math.cos(a)*.65,origin+5-p*2.5,12+Math.sin(a)*.65);m.scaling.setAll(o.kind==='powder'?.55:.9);}
+   if(o.kind==='pour'||o.kind==='powder'){const bowl=name(o.meshes,'cauldron')?.position||new B.Vector3(0,origin+1.95,7);m.position.set(bowl.x+Math.cos(a)*.4,bowl.y+1.4-p*1.5,bowl.z+Math.sin(a)*.4);m.scaling.setAll(o.kind==='powder'?.55:.9);}
    else{const radius=reducedMotion?.45:1+p*2.5;m.position.set(o.point.x+Math.cos(a)*radius,o.point.y+(reducedMotion?.2:p*2),o.point.z+Math.sin(a)*radius);m.scaling.setAll(.4+Math.sin(Math.PI*p)*.8);}
    m.visibility=Math.max(.15,Math.sin(Math.PI*t));
   }

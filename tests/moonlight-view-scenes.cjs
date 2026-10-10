@@ -4,7 +4,7 @@ const base=path.join(__dirname,'../games/moonlight-hollow'),B=require(path.join(
 global.OffscreenCanvas=class{constructor(w,h){return createCanvas(w,h)}};
 global.window=global;global.matchMedia=()=>({matches:true});global.devicePixelRatio=3;
 const windowEvents={};global.addEventListener=(type,fn)=>(windowEvents[type]??=[]).push(fn);global.removeEventListener=()=>{};global.document={hidden:false,createElement:()=>createCanvas(512,512),addEventListener(){},removeEventListener(){}};global.BABYLON=B;
-for(const name of ['engine','camera','campaign','controls','graphics','landscape','railway','atmosphere','puzzle-actions'])require(path.join(base,name+'.js'));
+for(const name of ['engine','grounding','camera','campaign','controls','graphics','landscape','railway','atmosphere','puzzle-actions'])require(path.join(base,name+'.js'));
 const source=fs.readFileSync(path.join(base,'world.js'),'utf8').replace("if(!B||!B.Engine.isSupported())throw Error('WebGL');",'').replace("new B.Engine(canvas,true,{preserveDrawingBuffer:false,stencil:true,powerPreference:'high-performance'})","new B.NullEngine({renderWidth:390,renderHeight:844})").replaceAll('camera.attachControl(canvas,true);','').replace('engine.runRenderLoop(()=>{','engine.runRenderLoop=fn=>{global.frame=fn;};engine.runRenderLoop(()=>{');vm.runInThisContext(source);
 class Target{
  constructor(width=390,height=844){this.clientWidth=width;this.clientHeight=height;this.events={};this.captured=new Set();this.style={};this.classList={add(){},remove(){}};}
@@ -37,7 +37,7 @@ assert.notEqual(eye.rotation.y,beforeMouse,'right mouse drag looks');
 eye.rotation.set(0,Math.PI/2,0);world.setStick(0,-.5);steps(60);world.resetInput();
 assert(Math.abs(world.hero.position.x-position.x-2.5)<1e-6,'forward follows eye yaw at proportional joystick speed');assert(Math.abs(world.hero.position.z-position.z)<1e-6);
 const q=MoonCampaign.make(0,1,'nl');world.enter(q,MoonCampaign.initial(q));steps();
-assert.equal(world.scene.activeCamera,world.camera);assert(world.hero.isEnabled());key('v');assert.equal(world.viewMode(),'first');
+assert.equal(world.scene.activeCamera.name,'exercise-first-person');assert(!world.hero.isEnabled());key('v');assert.equal(world.viewMode(),'first');
 world.leave();steps();assert.equal(world.scene.activeCamera,eye);assert(!world.hero.isEnabled());assert.equal(eye.rotation.y,Math.PI/2);
 preference={motion:false,view:'first'};world.enter(q,MoonCampaign.initial(q));steps(45);world.leave();steps(45);assert.equal(world.scene.activeCamera,eye);assert(!world.hero.isEnabled());assert(Math.abs(eye.position.y-world.hero.position.y-2.08)<1e-6,'eye stays steady without head bob');preference={motion:true};
 // Third-person orbit still restores when an exercise is interrupted or left.

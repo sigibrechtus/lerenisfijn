@@ -4,14 +4,14 @@ const base=path.join(__dirname,'../games/moonlight-hollow'),B=require(path.join(
 global.OffscreenCanvas=class{constructor(w,h){return createCanvas(w,h)}};
 global.window=global;global.matchMedia=()=>({matches:true});global.devicePixelRatio=3;
 global.addEventListener=()=>{};global.removeEventListener=()=>{};global.document={hidden:false,createElement:()=>createCanvas(512,512),addEventListener(){},removeEventListener(){}};global.BABYLON=B;
-for(const name of ['engine','camera','campaign','controls','graphics','landscape','railway','atmosphere','puzzle-actions'])require(path.join(base,name+'.js'));
+for(const name of ['engine','grounding','camera','campaign','controls','graphics','landscape','railway','atmosphere','puzzle-actions'])require(path.join(base,name+'.js'));
 const source=fs.readFileSync(path.join(base,'world.js'),'utf8').replace("if(!B||!B.Engine.isSupported())throw Error('WebGL');",'').replace("new B.Engine(canvas,true,{preserveDrawingBuffer:false,stencil:true,powerPreference:'high-performance'})","new B.NullEngine({renderWidth:390,renderHeight:844})").replaceAll('camera.attachControl(canvas,true);','').replace('engine.runRenderLoop(()=>{','engine.runRenderLoop=fn=>{global.frame=fn;};engine.runRenderLoop(()=>{');vm.runInThisContext(source);
 class Target{
  constructor(width=390,height=844){this.clientWidth=width;this.clientHeight=height;this.events={};this.captured=new Set();this.style={};this.classList={add(){},remove(){}};}
  addEventListener(type,fn){(this.events[type]??=[]).push(fn);}removeEventListener(type,fn){this.events[type]=(this.events[type]||[]).filter(v=>v!==fn);}
  setPointerCapture(id){this.captured.add(id);}hasPointerCapture(id){return this.captured.has(id);}releasePointerCapture(id){this.captured.delete(id);}
  getBoundingClientRect(){return {left:0,top:0,width:this.clientWidth,height:this.clientHeight};}
- emit(type,id,x,y,stamp=0){let stopped=false;const e={pointerType:'touch',button:0,pointerId:id,clientX:x,clientY:y,timeStamp:stamp,preventDefault(){},stopImmediatePropagation(){stopped=true;}};for(const fn of this.events[type]||[]){fn(e);if(stopped)break;}}
+ emit(type,id,x,y,stamp=0,pointerType='touch',button=0){let stopped=false;const e={pointerType,button,pointerId:id,clientX:x,clientY:y,timeStamp:stamp,preventDefault(){},stopImmediatePropagation(){stopped=true;}};for(const fn of this.events[type]||[]){fn(e);if(stopped)break;}}
 }
 let blocked=false;const canvas=new Target(),joystick=new Target(128,128),knob=new Target(),api={joystick,knob,prefs:()=>({motion:true}),lang:()=> 'nl',time:String,blocked:()=>blocked,solved:()=>false,goal:()=> 'bridge',interact(){},near(){},change(){},select(){},objects(){},effect(){},ride(){},position(){}};
 let audioPose=null,trainAudio=0;api.audioListener=(p,forward,up)=>{audioPose={p:p.clone(),forward:forward.clone(),up:up.clone()};};api.effect=(kind,options)=>{if(kind==='train'&&options?.point){trainAudio++;assert(Number.isFinite(options.point().x));}};
@@ -22,19 +22,27 @@ const alpha=world.camera.alpha,beta=world.camera.beta,position=world.hero.positi
 const radius=world.camera.radius;canvas.emit('pointerdown',1,100,200);canvas.emit('pointerdown',2,200,200);canvas.emit('pointermove',2,250,200);canvas.emit('pointerup',2,250,200);canvas.emit('pointerup',1,100,200);assert(world.camera.radius<radius,'spreading fingers zooms in');
 canvas.emit('pointerdown',1,100,200);canvas.emit('pointerdown',2,110,200);for(let i=0;i<20;i++)canvas.emit('pointermove',2,110+i*80,200);assert.equal(world.camera.radius,6,'pinch respects closest distance');canvas.emit('pointerup',2,1700,200);canvas.emit('pointerup',1,100,200);
 const beforePuzzle={alpha:world.camera.alpha,beta:world.camera.beta,radius:world.camera.radius},q=MoonCampaign.make(0,1,'nl');world.enter(q,MoonCampaign.initial(q));const framedRadius=world.camera.radius;canvas.emit('pointerdown',1,100,100);canvas.emit('pointermove',1,150,150);canvas.emit('pointerup',1,150,150);assert.equal(world.camera.radius,framedRadius,'exploration gestures cannot change exercise framing');world.leave();assert(Math.abs(world.camera.alpha-beforePuzzle.alpha)<.001);assert(Math.abs(world.camera.radius-beforePuzzle.radius)<.001);
+// Empty-space touch drag and right mouse drag turn the low exercise eye without walking/zooming.
+world.enter(q,MoonCampaign.initial(q));const lowEye=world.scene.activeCamera,lowPosition=lowEye.position.clone(),lowHero=world.hero.position.clone(),lowYaw=lowEye.rotation.y;
+const gesturePick=world.scene.pick;world.scene.pick=()=>({hit:false});
+function activityPointer(type,id,x,y){world.scene.onPointerObservable.notifyObservers({type,event:{button:0,pointerType:'touch',pointerId:id,clientX:x,clientY:y}});}
+activityPointer(B.PointerEventTypes.POINTERDOWN,91,100,100);activityPointer(B.PointerEventTypes.POINTERMOVE,91,140,120);activityPointer(B.PointerEventTypes.POINTERDOWN,92,200,100);activityPointer(B.PointerEventTypes.POINTERMOVE,92,300,100);activityPointer(B.PointerEventTypes.POINTERUP,92,300,100);activityPointer(B.PointerEventTypes.POINTERUP,91,140,120);
+assert.notEqual(lowEye.rotation.y,lowYaw);assert(lowEye.position.equals(lowPosition),'activity touch look never translates the eye');assert(world.hero.position.equals(lowHero));assert.equal(world.camera.radius,beforePuzzle.radius,'two touches cannot zoom the activity');
+const mouseYaw=lowEye.rotation.y;canvas.emit('pointerdown',93,100,100,0,'mouse',2);canvas.emit('pointermove',93,150,100,0,'mouse',2);canvas.emit('pointerup',93,150,100,0,'mouse',2);assert.notEqual(lowEye.rotation.y,mouseYaw);world.scene.pick=gesturePick;world.leave();
 joystick.emit('pointerdown',1,64,30);global.frame();world.resetInput();const released=world.hero.position.clone();global.frame();assert(B.Vector3.Distance(released,world.hero.position)<.001,'opening a dialog cancels movement');
 // The exercise camera looks from -Z: +Z is screen top and +X is screen right.
 world.enter({type:'time',area:'clock',kind:'schedule',duration:15,start:180},180);
-function clockNumber(n){return world.scene.meshes.find(m=>m.parent?.name==='puzzle'&&m.material?.diffuseTexture?.name==='tile-'+n);}
-world.camera.getViewMatrix(true);
-const transform=world.camera.getViewMatrix().multiply(world.camera.getProjectionMatrix(true)),viewport=world.camera.viewport.toGlobal(390,844);
+function clockNumber(n){return world.scene.meshes.find(m=>m.parent?.name==='clock-dial'&&m.material?.diffuseTexture?.name==='tile-'+n);}
+const exerciseEye=world.scene.activeCamera;exerciseEye.getViewMatrix(true);
+const transform=exerciseEye.getViewMatrix().multiply(exerciseEye.getProjectionMatrix(true)),viewport=exerciseEye.viewport.toGlobal(390,844);
 function screen(m){m.computeWorldMatrix(true);return B.Vector3.Project(m.getAbsolutePosition(),B.Matrix.Identity(),transform,viewport);}
 const top=screen(clockNumber(12)),right=screen(clockNumber(3)),bottom=screen(clockNumber(6)),left=screen(clockNumber(9));
 assert(top.y<right.y&&top.y<left.y&&bottom.y>right.y&&bottom.y>left.y,'12 at top, 6 at bottom');
 assert(right.x>top.x&&right.x>bottom.x&&left.x<top.x&&left.x<bottom.x,'3 on right, 9 on left');
 const hands=world.scene.meshes.filter(m=>m.name==='clock-hand');
-assert(hands[0].position.x>0&&Math.abs(hands[0].position.z)<1e-6,'hour hand points to 3 at 03:00');
-assert(hands[1].position.z>0&&Math.abs(hands[1].position.x)<1e-6,'minute hand points to 12 at 03:00');
+assert(hands[0].position.x>0&&Math.abs(hands[0].position.y)<1e-6,'hour hand points to 3 at 03:00');
+assert(hands[1].position.y>0&&Math.abs(hands[1].position.x)<1e-6,'minute hand points to 12 at 03:00');
+for(let n=1;n<=12;n++){const point=screen(clockNumber(n)),scale=world.engine.getHardwareScalingLevel(),hit=world.scene.pick(point.x*scale,point.y*scale,m=>m.metadata?.clock,false,exerciseEye);assert(hit?.hit,'upright clock number '+n+' has a real dial ray hit');const dial=world.scene.getTransformNodeByName('clock-dial');dial.computeWorldMatrix(true);const local=B.Vector3.TransformCoordinates(hit.pickedPoint,B.Matrix.Invert(dial.getWorldMatrix())),theta=Math.atan2(local.x,local.y),minute=Math.round((theta+Math.PI*2)%(Math.PI*2)/(Math.PI*2)*12)%12*5;assert.equal(minute,n%12*5,'real dial ray preserves the selected clock number');}
 const originalPick=world.scene.pick;let pickedAnswer;api.change=a=>{pickedAnswer=a;};
 for(let n=1;n<=12;n++){
  const number=clockNumber(n),point=number.getAbsolutePosition().clone(),dial=world.scene.getMeshByName('clock-face');
@@ -48,7 +56,7 @@ const basicOptics=MoonCampaign.make(11,2),basicSolution=basicOptics.mirrors.map(
 world.enter(basicOptics,basicSolution);
 for(const hit of MoonEngine.trace(basicOptics,basicSolution).hits){
  const face=world.scene.meshes.find(m=>m.name==='mirror'&&m.metadata?.opticIndex===hit.index);face.computeWorldMatrix(true);
- const normal=B.Vector3.TransformNormal(B.Vector3.Forward(),face.getWorldMatrix()).normalize(),incoming=new B.Vector3(hit.incoming.x,0,hit.incoming.y),out=hit.outgoing[0],outgoing=new B.Vector3(out.x,0,out.y);
+ const normal=B.Vector3.TransformNormal(B.Vector3.Forward(),face.getWorldMatrix()).normalize(),mount=world.scene.getTransformNodeByName('optics-display').getWorldMatrix(),incoming=B.Vector3.TransformNormal(new B.Vector3(hit.incoming.x,0,hit.incoming.y),mount).normalize(),out=hit.outgoing[0],outgoing=B.Vector3.TransformNormal(new B.Vector3(out.x,0,out.y),mount).normalize();
  const reflected=incoming.subtract(normal.scale(2*B.Vector3.Dot(incoming,normal)));
  assert(B.Vector3.Distance(reflected,outgoing)<1e-6,'rendered mirror normal agrees with reflection law');
  assert(B.Vector3.Dot(incoming.negate(),normal)*B.Vector3.Dot(outgoing,normal)>0,'reflection remains on incoming side of the drawn surface');assert.equal(face.material.alpha,1,'ordinary mirror is opaque');
@@ -59,9 +67,9 @@ const advancedOptics=MoonCampaign.make(22,3);let opticalAnswer,stockBlocked=0;ap
 world.enter(advancedOptics,MoonCampaign.initial(advancedOptics));world.select(1);world.objectsUse();assert.equal(opticalAnswer[0].type,'splitter');world.objectsMove(1);world.objectsUse();assert.equal(stockBlocked,1,'cannot create a second prism');
 world.select(0);world.objectsUse();assert.equal(opticalAnswer[1].type,'mirror');world.select(2);world.objectsMove(-1);world.objectsUse();assert.equal(MoonEngine.remaining(advancedOptics,opticalAnswer).splitter,1,'returning a part refills the stock');
 const advancedSolution=advancedOptics.mirrors.map(m=>m.solution);world.change(advancedSolution);
-assert.equal(world.scene.meshes.filter(m=>m.name==='target-light'&&m.parent?.name==='puzzle'&&m.material.name==='warm-light').length,2,'both lanterns light on a correct solution');assert(world.scene.getMeshByName('beam-splitting-prism').material.alpha<1);
-const beamSegments=world.scene.meshes.filter(m=>m.name==='light-beam'&&m.parent?.name==='puzzle').map(m=>m.metadata.segment);assert(beamSegments.some(s=>s.intensity===.5));assert(world.scene.getMeshByName('beam-direction'));
-world.camera.getViewMatrix(true);const opticTransform=world.camera.getViewMatrix().multiply(world.camera.getProjectionMatrix(true)),opticViewport=world.camera.viewport.toGlobal(390,844);
+assert.equal(world.scene.meshes.filter(m=>m.name==='target-light'&&m.parent?.name==='optics-display'&&m.material.name==='warm-light').length,2,'both lanterns light on a correct solution');assert(world.scene.getMeshByName('beam-splitting-prism').material.alpha<1);
+const beamSegments=world.scene.meshes.filter(m=>m.name==='light-beam'&&m.parent?.name==='optics-display').map(m=>m.metadata.segment);assert(beamSegments.some(s=>s.intensity===.5));assert(world.scene.getMeshByName('beam-direction'));
+const opticEye=world.scene.activeCamera;opticEye.getViewMatrix(true);const opticTransform=opticEye.getViewMatrix().multiply(opticEye.getProjectionMatrix(true)),opticViewport=opticEye.viewport.toGlobal(390,844);
 for(const mesh of world.scene.getTransformNodeByName('puzzle').getChildMeshes()){mesh.computeWorldMatrix(true);for(const corner of mesh.getBoundingInfo().boundingBox.vectorsWorld){const p=B.Vector3.Project(corner,B.Matrix.Identity(),opticTransform,opticViewport);assert(p.x>=0&&p.x<=390&&p.y>=0&&p.y<=844&&p.z>0&&p.z<1,'advanced optics and tray remain fully framed');}}
 world.leave();
 // Curved route integration: calls, boarding, parented passengers, arrival, return and restoration.
@@ -99,4 +107,4 @@ blocked=true;const pausedSun=sun.position.clone();for(let i=0;i<20;i++)global.fr
 world.enter(q,MoonCampaign.initial(q));global.frame();assert.equal(world.scene.fogDensity,0);assert.equal(world.scene.getLightByName('moonwash').intensity,.75);assert(!world.scene.getMeshByName('wind-leaf').isEnabled());world.leave();global.frame();assert(world.scene.fogDensity>.002);
 atStation(0);assert(world.ride());for(let i=0;i<150;i++)global.frame();assert(world.scene.meshes.some(m=>m.name==='train-mist'&&m.isEnabled()));world.start({x:0,z:-3},0);
 api.prefs=()=>({motion:true});global.frame();assert(!world.scene.getMeshByName('wind-leaf').isEnabled());assert(!world.scene.getMeshByName('walking-dust').isEnabled());assert(!world.scene.getMeshByName('distant-lightning').isEnabled());world.stop();
-console.log(JSON.stringify({proportionalMovement:true,dragDoesNotWalk:true,pinchBounds:true,puzzleViewRestored:true,materialsAndQualityTiers:true,clockOrientationAndSelection:true,trainRideAndPassengers:true,mirrorSurfaceAndInventory:true,sixStationCallsAndRides:true,curvedTrackClear:true,terrainFollow:true}));
+console.log(JSON.stringify({proportionalMovement:true,dragDoesNotWalk:true,pinchBounds:true,puzzleViewRestored:true,lowExerciseTouchAndMouseLook:true,activityLookCannotWalkOrZoom:true,materialsAndQualityTiers:true,clockOrientationAndSelection:true,trainRideAndPassengers:true,mirrorSurfaceAndInventory:true,sixStationCallsAndRides:true,curvedTrackClear:true,terrainFollow:true}));

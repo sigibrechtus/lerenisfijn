@@ -17,7 +17,7 @@ test('every campaign location can avoid its last twelve semantic tasks without c
   }
  }
 });
-test('mini-games reject recent content on entry and keep their three rounds distinct',()=>{
+test('mini-games reject recent content on entry and keep their six rounds distinct',()=>{
  for(const id of Object.keys(G.catalog))for(const level of [1,2,3]){
   let recent=[];
   for(let visit=0;visit<15;visit++){
