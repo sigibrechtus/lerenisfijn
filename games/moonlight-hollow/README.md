@@ -1,6 +1,6 @@
 # Moonlight Hollow — The Lantern Chronicles (3D)
 
-A browser-native third-person educational Halloween adventure in Leren is fijn. Original procedural 3D artwork; Babylon.js 9.30.0 is vendored with its Apache 2.0 license. No external runtime graphics CDN, advertising or child account required.
+A browser-native educational Halloween adventure with first- and third-person exploration in Leren is fijn. Original procedural 3D artwork; Babylon.js 9.30.0 is vendored with its Apache 2.0 license. No external runtime graphics CDN, advertising or child account required.
 
 ## Play
 
@@ -165,3 +165,15 @@ Primary references:
 Validation: 74 unit/controller tests; 180 constructed and solved exercise scenes across two languages and three levels; touch movement, camera gestures, railway calls/rides, inventory and scene integration; weather cleanup, normal-map presence, reduced motion and quality emission budgets. Camera fitting checks cover desktop and portrait/landscape phone aspect ratios. These scene checks use Babylon NullEngine, not GPU rendering or device frame-rate measurements. The cloud Chrome browser also fails the existing production game's WebGL capability check, so 3D appearance and device performance require a WebGL-capable browser.
 
 Framework references: https://github.com/BabylonJS/Babylon.js/releases/tag/9.30.0 ; https://doc.babylonjs.com/features/featuresDeepDive/particles/particle_system/ ; https://doc.babylonjs.com/features/featuresDeepDive/materials/using/materials_introduction/ ; https://doc.babylonjs.com/features/featuresDeepDive/mesh/copies/instances ; https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay .
+
+## Six attractions and exploration views (v19)
+
+Six optional destinations extend the existing campaign: haunted mansion, potion workshop, broom flight tower, ghost garden, midnight railway depot and pumpkin rally. Each has an original 3D landmark, a clear entrance, a walking path and a Dutch/French sign. Use the attraction section of the star map to travel there, or walk up and choose Enter / press E. Entry is optional.
+
+Each activity has three repeatable rounds, Dutch/French instructions and three difficulty levels. Mansion keys combine colors/shapes and deduction; potions use ingredient quantities; the garden orders seeds; the depot orders time schedules. Broom flight and pumpkin driving use physical movement to pass answer gates, with keyboard and held touch buttons plus selectable guidance toward a gate. Broom flight supports ascent/descent; the rally has acceleration, steering, braking and reverse. These are compact educational activities, not full racing or rigid-body simulations. Completed sessions and best levels save separately for each profile without changing campaign events. Incomplete mini-game sessions restart on re-entry.
+
+Choose first/third person with V, the header button or Settings. First person has eye-height, camera-relative walking and right-drag/touch look; third person keeps the visible avatar and orbit controls. Preference is saved. Campaign exercises keep their fitted camera; train boarding keeps its existing view. Leaving any mini-game restores exploration and resets input. Backgrounding and dialogs pause movement.
+
+`destinations.js` owns shared procedural scenery; `mini-games.js` owns deterministic rules; `mini-game-world.js` owns disposable Babylon activity scenes; `attraction-ui.js` owns entry, controls and profile integration. Terrain pads and approach routes are reserved from trees. No third-party model downloads or paid generation were used. The offline cache includes the new modules.
+
+Validation includes deterministic activity generation, real Babylon NullEngine scene/gameplay/cleanup checks, 612 sign projection checks across portrait/landscape/desktop layouts, actual controller integration with DOM/runtime doubles, and first-person/exercise/train restoration tests. These verify logic, geometry and lifecycle; GPU appearance and physical-device frame rates remain unverified.
