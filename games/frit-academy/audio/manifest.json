@@ -1,0 +1,18 @@
+{
+  "title": "Frituur Swing",
+  "file": "frituur-swing.mp3",
+  "bpm": 112,
+  "bars": 32,
+  "durationSeconds": 68.571,
+  "loop": true,
+  "vocals": false,
+  "instruments": [
+    "procedural accordion reeds",
+    "plucked guitar",
+    "bass",
+    "brush percussion",
+    "bells"
+  ],
+  "provenance": "Original composition and deterministic synthesis made for FritAcademy. No third-party samples or external generation service.",
+  "sha256": "94ed1fc93633e7b9896f5868b3380109fef354f8c1dd3e9a34e7b5e5528ff3e2"
+}
