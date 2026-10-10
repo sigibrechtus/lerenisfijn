@@ -12,3 +12,6 @@ for(const id of Object.keys(G.catalog))for(const lang of ['nl','fr'])for(let lev
 }
 assert.throws(()=>G.make('bad'),RangeError);assert.equal(G.make('broom',99).level,3);assert.equal(G.make('broom',-1).level,1);
 console.log('Mini-games: 108 deterministic sessions, all six types, both languages, all difficulty levels, retries and completion verified.');
+
+// Added symbols include masculine nouns; clues must not give them a feminine article.
+for(const level of [1,2])for(let seed=1;seed<=100;seed++)assert.doesNotMatch(G.make('mansion',level,'fr',seed).question,/une (?:soleil|cœur|losange)/);
