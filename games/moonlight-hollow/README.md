@@ -81,3 +81,11 @@ NullEngine confirms movement, camera gestures, zoom limits, quality settings, sc
 ### Secondary review (v9)
 
 Automatic quality now includes repeated active-frame stalls above 250 ms in its performance measurements. An isolated resume gap above one second is ignored; recurring very long frames within six active seconds still lower quality. Regression checks cover steady slow frames, repeated stalls, recovery, and the isolated-gap guard. The graphics dependency and offline cache are versioned for this fix.
+
+## Moon Express passenger ride (v11)
+
+Two terminal platforms serve Dorpsstation / Gare du village and Maantoren / Tour de la Lune. Approach the parked train's platform and use the boarding button or R. Boarding takes 1.2 seconds in first person; the 12-second ride smoothly accelerates and brakes, then holds at zero speed for one second before disembarking. The train remains parked at its arrival station, supports a return journey, and stores its last completed station per child profile. Mid-ride reloads restart from the last completed station.
+
+The open carriage has a floor, seats, window framing, roof, rolling wheels, and boarding steps. The track corridor is clear of generated trees. The explorer, Lumi, and onboard camera use train-relative transforms: passenger movement cannot independently drift, walk off the carriage, or separate from the train. Motion uses a deterministic kinematic rail constraint with smooth velocity and distance-driven wheel rotation, rather than a rigid-body simulation. Swipe or right-drag to look around onboard. Dialogs and backgrounding pause travel; returning restores the exploration camera and controls. Map travel and profile changes detach passengers safely. Reduced-motion mode retains transport without camera shake or passenger bobbing.
+
+Rail motion tests cover acceleration, braking, both directions, frame-rate independence and saved station restoration. NullEngine integration checks boarding, passenger attachment, pause, onboard look, stopped arrival, return travel, teleport interruption and profile reset. GPU rendering and physical-device behaviour require separate verification.

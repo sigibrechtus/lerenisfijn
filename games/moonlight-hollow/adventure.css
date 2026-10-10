@@ -27,3 +27,6 @@
  .ride{right:max(18px,env(safe-area-inset-right));bottom:max(92px,calc(env(safe-area-inset-bottom) + 80px))}
 }
 @media(any-pointer:coarse) and (max-height:500px){.joystick{width:108px;height:108px;bottom:max(12px,env(safe-area-inset-bottom))}.joystick span{left:31px;top:31px}.companion{display:none}.quest{top:62px;max-width:210px}.interact{left:auto;right:max(18px,env(safe-area-inset-right));bottom:max(24px,env(safe-area-inset-bottom));transform:none}.ride{bottom:82px}.movement-help{display:none}}
+
+.train-mode .joystick,.train-mode .interact,.train-mode .quest,.train-mode .companion{display:none!important}
+.train-mode .ride:disabled{opacity:1;color:#ffe6ae;cursor:default}
