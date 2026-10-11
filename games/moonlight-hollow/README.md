@@ -233,3 +233,16 @@ Each optional adventure now requires six tasks. Rally and broom travel through a
 Capability Orchestrator selected Game Development Studio and Visual Debugging guidance for camera, terrain and checkpoint work, and Precision Prompt Pro for the progressive-hint contract. The copy-ready implementation brief is in `implementation-brief.md`. The Studio CLI is unavailable, so execution and verification use the existing Babylon source, Node controller tests, native canvas metrics and NullEngine scene geometry.
 
 Validation includes 2,172 campaign projections, 13,476 actual interaction ray picks across six viewport layouts, 180 constructed/solved scenes, real clock-coordinate conversion, exploration/train restoration, all six-stage completion flows, 612 mini-game sign framing checks, 504 gate glyph measurements and 1,008 stationary-sign measurements. Terrain tests inspect grouped foundations and foot contact. GPU pixels, physical-device typography, audio output and frame rates remain unmeasured.
+
+
+## v25 activity and world review
+
+All campaign quests now contain three fresh tasks; completion is recorded after the third, with checkpoint draft resume and original saves preserved. Six-stage optional adventures move through translated/turned themed areas or workstations. The optical puzzle is a horizontal board with an orthographic top view; other activities remain at low first-person eye height.
+
+Broom goals use fog-independent self-lit signs, contrasting backdrops and scoped arena lighting. Live campaign feedback and mini-game choreography cover action sounds, corrections, hints, verification and stage hops. Effects stay anchored after movement and keep bounded resource pools.
+
+The main world has twelve creatures at each of 26 configured anchors (312 total); each mini-world has twelve at each of six areas (72 total). Reused ghost/bat/spider/pumpkin geometry patrols outside protected paths, samples real ground or visible floor, culls distance and honors pause/reduced motion.
+
+Eight original surface families use 512/1024/selected 2048 native albedo/normal maps by quality tier, subject to device limits. Mip budgets are 32/96/192 MiB. Terrain has 25,921 vertices, cottages 350 instanced roof shingles and important curved geometry is smoother. Native tests cover actual texture dimensions, periodic seams, ownership and quality replacement; no device FPS result is claimed.
+
+See [the copy-ready brief](implementation-brief.md), [the per-activity review](activity-review.md) and [the Godot/Babylon recommendation](engine-guide.md). The Studio CLI is unavailable; validation uses existing native Babylon/controller tests. This release retains the current WebGL renderer.

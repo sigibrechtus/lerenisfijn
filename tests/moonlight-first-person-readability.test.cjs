@@ -25,7 +25,7 @@ test('broom camera follows its rider, lateral movement and altitude; release and
  const e=new B.NullEngine(),scene=new B.Scene(e);let paused=false;const r=W.create({B,scene,reducedMotion:true,paused:()=>paused});
  r.start('broom',{seed:42});const c=scene.activeCamera,start=c.position.clone();assert.equal(c.name,'broom-first-person-camera');
  r.input(1,0,1);r.tick(.1);assert(c.position.x>start.x&&c.position.y>start.y);assert.equal(c.position.z,start.z);assert.equal(c.rotation.y,0);
- const rider=scene.meshes.find(m=>m.name==='mini-broom');assert.equal(c.position.y,rider.position.y+.8);
+ const rider=scene.meshes.find(m=>m.name==='mini-broom');assert(Math.abs(c.position.y-(rider.getAbsolutePosition().y+.8))<1e-4);
  r.input(0,0,0);r.tick(.1);assert.equal(r.snapshot().speed,0);const stopped=c.position.clone();r.input(1,1,1);paused=true;r.tick(.1);assert.deepEqual(c.position.asArray(),stopped.asArray());paused=false;r.tick(.1);assert.deepEqual(c.position.asArray(),stopped.asArray());
  r.input(1,1,1);r.action(r.snapshot().task.solution[0]);for(let i=0;i<400&&r.snapshot().progress===0;i++)r.tick(.1);assert.equal(r.snapshot().progress,1/r.snapshot().rounds);const nextStart=c.position.clone();r.tick(.1);assert.deepEqual(c.position.asArray(),nextStart.asArray());assert.equal(r.snapshot().speed,0,'new question waits for new movement input');
  r.dispose();scene.dispose();e.dispose();

@@ -12,7 +12,7 @@ function create({B,scene,layer,origin=120,quality='balanced',reducedMotion=false
   else if(action==='undo'||action.startsWith('remove:')){kind='remove';sound='remove';duration=.6;}
   else if(action==='slower'||action==='faster'){kind='pace';sound='ui';duration=.35;}
   else if(id==='potions'){kind=action==='check'?'mix':action==='add:0'?'pour':'powder';sound=kind==='pour'?'pour':kind==='mix'?'bubble':'place';duration=kind==='mix'?1.45:.9;}
-  else if(id==='mansion'){kind='unlock';sound='bottle';duration=correct?1.15:.8;}
+  else if(id==='mansion'){kind='unlock';sound=correct?'bottle':'retry';duration=correct?1.15:.8;}
   else if(id==='garden'){kind=action==='check'?(correct?'grow':'verify'):'plant';sound=kind==='plant'?'leaf':correct?'lantern':'retry';duration=.85;}
   else if(id==='railway'){kind=action==='check'?(correct?'depart':'verify'):'station';sound=kind==='depart'?'train':kind==='verify'?'retry':'clock';duration=kind==='depart'&&correct?1.5:.7;}
   else if(id==='broom'||id==='rally'){kind='gate';sound=correct?'lantern':'retry';duration=.8;}
@@ -44,13 +44,13 @@ function create({B,scene,layer,origin=120,quality='balanced',reducedMotion=false
   }
   const count=reducedMotion?3:pool.length;
   for(let i=0;i<pool.length;i++){const m=pool[i];m.setEnabled(i<count&&t<1);if(i>=count)continue;const p=(t+i/count)%1,a=i*2.4;
-   if(o.kind==='pour'||o.kind==='powder'){const bowl=name(o.meshes,'cauldron')?.position||new B.Vector3(0,origin+1.95,7);m.position.set(bowl.x+Math.cos(a)*.4,bowl.y+1.4-p*1.5,bowl.z+Math.sin(a)*.4);m.scaling.setAll(o.kind==='powder'?.55:.9);}
+   if(o.kind==='pour'||o.kind==='powder'){const bowl=name(o.meshes,'cauldron')?.getAbsolutePosition()||new B.Vector3(0,origin+1.95,7);m.position.set(bowl.x+Math.cos(a)*.4,bowl.y+1.4-p*1.5,bowl.z+Math.sin(a)*.4);m.scaling.setAll(o.kind==='powder'?.55:.9);}
    else{const radius=reducedMotion?.45:1+p*2.5;m.position.set(o.point.x+Math.cos(a)*radius,o.point.y+(reducedMotion?.2:p*2),o.point.z+Math.sin(a)*radius);m.scaling.setAll(.4+Math.sin(Math.PI*p)*.8);}
    m.visibility=Math.max(.15,Math.sin(Math.PI*t));
   }
   return t>=1;
  }
- function motion(point,speed,fly,time){if(operation)return;if(reducedMotion||Math.abs(speed)<.4){for(const m of pool)m.setEnabled(false);return;}ensurePool();for(let i=0;i<pool.length;i++){const m=pool[i],p=(time*1.8+i/pool.length)%1;m.setEnabled(i<(fly?8:6));m.position.set(point.x+Math.sin(i*2.4)*.7,point.y-(fly?.15:.7)+p*.4,point.z-1-p*2);m.scaling.setAll(fly?.55:.75);m.visibility=(1-p)*.45;}}
+ function motion(point,speed,fly,time,heading=0){if(operation)return;if(reducedMotion||Math.abs(speed)<.4){for(const m of pool)m.setEnabled(false);return;}ensurePool();for(let i=0;i<pool.length;i++){const m=pool[i],p=(time*1.8+i/pool.length)%1;m.setEnabled(i<(fly?8:6));const lateral=Math.sin(i*2.4)*.7,behind=-1-p*2;m.position.set(point.x+Math.cos(heading)*lateral+Math.sin(heading)*behind,point.y-(fly?.15:.7)+p*.4,point.z-Math.sin(heading)*lateral+Math.cos(heading)*behind);m.scaling.setAll(fly?.55:.75);m.visibility=(1-p)*.45;}}
  function state(){return operation?{action:operation.action,kind:operation.kind,progress:Math.min(1,operation.time/operation.duration),duration:operation.duration}:null;}
  function dispose(){restore();for(const m of pool)m.dispose();pool=[];mat?.dispose();mat=null;}
  return{play,tick,motion,state,clear:restore,dispose};

@@ -42,6 +42,11 @@ function lowEyeFrame(bounds,aspect,supportY,eyeHeight=2.08,maxDistance=18){
   return result;
 }
 function angleDelta(from,to){return Math.atan2(Math.sin(to-from),Math.cos(to-from));}
+// Optical boards use an orthographic top view: no foreshortening or hidden ray paths.
+function topFrame(bounds,aspect){
+  const width=Math.max(.1,bounds.max.x-bounds.min.x),depth=Math.max(.1,bounds.max.z-bounds.min.z),halfHeight=Math.max(depth/2,width/(2*Math.max(.01,aspect)))*1.12;
+  return {position:{x:(bounds.min.x+bounds.max.x)/2,y:bounds.max.y+8,z:(bounds.min.z+bounds.max.z)/2},left:-halfHeight*aspect,right:halfHeight*aspect,bottom:-halfHeight,top:halfHeight};
+}
 function ease(t){t=clamp(t,0,1);return t*t*(3-2*t);}
-const api={followWeight,safeFrame,fit,lowEyeFrame,angleDelta,ease};root.MoonCamera=api;if(typeof module!=='undefined')module.exports=api;
+const api={followWeight,safeFrame,fit,lowEyeFrame,topFrame,angleDelta,ease};root.MoonCamera=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

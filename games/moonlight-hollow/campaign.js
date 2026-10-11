@@ -2,6 +2,7 @@
 (function(root){'use strict';
 const Content=root.MoonLearningContent||(typeof require==='function'?require('./learning-content.js'):null);
 const regions=['bridge','garden','library','clock','lights'];
+const checkpointsPerQuest=3;
 const names={nl:['Het slapende dorp','Geheimen van het herfstbos','De wandelende tuin','De Maanexpress','Vergeten sterren'],fr:['Le village endormi','Les secrets du bois','Le jardin voyageur','Le Train de la Lune','Les étoiles oubliées']};
 const stories={nl:['Lumi heeft een sterrenkaart gevonden. Herstel de eerste lantaarns om haar te lezen.','De kaart wijst naar het bos. Een kleine vos bewaakt een verloren sterrenstuk.','De bloemen verplaatsen zich! Help de tuinier de weg naar de volgende ster te vinden.','De trein kan weer rijden. Zoek de juiste route naar het kasteel.','Alle aanwijzingen komen samen. Wek de maanmachine en bereid het feest voor.'],fr:['Lumi a trouvé une carte céleste. Rallume les lanternes pour la lire.','La carte mène au bois. Un petit renard garde une étoile perdue.','Les fleurs se déplacent ! Aide le jardinier à retrouver le chemin.','Le train peut repartir. Trouve le bon trajet vers le château.','Rassemble les indices. Réveille la machine lunaire et prépare la fête.']};
 const layout=[['bridge','groups'],['library','riddle'],['garden','fraction'],['clock','time'],['lights','pattern'],['bridge','sequence'],['bridge','sequence'],['library','word'],['lights','deduction'],['garden','groups'],['clock','time'],['lights','mirror'],['garden','fraction'],['bridge','groups'],['library','word'],['lights','route'],['garden','fraction'],['library','riddle'],['clock','time'],['bridge','sequence'],['garden','groups'],['library','word'],['lights','mirror'],['clock','time'],['lights','deduction'],['garden','fraction'],['library','word'],['clock','time'],['lights','mirror'],['bridge','groups']];
@@ -21,9 +22,20 @@ if(type==='route'){if(Number(seed)===0){q.target=[2,level===1?1:2];q.moves=level
 return q;}
 function initial(q){if(q.type==='groups')return q.targets.map((_,i)=>i===0?q.initial:0);if(q.type==='fraction')return Array(q.total).fill(null);if(q.type==='word')return[];if(q.type==='time')return(q.kind==='read'&&q.answer%720===0)||q.answer===720?60:720;if(q.type==='mirror')return q.initial.map(v=>v&&typeof v==='object'?{...v}:v);if(q.type==='route')return'';return null;}
 function check(q,a){if(q.type==='sequence'||q.type==='riddle'||q.type==='deduction')return a===q.answer;if(q.type==='route'){let x=0,y=0;if(typeof a!=='string'||a.length!==q.moves)return false;for(const c of a){if(c==='E')x++;else if(c==='N')y++;else if(c==='W')x--;else if(c==='S')y--;else return false;if(x<0||x>2||y<0||y>2)return false;}return x===q.target[0]&&y===q.target[1];}if(q.type==='word'){if(!Array.isArray(a))return false;return a.map(id=>q.tiles.find(x=>x.id===id)?.letter||'').join('')===q.word&&new Set(a).size===a.length;}const canonical={groups:'bridge',fraction:'garden',time:'clock',pattern:'lights',mirror:'lights'}[q.type];return canonical?root.MoonEngine.check({...q,area:canonical},a):false;}
-function completed(events){return new Set(events.filter(e=>Number.isInteger(e.quest)&&e.quest>=0&&e.quest<30).map(e=>e.quest));}
+function completed(events){return new Set(events.filter(e=>Number.isInteger(e.quest)&&e.quest>=0&&e.quest<30&&(e.checkpoints===undefined||e.checkpoints===checkpointsPerQuest)).map(e=>e.quest));}
 function next(events){const done=completed(events);for(let i=0;i<30;i++)if(!done.has(i))return i;return 30;}
 function chapter(events){return Math.min(4,Math.floor(next(events)/6));}
-function validateDraft(d){return d&&d.q&&Number.isInteger(d.q.index)&&d.q.index>=0&&d.q.index<30&&regions.includes(d.q.area)&&[1,2,3].includes(d.q.level)&&typeof d.attempts==='number'&&typeof d.assisted==='boolean';}
-const api={regions,names,stories,layout,make,initial,check,skill,completed,next,chapter,validateDraft,rngFor};if(typeof module!=='undefined')module.exports=api;root.MoonCampaign=api;
+function validTaskResult(result){return result&&Number.isInteger(result.attempts)&&result.attempts>0&&typeof result.assisted==='boolean';}
+function taskSummary(results){return{attempts:Math.max(1,...results.map(result=>result.attempts)),assisted:results.some(result=>result.assisted)};}
+function draftProgress(d){return{checkpoint:d.checkpoint??0,taskResults:(d.taskResults||[]).map(result=>({...result})),taskKeys:[...(d.taskKeys||[])],solved:d.solved===true};}
+function validateDraft(d){
+ if(!(d&&d.q&&Number.isInteger(d.q.index)&&d.q.index>=0&&d.q.index<30&&regions.includes(d.q.area)&&[1,2,3].includes(d.q.level)&&typeof d.attempts==='number'&&typeof d.assisted==='boolean'))return false;
+ // A pre-checkpoint draft still represents its exact original task, now at checkpoint one.
+ if(d.checkpoint===undefined)return d.solved===undefined&&d.taskResults===undefined&&d.taskKeys===undefined;
+ if(!Number.isInteger(d.checkpoint)||d.checkpoint<0||d.checkpoint>=checkpointsPerQuest||typeof d.solved!=='boolean')return false;
+ if(d.solved&&d.checkpoint===checkpointsPerQuest-1)return false; // Finished quests live in events, never in drafts.
+ if(!Array.isArray(d.taskResults)||d.taskResults.length!==d.checkpoint+(d.solved?1:0)||!d.taskResults.every(validTaskResult))return false;
+ return Array.isArray(d.taskKeys)&&d.taskKeys.length===d.checkpoint+1&&d.taskKeys.every(key=>typeof key==='string');
+}
+const api={regions,names,stories,layout,checkpointsPerQuest,make,initial,check,skill,completed,next,chapter,validateDraft,draftProgress,taskSummary,rngFor};if(typeof module!=='undefined')module.exports=api;root.MoonCampaign=api;
 })(typeof window!=='undefined'?window:globalThis);

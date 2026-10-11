@@ -1,20 +1,28 @@
-# Moonlight Hollow: first-person activity update
+# Moonlight Hollow: activity, scenery and material review
 
-Implement all 30 campaign exercises and all six optional mini-games as first-person activities at a low, fixed eye height. Fit the objects by adjusting their layout, camera distance and field of view. Never lift the camera to obtain an overhead exercise view. Keep numbers, words, controls and gates readable in the viewport left above the activity HUD, including portrait and landscape touch screens. Provide equivalent keyboard and touch controls, neutralize held movement at checkpoints and pause, and restore the exploration camera after leaving.
+## Current copy-ready implementation prompt (v25)
 
-Place world scenery in relation to the actual terrain, with grouped building transforms and visible foundations wherever a level structure crosses a slope. Rest loose props against the terrain and connect signs and raised displays to physical supports. Keep intentional airborne moon and magic effects separate from ordinary ground contact.
+Improve the existing Babylon browser game across all ten campaign exercise families, thirty quests, six mini-games and their worlds. Implement and validate changes, preserve Dutch/French content and saved progress, deliver a playable release, and compare Godot/Babylon using current primary documentation.
 
-Give every activity three distinct progressive hints in Dutch and French: notice a relevant feature, explain a strategy, then guide one partial step. Do not reveal a whole word, riddle answer, complete route or all mirror settings. Track the current hint stage per task, preserve existing assisted learning records and saved exercise drafts, and reset the hint stage when a new task starts.
+Before each task, use Capability Orchestrator to select specialist guidance: Precision Prompt Pro for the acceptance contract; Game Development Studio for gameplay, scene and asset work. Continue through authorized native project capabilities when its CLI is unavailable, and distinguish CPU/canvas evidence from GPU/device measurements.
 
-Extend all optional adventures to six tasks before awarding completion. Racing and flying must progress along a course with six spatial checkpoint rows rather than repeatedly return to the first gate. Show the current stage and total clearly, keep the racing riddle visible, and prevent a single successful task from awarding a finished adventure. Preserve the existing minimum fivefold content-variety increase and recent-task repeat avoidance.
+- Retain a steady low first-person eye for ordinary activities. For Play with Light, lay the board horizontally and use an orthographic top view so tools, ray paths and stock remain visible. This specific instruction supersedes the earlier universal first-person requirement. Fit labels and actual picking within the HUD's usable viewport; restore the exploration camera when leaving.
+- Link operations to live object animation and sound: selection, placement/removal, rotation, pouring/powder/mixing, planting/growing, ordering/departure, steering, hint/reset, verify/retry/success. Effects must follow the real coordinates after a stage moves, use bounded pools, pause correctly and honor reduced motion.
+- Make broom goals fog-independent, self-lit and contrasting, with large gate values and clear ring borders. Test all six stages on portrait and landscape screens without changing main-world weather.
+- Make every campaign quest three fresh tasks before completion. Show checkpoint progress, reset hints, preserve solved/unsolved intermediate drafts exactly, and migrate old drafts/events. If any task uses help, mark the entire quest assisted.
+- Keep six tasks in all optional adventures, but visit six distinct themed areas. Racing/flying progress through translated and turned checkpoint areas; stationary adventures hop among six workstations. Reset held controls at transitions, retain manual/guided play, and record completion once after all six successes.
+- Put at least ten nearby moving Halloween inhabitants at each configured building, location, station and destination, and each mini-stage. Target twelve diverse ghosts, bats, spiders and pumpkin critters. Ground walkers on actual terrain/visible floors, protect gameplay corridors, share geometry, cull distance and dispose resources.
+- Increase native image detail separately from mesh polygons: 512 Eco, 1024 balanced and selected 2048 close surfaces in HD when device limits allow. Use original seamless albedo/normal maps, smoother silhouettes, richer physical roof detail and denser terrain. Bound mip memory and share surfaces. Assess AI Banana's actual output and terms before treating it as a PBR asset or commercially licensed source.
+- Advise on Godot versus Babylon for this existing browser/website product, and when native targets change the recommendation. Recommend editable Blender sources and glTF 2.0/GLB deployment models, compressed textures, quality tiers and comparable device testing. Do not promise high frame rates from the engine name alone.
 
-Before each improvement task, use Capability Orchestrator to select the smallest suitable route:
+Acceptance includes campaign transitions/save migration, all-stage projection and picking, grounded creature populations, bounded effect/material ownership, offline dependencies and successful deployment. Review every activity family in a table and report evidence limits.
 
-| Task | Selected capabilities | Execution |
+| Improvement | Capability Orchestrator route | Execution |
 | --- | --- | --- |
-| Low first-person camera, layout and controls | Game Development Studio, Visual Debugging | Existing Babylon code and native scene tests |
-| Terrain contact and supports | Game Development Studio, Visual Debugging | Terrain sampling and native geometry tests |
-| Three-stage hints | Precision Prompt Pro | Refined hint contract and pure generator tests |
-| Six-stage adventures and gate courses | Game Development Studio, Visual Debugging | Existing gameplay, scene and DOM tests |
+| Camera, light board, broom clarity | Game Development Studio / Visual Debugging guidance | Babylon scenes and native projection/picking |
+| Longer checkpoints and save behavior | Precision Prompt Pro + Game Development Studio guidance | Controller and spatial-stage tests |
+| Creatures and materials | Game Development Studio / Asset Production guidance | Original offline geometry/textures |
+| Engine and AI Banana advice | Web research | Official documentation and provider terms |
+| Publication | GitHub connector | Changed-file tree and verified Pages deployment |
 
-The Studio CLI is unavailable in this environment. Do not install it, substitute remote rendering, or report GPU frame-rate measurements. Validate real Babylon scene geometry with NullEngine, canvas font metrics, gameplay transitions, save compatibility and input lifecycle tests; explicitly retain the limit that these checks are not rendered browser or GPU performance evidence.
+The local `game-dev` CLI is unavailable. No paid generation, Blender conversion or GPU frame-rate measurement is claimed.

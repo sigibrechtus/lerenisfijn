@@ -23,3 +23,5 @@ test('low activity framing never raises the eye and constrains distance, gaze an
   }
   const narrow=F.lowEyeFrame({min:{x:-3,y:0,z:0},max:{x:3,y:3.85,z:1}},12,0,1.85,24);assert.equal(narrow.position.y,1.85);assert(narrow.distance<=24);assert(narrow.horizontalFov<=1.65+1e-9);
 });
+
+test('optics top framing contains the horizontal board in any viewport without foreshortening',()=>{for(const aspect of [.3,.46,1,1.78,6,12]){const bounds={min:{x:-4,y:0,z:-3},max:{x:6,y:2,z:3}},p=F.topFrame(bounds,aspect);assert.equal(p.position.x,1);assert.equal(p.position.z,0);assert(p.position.y>bounds.max.y);assert(p.left<bounds.min.x-p.position.x);assert(p.right>bounds.max.x-p.position.x);assert(p.top>bounds.max.z-p.position.z);assert(p.bottom<bounds.min.z-p.position.z);assert(Math.abs((p.right-p.left)/(p.top-p.bottom)-aspect)<1e-9);}});

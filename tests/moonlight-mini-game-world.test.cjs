@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),B=require('../games/moonlight-hollow/
 const {createCanvas}=require('@napi-rs/canvas');global.document={hidden:false,createElement:()=>createCanvas(512,128),addEventListener(){},removeEventListener(){}};
 const G=require('../games/moonlight-hollow/mini-games.js'),W=require('../games/moonlight-hollow/mini-game-world.js');
 function perform(r,id){r.action(id);for(let i=0;i<400&&(r.snapshot().busy||r.snapshot().assisted);i++)r.tick(.1);assert(!r.snapshot().busy,'operation finished');}
-const engine=new B.NullEngine({renderWidth:1280,renderHeight:720}),scene=new B.Scene(engine),main=new B.UniversalCamera('main',B.Vector3.Zero(),scene);scene.activeCamera=main;const baseline={meshes:scene.meshes.length,materials:scene.materials.length,textures:scene.textures.length,cameras:scene.cameras.length};let updates=0,complete=0,paused=false;
+const engine=new B.NullEngine({renderWidth:1280,renderHeight:720}),scene=new B.Scene(engine),main=new B.UniversalCamera('main',B.Vector3.Zero(),scene);scene.activeCamera=main;const baseline={meshes:scene.meshes.length,materials:scene.materials.length,textures:scene.textures.length,cameras:scene.cameras.length,lights:scene.lights.length,nodes:scene.transformNodes.length};let updates=0,complete=0,paused=false;
 const runtime=W.create({B,scene,paused:()=>paused,quality:'low',reducedMotion:true,frame:()=>({x:0,y:.2,width:.7,height:.8}),onUpdate:s=>{assert(s.name&&s.question);updates++;},onComplete:()=>complete++});
 for(const id of Object.keys(G.catalog)){
  runtime.start(id,{level:3,lang:'fr',seed:8});assert.equal(scene.activeCamera.layerMask,W.LAYER);assert.equal(scene.activeCamera.viewport.width,.7);assert(scene.meshes.length>10);assert(scene.meshes.every(m=>m.layerMask===W.LAYER));
@@ -12,21 +12,21 @@ for(const id of Object.keys(G.catalog)){
   else{for(const choice of s.task.solution)perform(runtime,choice);if(id==='garden'||id==='railway')perform(runtime,'check');}
   assert.equal(runtime.snapshot().progress,(round+1)/s.rounds);if(round===0){assert.equal(runtime.snapshot().completed,false);assert.equal(complete,Object.keys(G.catalog).indexOf(id));}
  }
- assert.equal(runtime.snapshot().completed,true);if(['broom','rally'].includes(id)){const done=runtime.snapshot(),markers=scene.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(markers.length,done.rounds);assert(markers.every(m=>m.metadata.completed));assert.equal(done.vehicle.z,done.rounds*24);assert.equal(scene.activeCamera.metadata.firstPerson,true);}runtime.dispose();assert.equal(scene.activeCamera,main);assert.equal(scene.meshes.length,baseline.meshes);assert.equal(scene.materials.length,baseline.materials);assert.equal(scene.textures.length,baseline.textures);assert.equal(scene.cameras.length,baseline.cameras);
+ assert.equal(runtime.snapshot().completed,true);if(['broom','rally'].includes(id)){const done=runtime.snapshot(),markers=scene.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(markers.length,done.rounds);assert(markers.every(m=>m.metadata.completed));assert.equal(done.vehicle.z,done.rounds*24);assert.equal(scene.activeCamera.metadata.firstPerson,true);}runtime.dispose();assert.equal(scene.activeCamera,main);assert.equal(scene.meshes.length,baseline.meshes);assert.equal(scene.materials.length,baseline.materials);assert.equal(scene.textures.length,baseline.textures);assert.equal(scene.cameras.length,baseline.cameras);assert.equal(scene.lights.length,baseline.lights);assert.equal(scene.transformNodes.length,baseline.nodes);
 }
 assert.equal(complete,6);assert(updates>30);
 // Three physical stages prove course progression independently of guided-answer buttons.
 for(const id of ['broom','rally']){
  runtime.start(id,{level:1,seed:4});for(let stage=1;stage<=3;stage++){
-  const s=runtime.snapshot(),i=s.task.items.findIndex(t=>t.id===s.task.solution[0]),x=(i-1)*7,startZ=(stage-1)*24,gateZ=19+startZ;
-  assert.equal(s.round,stage);assert.equal(s.gateZ,gateZ);assert.equal(s.vehicle.z,startZ);
+  const s=runtime.snapshot(),i=s.task.items.findIndex(t=>t.id===s.task.solution[0]),x=(i-1)*7,gateZ=19;
+  assert.equal(s.round,stage);assert.equal(s.gateZ,s.course.gate.z);assert.equal(s.vehicle.localZ,0);assert(Math.abs(s.vehicle.x-s.course.start.x)<1e-4);assert(Math.abs(s.vehicle.z-s.course.start.z)<1e-4);if(stage>1){assert.notEqual(s.course.heading,0);assert.notEqual(s.course.start.x,0);}
   const checkpoints=scene.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(checkpoints.length,s.rounds);assert.equal(checkpoints.filter(m=>m.metadata.completed).length,stage-1);
   const labels=scene.meshes.filter(m=>m.metadata?.miniLabel?.gate);assert.equal(labels.length,3);assert(labels.every(m=>m.position.z===gateZ));
   if(id==='broom'){
    const ring=scene.meshes.filter(m=>m.name==='mini-answer-ring')[i],targetY=ring.position.y-120;runtime.input(Math.sign(x),0,0);for(let n=0;n<Math.round(Math.abs(x)/.6);n++)runtime.tick(.1);
    const initialY=runtime.snapshot().vehicle.y;runtime.input(0,0,Math.sign(targetY-initialY));for(let n=0;n<Math.round(Math.abs(targetY-initialY)/.6);n++)runtime.tick(.1);runtime.input(0,1,0);for(let n=0;n<60&&runtime.snapshot().progress===(stage-1)/s.rounds;n++)runtime.tick(.1);
-  }else for(let n=0;n<300&&runtime.snapshot().progress===(stage-1)/s.rounds;n++){const v=runtime.snapshot().vehicle,target=Math.atan2(x-v.x,gateZ-v.z),turn=Math.atan2(Math.sin(target-v.heading),Math.cos(target-v.heading));runtime.input(Math.max(-1,Math.min(1,turn*3)),1,0);runtime.tick(.05);}
-  for(let n=0;n<40&&runtime.snapshot().busy;n++)runtime.tick(.1);assert.equal(runtime.snapshot().progress,stage/s.rounds);assert.equal(runtime.snapshot().vehicle.z,stage*24);assert.equal(runtime.snapshot().completed,false);const parked=runtime.snapshot().vehicle.z;runtime.tick(.1);assert.equal(runtime.snapshot().vehicle.z,parked,'next stage waits for fresh movement');
+  }else for(let n=0;n<300&&runtime.snapshot().progress===(stage-1)/s.rounds;n++){const v=runtime.snapshot().vehicle,target=Math.atan2(x-v.localX,gateZ-v.localZ),localHeading=v.heading-s.course.heading,turn=Math.atan2(Math.sin(target-localHeading),Math.cos(target-localHeading));runtime.input(Math.max(-1,Math.min(1,turn*3)),1,0);runtime.tick(.05);}
+  for(let n=0;n<40&&runtime.snapshot().busy;n++)runtime.tick(.1);assert.equal(runtime.snapshot().progress,stage/s.rounds);assert.equal(runtime.snapshot().vehicle.localZ,0);assert.equal(runtime.snapshot().completed,false);const parked=runtime.snapshot().vehicle.z;runtime.tick(.1);assert.equal(runtime.snapshot().vehicle.z,parked,'next stage waits for fresh movement');
  }
  runtime.dispose();
 }
