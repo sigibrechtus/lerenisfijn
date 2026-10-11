@@ -64,6 +64,7 @@ function create({B,scene,quality='balanced',reducedMotion=false,onUpdate=()=>{},
   const accent=material('stage-accent',stageColors[(s.round-1)%6]);
   stageFrames=Array.from({length:s.rounds},(_,i)=>stageFrame(i,driving));arenaFrame=stageFrames[s.round-1];meshFrame=arenaFrame;frameBase=driving?stage:0;
   const light=owned(new B.HemisphericLight('mini-stage-light',new B.Vector3(0,1,0),scene));light.includeOnlyWithLayerMask=LAYER;light.intensity=.95;light.groundColor=B.Color3.FromHexString('#47506a');
+  if(['mansion','potions'].includes(t.id)){const interior=root.MoonInteriors?.decorate({B,scene,parent:arenaFrame,originY:origin,layer:LAYER});if(interior)for(const m of interior)owned(m);}
   const savedBase=frameBase;frameBase=0;stageDecor(s,wood,pale,accent);frameBase=savedBase;
   for(let i=0;i<s.rounds;i++){meshFrame=stageFrames[i];frameBase=driving?i*24:0;mesh('CreateBox','floor',{width:52,depth:52,height:.3},[0,-.25,frameBase],ground);}meshFrame=arenaFrame;frameBase=driving?stage:0;
   mesh('CreateSphere','moon',{diameter:4,segments:quality==='low'?8:16},[-12,11,driving?stage+24:24],pale);

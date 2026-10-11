@@ -27,6 +27,7 @@ function lowEyeFrame(bounds,aspect,supportY,eyeHeight=2.08,maxDistance=18){
   let result;
   // Cap horizontal FOV as well, so a short landscape viewport does not become a fisheye.
   const horizontalLimit=1.65,maxVertical=2*Math.atan(Math.tan(horizontalLimit/2)/Math.max(.01,aspect));
+  for(const margin of [1.3,1.12]){
   for(const preferredFov of [.9,1.05,1.2])for(let distance=3;distance<=maxDistance;distance+=.125){
     const fov=Math.min(preferredFov,maxVertical);
     position.z=bounds.min.z-distance;
@@ -34,9 +35,11 @@ function lowEyeFrame(bounds,aspect,supportY,eyeHeight=2.08,maxDistance=18){
     let fits=true;
     for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z]){
       const dx=x-position.x,dy=y-position.y,dz=z-position.z,depth=dz*c-dy*s,up=dy*c+dz*s;
-      if(depth<=.2||Math.abs(dx)>depth*tanH/1.12||Math.abs(up)>depth*tanV/1.12)fits=false;
+      if(depth<=.2||Math.abs(dx)>depth*tanH/margin||Math.abs(up)>depth*tanV/margin)fits=false;
     }
     if(fits){const candidate={position:{...position},target:{...target},pitch,fov,horizontalFov:2*Math.atan(tanH),distance};if(!result||distance<result.distance)result=candidate;break;}
+  }
+  if(result)break;
   }
   if(!result)throw Error('Activity layout exceeds the low eye camera frame');
   return result;
@@ -44,7 +47,7 @@ function lowEyeFrame(bounds,aspect,supportY,eyeHeight=2.08,maxDistance=18){
 function angleDelta(from,to){return Math.atan2(Math.sin(to-from),Math.cos(to-from));}
 // Optical boards use an orthographic top view: no foreshortening or hidden ray paths.
 function topFrame(bounds,aspect){
-  const width=Math.max(.1,bounds.max.x-bounds.min.x),depth=Math.max(.1,bounds.max.z-bounds.min.z),halfHeight=Math.max(depth/2,width/(2*Math.max(.01,aspect)))*1.12;
+  const width=Math.max(.1,bounds.max.x-bounds.min.x),depth=Math.max(.1,bounds.max.z-bounds.min.z),halfHeight=Math.max(depth/2,width/(2*Math.max(.01,aspect)))*1.3;
   return {position:{x:(bounds.min.x+bounds.max.x)/2,y:bounds.max.y+8,z:(bounds.min.z+bounds.max.z)/2},left:-halfHeight*aspect,right:halfHeight*aspect,bottom:-halfHeight,top:halfHeight};
 }
 function ease(t){t=clamp(t,0,1);return t*t*(3-2*t);}
