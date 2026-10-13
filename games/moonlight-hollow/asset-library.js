@@ -138,6 +138,24 @@ async function placeProduction(scene,id,parent,opts={}){
   part.checkCollisions=false;part.isPickable=false;part.receiveShadows=true;
   part.metadata={...part.metadata,moonVisualOnly:true,productionAsset:id};
  }
+ // High-tier PBR explicitly switches the locomotive's UV-compatible paint maps
+ // to 4096² images. The GLB embeds 512px equivalents for balanced/mobile.
+ if(quality==='high'&&(scene.getEngine()?.getCaps()?.maxTextureSize||0)>=4096){
+  const prefix='assets/models/custom/moon-express/textures-4k/';
+  const paintMaterials=new Set(node.getChildMeshes().map(m=>m.material).filter(m=>
+   m instanceof B.PBRMaterial&&m.name.includes('moon-red-pbr')));
+  for(const m of paintMaterials){
+   const albedo=new B.Texture(prefix+'albedo.png',scene,true,false);
+   const normal=new B.Texture(prefix+'normal.png',scene,true,false);
+   const packed=new B.Texture(prefix+'orm.png',scene,true,false);
+   [albedo,normal,packed].forEach(t=>{t.anisotropicFilteringLevel=8;});
+   m.albedoTexture=albedo;m.bumpTexture=normal;m.metallicTexture=packed;
+   m.ambientTexture=packed;
+   m.useRoughnessFromMetallicTextureGreen=true;
+   m.useMetallnessFromMetallicTextureBlue=true;
+   m.useAmbientInGrayScale=true;
+  }
+ }
  node.metadata={productionAsset:id,quality,source:path};
  return node;
 }
