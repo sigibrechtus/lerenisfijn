@@ -57,4 +57,12 @@ Gameplay-critical signs, control buttons, illuminated puzzle objects, train entr
 - Quaternius: https://quaternius.com — free/open game-oriented 3D packs; verify per-pack licence.
 - Blender: https://www.blender.org — open-source 3D editor for topology, rigging and GLB export.
 
+## Open-source / cloud generation options
+
+- **Microsoft TRELLIS.2** — https://github.com/microsoft/TRELLIS.2 — a PBR-ready image-to-3D GLB generation option; model and source code are MIT, but dependencies have separate licence terms. It requires a suitable CUDA GPU (typically >=24 GB of VRAM) and an external GPU-capable environment; it was **not run** as part of this import.
+- **Blender** — https://www.blender.org/ — use for final topology, UVs, scale calibration, mesh decimation/LODs, animation rigs, glTF export and rendering checks. Can run in a self-hosted CI or dedicated GPU container; standard free GitHub Actions runners are not GPU rendering workstations.
+- **Astria** — generate original visual references or material concepts, then use a dedicated mesh generator and Blender; Astria images are not mechanically valid replacement 3D meshes.
+- **Licensing restriction** — Tencent Hunyuan3D-2.1's public community licence explicitly excludes use in the EU, UK and South Korea. Do not deploy its model or weights in a Belgium-based production pipeline without a separate valid licence.
+- Every generated model still requires a verified provenance record, topology/geometry inspection, glTF material validation, GPU-memory assessment and model-to-gameplay rig/physics mapping before it can replace a procedural scene element.
+
 **Verification boundaries:** The source index and code integration are committed to the feature branch. The verified GLB files are written by a separate CI job after this change merges. A CI result proves byte integrity only; live WebGL rendering requires an additional test.
