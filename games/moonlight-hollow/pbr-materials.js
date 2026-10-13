@@ -12,7 +12,7 @@ function generate(type,resolution=512){
  // In glTF's packed ORM convention R=occlusion, G=roughness, B=metallic.
  // Small variations are derived from the actual surface height, not illumination.
  for(let y=0;y<resolution;y++)for(let x=0;x<resolution;x++){
-  const i=y*resolution+x,j=i*4,h=height[i],left=height[y*resolution+(x?p===x?0:x-1:p-1)],up=height[(y?y===p?0:y-1:p-1)*resolution+x];
+  const i=y*resolution+x,j=i*4,h=height[i],left=height[y*resolution+(x===0||x===p?p-1:x-1)],up=height[(y===0||y===p?p-1:y-1)*resolution+x];
   const crevice=max(0,.53-h),ridge=Math.min(1,Math.abs(h-left)+Math.abs(h-up));
   orm[j]=clamp(255*(1-Math.min(.28,crevice*.45+ridge*.08)));
   orm[j+1]=clamp(255*Math.min(.99,max(.13,baseRoughness[type]+(h-.5)*.20+ridge*.10)));
