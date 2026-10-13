@@ -31,3 +31,9 @@ Editable HUD specification: https://www.figma.com/design/LswioLZvHp2ZlqEYr7DdPE
 - Service worker v34 includes the race module and generated texture.
 
 Game Development Studio CLI and OpenAI Platform tools were unavailable. Chromium installation failed because the network download returned invalid ZIP content; no successful real-browser/WebGL screenshot or device performance test is claimed. NullEngine checks prove scene construction and geometry/projection, not GPU output, visual quality or iPhone performance. The Figma screens describe the HUD and do not depict a rendered race.
+
+## Sharp independent race scene (v35)
+
+The full-viewport vehicle HUD explicitly disables the inherited `.glass` 14-pixel backdrop blur, which otherwise fuzzed the complete game canvas. The race vignette is hidden. The race owns a separate Babylon Scene, with no inherited exploration fog, glow layers or postprocessing. It uses direct image processing (exposure/contrast 1), native-density rendering up to 2× within a 4.2-million-pixel budget, anisotropic road filtering, and non-glowing surface materials. The main loop renders the active race scene and resumes the exploration scene on exit, restoring its rendering resolution. Hundreds of instanced Halloween props include autumn trees, jack-o-lantern clusters, lantern poles, haunted huts, grave crosses and bats.
+
+Runtime gate tests assert speed retention and forward-position continuity at every successful checkpoint, plus separate-scene ownership, no inherited glow, active instanced scenery, overhead sign framing and resource cleanup.

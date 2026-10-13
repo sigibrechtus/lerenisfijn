@@ -33,3 +33,6 @@
 /* Pumpkin rally: race-specific palette with overhead gate answers; the road stays exposed. */
 .rally-mode .mini-mission,.rally-mode .race-telemetry,.rally-mode .mini-tools{background:#261b32ed;border-color:#e99b55aa;box-shadow:0 4px 20px #120c2266}
 .rally-mode #mini-question{color:#ffe2a5}.rally-mode #mini-progress{color:#dab9f5}.rally-mode .mini-driving button{background:#352440f2;border-color:#eea453aa}.rally-mode .mini-driving button.held{background:#956030}
+/* The vehicle HUD covers the viewport: never inherit .glass backdrop blur here. */
+.vehicle-mode .mini-panel{backdrop-filter:none;-webkit-backdrop-filter:none}
+.rally-mode .vignette{display:none}
