@@ -45,6 +45,22 @@ test('PBR maps are on the matching Babylon material slots and shared by surface 
 test('PBR bank rejects a StandardMaterial rather than silently dropping ORM',()=>{
  const d=doubles(),bank=P.create(d.B,d.scene,{quality:'low'});assert.throws(()=>bank.apply({diffuseColor:'#ffffff'},{}),/PBRMaterial/);assert.equal(bank.stats.textures,0);bank.dispose();
 });
+test('desktop HD PBR bank holds seven full 2K surface sets',()=>{
+ const d=doubles(),bank=P.create(d.B,d.scene,{quality:'high'});
+ for(const type of ['wood','stone','roof','metal','pumpkin','cloth','earth'])bank.material(type);
+ assert.equal(bank.stats.pairs,7);
+ assert(bank.stats.surfaces.every(surface=>surface.resolution===2048));
+ assert.equal(bank.stats.estimatedBytes,448*1048576);
+ assert(bank.stats.estimatedBytes<=bank.stats.budgetMiB*1048576);
+ bank.dispose();
+});
+test('mobile PBR bank stays at balanced resolution when HD is selected',()=>{
+ const d=doubles(),bank=P.create(d.B,d.scene,{quality:'high',maxQuality:'balanced',budgetMiB:128});
+ bank.material('stone');
+ assert.equal(bank.stats.quality,'balanced');assert.equal(bank.stats.surfaces[0].resolution,1024);
+ assert.equal(bank.quality('high'),false);assert.equal(bank.stats.quality,'balanced');
+ bank.dispose();
+});
 test('actual vendored Babylon NullEngine accepts the PBR/ORM material layout',t=>{
  let canvas;try{canvas=require('@napi-rs/canvas');}catch{t.skip('Canvas unavailable');return;}
  const prev=global.OffscreenCanvas;global.OffscreenCanvas=class{constructor(w,h){return canvas.createCanvas(w,h);}};

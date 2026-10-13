@@ -23,10 +23,14 @@ function generate(type,resolution=512){
 }
 function create(B,scene,opts={}){
  if(!B?.PBRMaterial||!B?.DynamicTexture)throw new Error('Babylon PBRMaterial and DynamicTexture required');
+ const rank={low:0,balanced:1,high:2},maxQuality=['low','balanced','high'].includes(opts.maxQuality)?opts.maxQuality:'high';
  let quality=['low','balanced','high'].includes(opts.quality)?opts.quality:'balanced',bytes=0,peak=0,disposed=false;
+ if(rank[quality]>rank[maxQuality])quality=maxQuality;
  const caps=scene.getEngine?.().getCaps?.()||{},hardware=caps.maxTextureSize||2048;
  const limit=Math.min(hardware,opts.enable4K===true?4096:2048);
- const budgetFor=q=>(Number.isFinite(opts.budgetMiB)?max(4,opts.budgetMiB):(q==='low'?48:q==='high'?192:128))*1048576;
+ // Seven independent 2K PBR triplets require 448 MiB including mipmaps.
+ // The world supplies a lower explicit budget for iOS devices.
+ const budgetFor=q=>(Number.isFinite(opts.budgetMiB)?max(4,opts.budgetMiB):(q==='low'?48:q==='high'?640:128))*1048576;
  const pairs=new Map(),bindings=new Map(),owned=new Set(),mats=new Map();
  const pairBytes=size=>Math.ceil(size*size*4*3*4/3);
  function expected(type,tier){
@@ -98,7 +102,7 @@ function create(B,scene,opts={}){
  function live(mat){return !(typeof mat.isDisposed==='function'&&mat.isDisposed())&&!mat._isDisposed&&(!scene.materials||scene.materials.includes(mat));}
  function setQuality(value){
   if(disposed)throw Error('Moonlight PBR bank disposed');
-  const next=['low','balanced','high'].includes(value)?value:'balanced';if(next===quality)return false;
+  let next=['low','balanced','high'].includes(value)?value:'balanced';if(rank[next]>rank[maxQuality])next=maxQuality;if(next===quality)return false;
   let remaining=budgetFor(next);const plan=[];
   for(const [key,p] of pairs){const size=sizeFor(p.type,next,remaining);remaining-=pairBytes(size);plan.push({key,p,size});}
   for(const [mat]of bindings)if(!live(mat))bindings.delete(mat);

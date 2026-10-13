@@ -7,7 +7,9 @@ const camera=new B.ArcRotateCamera('camera',-Math.PI/2,1.06,14,new B.Vector3(0,2
 const hemi=new B.HemisphericLight('moonwash',new B.Vector3(0,1,0),scene);hemi.intensity=.75;hemi.diffuse=new B.Color3(.65,.79,1);hemi.groundColor=new B.Color3(.32,.22,.28);const moonLight=new B.DirectionalLight('moonlight',new B.Vector3(-.4,-1,.3),scene);moonLight.position=new B.Vector3(25,40,-30);moonLight.intensity=1.1;moonLight.diffuse=new B.Color3(.91,.85,1);
 const shadows=new B.ShadowGenerator(1024,moonLight);shadows.useBlurExponentialShadowMap=true;shadows.blurKernel=12;const glow=new B.GlowLayer('lantern-glow',scene,{mainTextureRatio:.5});glow.intensity=.38;
 const pipeline=new B.DefaultRenderingPipeline('moonlight-finish',false,scene,[camera]);pipeline.samples=1;pipeline.fxaaEnabled=true;pipeline.imageProcessingEnabled=true;scene.imageProcessingConfiguration.toneMappingEnabled=true;scene.imageProcessingConfiguration.toneMappingType=B.ImageProcessingConfiguration.TONEMAPPING_ACES;scene.imageProcessingConfiguration.exposure=1.2;scene.imageProcessingConfiguration.contrast=1.08;
-const surfaceBank=(root.MoonPBRMaterials?.create&&B.PBRMaterial?root.MoonPBRMaterials.create(B,scene,{quality:['low','high'].includes(api.prefs().quality)?api.prefs().quality:'balanced'}):root.MoonMaterials?.create(B,scene,{quality:['low','high'].includes(api.prefs().quality)?api.prefs().quality:'balanced'}));
+const mobileSafari=/iPhone|iPad|iPod/i.test(root.navigator?.userAgent||'');
+const requestedPBRQuality=['low','high'].includes(api.prefs().quality)?api.prefs().quality:'balanced';
+const surfaceBank=(root.MoonPBRMaterials?.create&&B.PBRMaterial?root.MoonPBRMaterials.create(B,scene,{quality:mobileSafari&&requestedPBRQuality==='high'?'balanced':requestedPBRQuality,maxQuality:mobileSafari?'balanced':'high',budgetMiB:mobileSafari?128:640}):root.MoonMaterials?.create(B,scene,{quality:mobileSafari&&requestedPBRQuality==='high'?'balanced':requestedPBRQuality}));
 const pbrSurfaces=new Set(['moss','stone','warm-path','wood','roof','plaster','gold','coat','weathered-rock','pumpkin','pumpkin-gold']);const mats={};function material(name,hex,em=0){if(mats[name])return mats[name];const m=surfaceBank?.pbr&&pbrSurfaces.has(name)?surfaceBank.prepare(new B.PBRMaterial(name,scene)):new B.StandardMaterial(name,scene);m.diffuseColor=B.Color3.FromHexString(hex);m.specularColor=new B.Color3(.12,.12,.12);if(em)m.emissiveColor=m.diffuseColor.scale(em);mats[name]=m;return m;}
 const grass=material('moss','#3d6462'),stone=material('stone','#738793'),path=material('warm-path','#a3947f'),wood=material('wood','#715640'),roof=material('roof','#654b70'),plaster=material('plaster','#d5bd99'),gold=material('gold','#edbc67'),dark=material('dark','#273345'),warm=material('warm-light','#ffcc72',1.4),blue=material('moon-drop','#86dbe3',.7),pink=material('red-drop','#dd8ca3',.5),ghostMat=material('Lumi','#c4e7f5',.5),coatMat=material('coat','#4caaaa'),skinMat=material('skin','#d7aa86'),hair=material('hair','#523f48');
 // Original tiling surface details; modest canvas textures remain available offline.
@@ -103,7 +105,6 @@ let productionTrain=null;
 // can interrupt construction of the Babylon scene.
 const productionLibrary=root.MoonAssetLibrary;
 const requestedTrainQuality=api.prefs().quality;
-const mobileSafari=/iPhone|iPad|iPod/i.test(root.navigator?.userAgent||'');
 if(requestedTrainQuality!=='low'&&typeof productionLibrary?.placeProduction==='function'){
  Promise.resolve().then(()=>productionLibrary.placeProduction(scene,'moon-express-locomotive',train,{
   // The detailed 69K-triangle model and 4K PBR set remain available on desktop HD.
