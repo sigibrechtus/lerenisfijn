@@ -1,0 +1,25 @@
+name: Moonlight Hollow 3D asset inventory coverage
+on:
+  pull_request:
+    paths:
+      - 'games/moonlight-hollow/*.js'
+      - 'games/moonlight-hollow/tools/check_production_registry.cjs'
+      - 'games/moonlight-hollow/assets/production-registry.json'
+  push:
+    branches: [main]
+    paths:
+      - 'games/moonlight-hollow/*.js'
+      - 'games/moonlight-hollow/tools/check_production_registry.cjs'
+      - 'games/moonlight-hollow/assets/production-registry.json'
+permissions:
+  contents: read
+jobs:
+  assert-registry-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Reject untracked meshes and invalid production states
+        run: node games/moonlight-hollow/tools/check_production_registry.cjs
