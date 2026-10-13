@@ -1,0 +1,64 @@
+name: Build Moon Express 3D production assets
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/moonlight-hollow/tools/generate_moon_express.py'
+      - 'games/moonlight-hollow/tools/render_moon_express_views.py'
+      - '.github/workflows/moonlight-train-production.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: moonlight-train-assets
+  cancel-in-progress: false
+jobs:
+  build-validate-vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned mesh/PBR toolchain
+        run: python -m pip install 'numpy==2.3.5' 'trimesh==4.11.1' 'Pillow==12.3.0'
+      - name: Generate hero/mobile GLBs, 4K PBR textures and report
+        run: |
+          python games/moonlight-hollow/tools/generate_moon_express.py
+          python games/moonlight-hollow/tools/render_moon_express_views.py
+      - name: Validate actual files and PBR semantics
+        run: |
+          python - <<'PY'
+          import json,struct,pathlib,trimesh
+          from PIL import Image
+          p=pathlib.Path('games/moonlight-hollow/assets/models/custom/moon-express')
+          r=json.loads((p/'model-report.json').read_text())
+          assert r['hero']['triangles']>=20000
+          assert r['mobile']['triangles']<r['hero']['triangles']
+          for name in ['moon-express-hero.glb','moon-express-mobile.glb']:
+              binary=(p/name).read_bytes()
+              assert binary[:4]==b'glTF'
+              assert struct.unpack_from('<I',binary,4)[0]==2
+              assert struct.unpack_from('<I',binary,8)[0]==len(binary)
+              scene=trimesh.load_scene(p/name)
+              actual=sum(len(g.faces) for g in scene.geometry.values())
+              declared=r['hero' if 'hero' in name else 'mobile']['triangles']
+              assert actual==declared,(name,actual,declared)
+          for file in ['albedo','normal','orm']:
+              with Image.open(p/'textures-4k'/(file+'.png')) as img:
+                  assert img.size==(4096,4096) and img.mode=='RGB'
+          assert len(list((p/'reference-views').glob('view-*.png')))==8
+          assert (p/'reference-views/contact-sheet.png').exists()
+          assert not r['qa']['liveWebGLVerified']
+          print('GLB topology and map integrity validated.')
+          PY
+      - name: Commit generated assets to GitHub game folder
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add games/moonlight-hollow/assets/models/custom/moon-express
+          if ! git diff --cached --quiet; then
+            git commit -m 'assets(moonlight): publish tested Moon Express GLBs and 4K PBR maps'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
