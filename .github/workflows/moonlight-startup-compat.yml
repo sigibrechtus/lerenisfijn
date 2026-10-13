@@ -1,0 +1,39 @@
+name: Moonlight Hollow startup compatibility
+on:
+  pull_request:
+    paths:
+      - 'games/moonlight-hollow/world.js'
+      - 'games/moonlight-hollow/asset-library.js'
+      - 'games/moonlight-hollow/adventure.js'
+      - 'games/moonlight-hollow/index.html'
+      - 'games/moonlight-hollow/sw.js'
+      - 'tests/moonlight-asset-startup.test.cjs'
+      - '.github/workflows/moonlight-startup-compat.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'games/moonlight-hollow/world.js'
+      - 'games/moonlight-hollow/asset-library.js'
+      - 'games/moonlight-hollow/adventure.js'
+      - 'games/moonlight-hollow/index.html'
+      - 'games/moonlight-hollow/sw.js'
+      - 'tests/moonlight-asset-startup.test.cjs'
+      - '.github/workflows/moonlight-startup-compat.yml'
+permissions:
+  contents: read
+jobs:
+  startup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax
+        run: |
+          node --check games/moonlight-hollow/world.js
+          node --check games/moonlight-hollow/asset-library.js
+          node --check games/moonlight-hollow/adventure.js
+          node --check games/moonlight-hollow/sw.js
+      - name: Optional-asset and cache regression tests
+        run: node --test tests/moonlight-asset-startup.test.cjs

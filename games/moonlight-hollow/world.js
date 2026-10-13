@@ -97,14 +97,25 @@ pumpkin(0,1.05, .45,train);
 // procedural collision/animation proxies. The original scene survives failed loading.
 const trainProxyMeshes=train.getChildMeshes().slice();
 let productionTrain=null;
-root.MoonAssetLibrary?.placeProduction(scene,'moon-express-locomotive',train,{
- quality:api.prefs().quality==='high'?'high':'balanced',scale:.66
-}).then(art=>{
- if(!art||scene.isDisposed()||train.isDisposed())return;
- productionTrain=art;
- trainProxyMeshes.filter(m=>!m.isDisposed()).forEach(m=>m.setEnabled(false));
- if(mode==='ride')art.setEnabled(false); // cockpit sight lines cannot be occluded
-}).catch(e=>console.warn('Moon Express GLB fallback:',e.message));
+// Production GLBs are optional. Stale/offline clients may load an older asset-library.js
+// without placeProduction; in that case preserve the fully playable procedural train.
+// Defer optional imports so neither a missing method nor a synchronous importer failure
+// can interrupt construction of the Babylon scene.
+const productionLibrary=root.MoonAssetLibrary;
+const requestedTrainQuality=api.prefs().quality;
+const mobileSafari=/iPhone|iPad|iPod/i.test(root.navigator?.userAgent||'');
+if(requestedTrainQuality!=='low'&&typeof productionLibrary?.placeProduction==='function'){
+ Promise.resolve().then(()=>productionLibrary.placeProduction(scene,'moon-express-locomotive',train,{
+  // The detailed 69K-triangle model and 4K PBR set remain available on desktop HD.
+  // iOS devices use the improved mobile GLB with embedded 512px PBR maps.
+  quality:mobileSafari?'balanced':requestedTrainQuality==='high'?'high':'balanced',scale:.66
+ })).then(art=>{
+  if(!art||scene.isDisposed()||train.isDisposed())return;
+  productionTrain=art;
+  trainProxyMeshes.filter(m=>!m.isDisposed()).forEach(m=>m.setEnabled(false));
+  if(mode==='ride')art.setEnabled(false); // keep cockpit sight lines unobstructed
+ }).catch(e=>console.warn('Moon Express GLB fallback:',e));
+}
 const railMotion=R.create(),rideCamera=new B.UniversalCamera('train-first-person',new B.Vector3(0,2.05,-.35),scene);rideCamera.minZ=.08;rideCamera.maxZ=500;rideCamera.fov=.9;rideCamera.parent=train;rideCamera.inputs.clear();pipeline.addCamera(rideCamera);
 // Friendly castle and observatory.
 let moonMachine;district('lights',()=>{obstacles.push({x:0,z:49,w:14,d:6.5});
