@@ -12,3 +12,12 @@ for(const [width,height] of [[390,844],[844,390],[1440,900]])for(const circuit o
  r.start('rally');r.input(0,1);r.tick(.1);paused=true;r.tick(.1);assert.equal(r.snapshot().speed,0);paused=false;r.input(0,-1);r.tick(.1);assert.equal(r.snapshot().gear,'R');r.dispose();host.dispose();e.dispose();
 }
 console.log(`${signs} overhead answer signs fit portrait/landscape/desktop cameras; continuous scenes complete and dispose cleanly.`);
+
+// Cockpit look is independent of steering, including the real pointer listener path.
+{
+ const e=new B.NullEngine({renderWidth:1280,renderHeight:720}),host=new B.Scene(e),listeners=new Map(),canvas={clientWidth:1280,clientHeight:720,addEventListener(k,fn){listeners.set(k,fn);},removeEventListener(k){listeners.delete(k);},setPointerCapture(){}};e.getRenderingCanvas=()=>canvas;
+ const r=W.create({B,scene:host});r.start('rally',{speedTier:3});r.input(0,1);for(let i=0;i<20;i++)r.tick(.05);const before=r.snapshot();r.action('camera');assert.equal(r.snapshot().view,'first');assert.equal(r.snapshot().speed,before.speed,'switching view preserves speed');assert.deepEqual(r.snapshot().vehicle,before.vehicle,'switching view never teleports the kart');const heading=before.vehicle.heading;
+ listeners.get('pointerdown')({button:0,pointerId:7,clientX:100,clientY:100,preventDefault(){}});listeners.get('pointermove')({pointerId:7,clientX:200,clientY:150});listeners.get('pointerup')({pointerId:7});assert.equal(r.snapshot().vehicle.heading,heading);assert(r.snapshot().headLook.yaw>.3);assert(r.snapshot().headLook.pitch>0);assert.equal(r.scene.activeCamera.metadata.firstPerson,true);assert.equal(r.scene.getMeshByName('mini-driver-head').isEnabled(),false);r.action('look-center');assert.equal(r.snapshot().headLook.yaw,0);assert.equal(r.snapshot().headLook.pitch,0);r.action('camera');assert.equal(r.scene.getMeshByName('mini-driver-head').isEnabled(),true);
+ const road=r.scene.getMeshByName('mini-rally-continuous-road'),ys=road.getVerticesData(B.VertexBuffer.PositionKind).filter((_,i)=>i%3===1);assert(Math.max(...ys)-Math.min(...ys)>1,'rendered road follows elevation');assert(Math.abs(r.snapshot().vehicle.y-(R.at(R.circuit(0),r.snapshot().vehicle.s).y+1))<1e-6,'kart follows elevated road');r.dispose();assert.equal(listeners.size,0,'head-look listeners released');host.dispose();e.dispose();
+}
+console.log('Cockpit switching, pointer head look, elevation grounding and listener cleanup pass.');

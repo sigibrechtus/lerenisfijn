@@ -36,3 +36,5 @@
 /* The vehicle HUD covers the viewport: never inherit .glass backdrop blur here. */
 .vehicle-mode .mini-panel{backdrop-filter:none;-webkit-backdrop-filter:none}
 .rally-mode .vignette{display:none}
+
+.race-telemetry #mini-speed-cap{grid-column:1/-1;color:var(--gold);font-size:11px}.race-telemetry #mini-camera{grid-column:1/-1;min-height:38px;font-size:12px;padding:5px 8px}
