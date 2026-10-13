@@ -93,6 +93,18 @@ for(const z of [-1.95,1.95]){box('carriage-end',[0,.95,z],[2.3,.5,.12],trainMat,
 box('passenger-seat',[0,.85,.35],[1.3,.25,1],trainMat,train);box('seat-back',[0,1.25,-.2],[1.3,.8,.15],trainMat,train);
 for(const x of [-1,1])for(const z of [-1.2,1.2]){const wheel=cyl('wheel',[x,.55,z],.22,.64,dark,train);wheel.rotationQuaternion=B.Quaternion.RotationAxis(B.Vector3.Forward(),Math.PI/2);wheel.metadata={roll:0};wheels.push(wheel);box('wheel-spoke',[0,0,0],[.5,.08,.08],gold,wheel);}
 pumpkin(0,1.05, .45,train);
+// Preserve train kinematics, audio and station logic; visual GLB is a sibling of the
+// procedural collision/animation proxies. The original scene survives failed loading.
+const trainProxyMeshes=train.getChildMeshes().slice();
+let productionTrain=null;
+root.MoonAssetLibrary?.placeProduction(scene,'moon-express-locomotive',train,{
+ quality:api.prefs().quality==='high'?'high':'balanced',scale:.66
+}).then(art=>{
+ if(!art||scene.isDisposed()||train.isDisposed())return;
+ productionTrain=art;
+ trainProxyMeshes.filter(m=>!m.isDisposed()).forEach(m=>m.setEnabled(false));
+ if(mode==='ride')art.setEnabled(false); // cockpit sight lines cannot be occluded
+}).catch(e=>console.warn('Moon Express GLB fallback:',e.message));
 const railMotion=R.create(),rideCamera=new B.UniversalCamera('train-first-person',new B.Vector3(0,2.05,-.35),scene);rideCamera.minZ=.08;rideCamera.maxZ=500;rideCamera.fov=.9;rideCamera.parent=train;rideCamera.inputs.clear();pipeline.addCamera(rideCamera);
 // Friendly castle and observatory.
 let moonMachine;district('lights',()=>{obstacles.push({x:0,z:49,w:14,d:6.5});
@@ -220,14 +232,14 @@ canvas.addEventListener('pointermove',e=>{if(!rideMouse||rideMouse.id!==e.pointe
 for(const type of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(type,()=>{rideMouse=null;});
 function moveTrain(state,rollDistance=0){train.position.set(state.x,0,state.z);train.rotation.y=state.heading;for(const wheel of wheels){wheel.metadata.roll-=rollDistance/.32;wheel.rotationQuaternion=B.Quaternion.RotationAxis(B.Vector3.Right(),wheel.metadata.roll).multiply(B.Quaternion.RotationAxis(B.Vector3.Forward(),Math.PI/2));}train.computeWorldMatrix(true);}
 function stationUI(){if(externalActive)return;const state=railMotion.snapshot(),index=nearbyStation();api.station?.(index,state);api.callStation?.(index>=0&&(state.active||index!==state.station),state.active,index);api.ride(index>=0&&index===state.station&&!state.active,false,'idle',(state.station+1)%R.stations.length);}
-function finishRide(persist=true){if(mode!=='ride')return;const state=railMotion.finish(),p=R.platform(state.station);moveTrain(state);hero.parent=null;hero.position.set(p.x,.25,p.z);hero.setEnabled(true);ghost.parent=null;ghost.position.set(p.x+.7,1.7,p.z+.4);mode='world';if(!externalActive)scene.activeCamera=camera;controls.reset();keys={};rideMouse=null;destination=null;camera.target.copyFrom(hero.position.add(new B.Vector3(0,1.3,0)));applyCamera({...rideSaved,target:camera.target.clone()});restoreCameraControls();rideSaved=null;stationUI();if(persist){api.position(hero.position.x,hero.position.z);api.trainStation?.(state.station);}}
+function finishRide(persist=true){if(mode!=='ride')return;productionTrain?.setEnabled(true);const state=railMotion.finish(),p=R.platform(state.station);moveTrain(state);hero.parent=null;hero.position.set(p.x,.25,p.z);hero.setEnabled(true);ghost.parent=null;ghost.position.set(p.x+.7,1.7,p.z+.4);mode='world';if(!externalActive)scene.activeCamera=camera;controls.reset();keys={};rideMouse=null;destination=null;camera.target.copyFrom(hero.position.add(new B.Vector3(0,1.3,0)));applyCamera({...rideSaved,target:camera.target.clone()});restoreCameraControls();rideSaved=null;stationUI();if(persist){api.position(hero.position.x,hero.position.z);api.trainStation?.(state.station);}}
 function nearbyStation(){return R.stations.findIndex((s,i)=>{const p=R.platform(i);return Math.hypot(hero.position.x-p.x,hero.position.z-p.z)<4;});}
 function callTrain(requested){const index=nearbyStation();if(!started||externalActive||mode!=='world'||api.blocked()||index<0||(requested!==undefined&&requested!==index)||!railMotion.call(index))return false;moveTrain(railMotion.snapshot());stationUI();api.effect('train',{gain:.35,point:()=>train.getAbsolutePosition()});return true;}
 function trainSound(dt,state){railTimer+=dt;if(state.phase==='travel'&&railTimer>.75){railTimer=0;api.effect('train-roll',{gain:.28,point:()=>train.getAbsolutePosition()});}}
 function tickCalledTrain(dt){const before=railMotion.snapshot(),state=railMotion.tick(dt);moveTrain(state,Math.max(0,state.travelled-before.travelled));trainSound(dt,state);if(!state.active)api.trainStation?.(state.station);}
 function boardTrain(target){const state=railMotion.snapshot();if(!started||externalActive||mode!=='world'||api.blocked()||nearbyStation()!==state.station||!railMotion.begin(target))return false;
  controls.reset();keys={};destination=null;cameraTransition=null;rideSaved={alpha:camera.alpha,beta:camera.beta,radius:camera.radius};camera.detachControl();clearCameraInertia();moveTrain(railMotion.snapshot());
- hero.parent=train;hero.position.set(0,.65,0);hero.rotation.set(0,0,0);hero.setEnabled(false);ghost.parent=train;ghost.position.set(.65,1.4,.65);ghost.rotation.set(0,Math.PI,0);rideCamera.rotation.set(0,0,0);rideCamera.position.set(-4*railMotion.snapshot().direction,1.95,-.35);scene.activeCamera=rideCamera;mode='ride';api.near(null);wasNear=null;api.callStation?.(false);api.station?.(-1,railMotion.snapshot());api.ride(true,true,'boarding',railMotion.snapshot().target);api.effect('train',{point:()=>train.getAbsolutePosition()});return true;
+ hero.parent=train;hero.position.set(0,.65,0);hero.rotation.set(0,0,0);hero.setEnabled(false);ghost.parent=train;ghost.position.set(.65,1.4,.65);ghost.rotation.set(0,Math.PI,0);rideCamera.rotation.set(0,0,0);rideCamera.position.set(-4*railMotion.snapshot().direction,1.95,-.35);scene.activeCamera=rideCamera;mode='ride';productionTrain?.setEnabled(false);api.near(null);wasNear=null;api.callStation?.(false);api.station?.(-1,railMotion.snapshot());api.ride(true,true,'boarding',railMotion.snapshot().target);api.effect('train',{point:()=>train.getAbsolutePosition()});return true;
 }
 function tickRide(dt){const before=railMotion.snapshot(),state=railMotion.tick(dt);moveTrain(state,Math.max(0,state.travelled-before.travelled));
  const t=state.phase==='boarding'?F.ease(state.progress):1;rideCamera.position.set(-4*state.direction*(1-t),1.95+.1*t,-.35);hero.computeWorldMatrix(true);ghost.computeWorldMatrix(true);
