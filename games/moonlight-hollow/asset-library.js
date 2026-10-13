@@ -105,6 +105,42 @@ function enhanceInterior(scene,parent){
  if(!scene||!parent)return;
  parent.getChildMeshes().filter(m=>m.name==='interior-ribbed-pumpkin').slice(0,4).forEach(m=>replace(scene,m,'pumpkin-carved'));
 }
-root.MoonAssetLibrary={place,replace,enhanceWorld,enhanceRace,enhanceInterior};
+// Authored production GLBs: separate from Kenney CC0 vendor manifest.
+// Each may include its own node/material hierarchy and animation assets.
+const PRODUCTION={
+ 'moon-express-locomotive':{
+  high:'assets/models/custom/moon-express/moon-express-hero.glb',
+  balanced:'assets/models/custom/moon-express/moon-express-mobile.glb',
+  low:null
+ }
+};
+async function placeProduction(scene,id,parent,opts={}){
+ const B=root.BABYLON,info=PRODUCTION[id];
+ if(!scene||!B?.SceneLoader?.ImportMeshAsync||!info||!parent||parent.isDisposed())return null;
+ const quality=opts.quality==='high'?'high':'balanced',path=info[quality];
+ if(!path)return null;
+ let result;
+ try{
+  result=await B.SceneLoader.ImportMeshAsync(null,'',path,scene,undefined,'.glb');
+ }catch(e){
+  console.warn('Production GLB unavailable; preserving procedural scene:',id,e?.message);
+  return null;
+ }
+ if(scene.isDisposed()||parent.isDisposed()){
+  result.meshes.forEach(m=>m.dispose());return null;
+ }
+ const node=new B.TransformNode('moon-production-'+id,scene);
+ const included=new Set(result.meshes);
+ result.meshes.filter(m=>!m.parent||!included.has(m.parent)).forEach(m=>m.setParent(node));
+ node.parent=parent;
+ node.scaling.setAll(opts.scale||.66);
+ for(const part of node.getChildMeshes()){
+  part.checkCollisions=false;part.isPickable=false;part.receiveShadows=true;
+  part.metadata={...part.metadata,moonVisualOnly:true,productionAsset:id};
+ }
+ node.metadata={productionAsset:id,quality,source:path};
+ return node;
+}
+root.MoonAssetLibrary={place,replace,enhanceWorld,enhanceRace,enhanceInterior,placeProduction,PRODUCTION};
 if(typeof module!=='undefined')module.exports=root.MoonAssetLibrary;
 })(typeof window!=='undefined'?window:globalThis);
