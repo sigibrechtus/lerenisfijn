@@ -1,38 +1,46 @@
-/* AI environment artwork combined with physical room trim. Open front preserves framing. */
+/* Open-front quarter dome. Walls/ceiling and planar floor use separate AI assets. */
 (function(root){'use strict';
 const banks=new WeakMap();
-function decorate({B,scene,parent,originY=0,layer=0x10000000,topView=false}){
+function decorate({B,scene,parent,originY=0,layer=0x10000000,topView=false,floorY=.134}){
  let bank=banks.get(scene);
  if(!bank){
-  const wood=new B.StandardMaterial('interior-carved-wood',scene);wood.diffuseColor=B.Color3.FromHexString('#63432e');wood.specularColor=B.Color3.FromHexString('#41382f');wood.fogEnabled=false;
-  const gold=new B.StandardMaterial('interior-brass',scene);gold.diffuseColor=B.Color3.FromHexString('#d4a85d');gold.specularColor=B.Color3.FromHexString('#b79b6a');gold.specularPower=64;gold.fogEnabled=false;
-  const art=new B.StandardMaterial('interior-ai-panorama',scene);const texture=new B.Texture('assets/enchanted-interior.webp',scene,false,true,B.Texture.TRILINEAR_SAMPLINGMODE);texture.anisotropicFilteringLevel=8;art.diffuseTexture=texture;art.emissiveTexture=texture;art.emissiveColor=new B.Color3(.65,.65,.65);art.disableLighting=true;art.backFaceCulling=false;art.fogEnabled=false;
-  bank={wood,gold,art,users:0};banks.set(scene,bank);
-  bank.release=()=>{if(--bank.users>0)return;texture.dispose();for(const m of [wood,gold,art])m.dispose();banks.delete(scene);};
+  const wood=new B.StandardMaterial('interior-carved-wood',scene);wood.diffuseColor=B.Color3.FromHexString('#63432e');wood.fogEnabled=false;
+  const brass=new B.StandardMaterial('interior-brass',scene);brass.diffuseColor=B.Color3.FromHexString('#d4a85d');brass.specularPower=64;brass.fogEnabled=false;
+  const pumpkin=new B.StandardMaterial('interior-pumpkin',scene);pumpkin.diffuseColor=B.Color3.FromHexString('#d88739');pumpkin.emissiveColor=new B.Color3(.08,.025,.005);pumpkin.fogEnabled=false;
+  const glow=new B.StandardMaterial('interior-lantern-glow',scene);glow.diffuseColor=B.Color3.FromHexString('#ffe1a0');glow.emissiveColor=glow.diffuseColor;glow.fogEnabled=false;
+  function artwork(name,file){const m=new B.StandardMaterial(name,scene),t=new B.Texture(file,scene,false,true,B.Texture.TRILINEAR_SAMPLINGMODE);t.anisotropicFilteringLevel=8;m.diffuseTexture=t;m.emissiveTexture=t;m.emissiveColor=B.Color3.White();m.disableLighting=true;m.backFaceCulling=false;m.fogEnabled=false;return m;}
+  bank={wood,brass,pumpkin,glow,floor:artwork('interior-stone-floor','assets/interior-floor-v30.webp'),dome:artwork('interior-half-dome-art','assets/interior-dome-v30.webp'),users:0};banks.set(scene,bank);
+  bank.floor.diffuseTexture.uScale=10;bank.floor.diffuseTexture.vScale=10;
+  bank.floor.diffuseTexture.wrapU=B.Texture.MIRROR_ADDRESSMODE;bank.floor.diffuseTexture.wrapV=B.Texture.MIRROR_ADDRESSMODE;
+  bank.release=()=>{if(--bank.users>0)return;for(const key of ['floor','dome'])bank[key].diffuseTexture.dispose();for(const key of ['wood','brass','pumpkin','glow','floor','dome'])bank[key].dispose();banks.delete(scene);};
  }
  bank.users++;parent.onDisposeObservable.addOnce(bank.release);
  const meshes=[];
- function mesh(kind,name,options,x,y,z,mat){const m=B.MeshBuilder[kind]('interior-'+name,options,scene);m.parent=parent;m.position.set(x,originY+y,z);m.layerMask=layer;m.material=mat;m.isPickable=false;m.metadata={indoorScenery:true};meshes.push(m);return m;}
- if(topView){
-  for(const z of [-5,5]){
-   const border=mesh('CreateBox','overhead-picture-frame',{width:4.8,height:.08,depth:1.8},0,.19,z,bank.gold);border.metadata.frameIncluded=true;
-   const picture=mesh('CreatePlane','overhead-interior-picture',{width:4.5,height:1.5},0,.235,z,bank.art);picture.rotation.x=Math.PI/2;picture.metadata.frameIncluded=true;
-  }
-  return meshes;
+ function adopt(m,mat,kind){m.parent=parent;m.layerMask=layer;m.material=mat;m.isPickable=false;m.metadata={indoorScenery:true,interiorPart:kind};meshes.push(m);return m;}
+ function mesh(kind,name,opts,x,y,z,mat,part='prop'){const m=adopt(B.MeshBuilder[kind]('interior-'+name,opts,scene),mat,part);m.position.set(x,originY+y,z);return m;}
+ // Flat floor extends through the open entrance, above the support plinth but
+ // below the lowest activity surface. It never participates in camera fitting.
+ mesh('CreateGround','floor',{width:80,height:80,subdivisions:1},0,floorY,2,bank.floor,'floor');
+ // Top view gets floor only: no ceiling, walls, pictures or decorative props.
+ if(topView)return meshes;
+ const radius=28,height=18,centerZ=-6,columns=96,rows=32,positions=[],uvs=[],indices=[];
+ for(let j=0;j<rows;j++){const elevation=j/rows*Math.PI/2;for(let i=0;i<=columns;i++){const azimuth=(i/columns-.5)*Math.PI;positions.push(radius*Math.sin(azimuth)*Math.cos(elevation),originY+floorY+height*Math.sin(elevation),centerZ+radius*Math.cos(azimuth)*Math.cos(elevation));uvs.push(i/columns,j/rows);}}
+ for(let j=0;j<rows-1;j++)for(let i=0;i<columns;i++){const a=j*(columns+1)+i,b=a+1,c=a+columns+1,d=c+1;indices.push(a,c,b,b,c,d);}
+ // A shared zenith vertex avoids a ring of zero-area pole triangles.
+ const pole=positions.length/3;positions.push(0,originY+floorY+height,centerZ);uvs.push(.5,1);
+ for(let i=0;i<columns;i++){const a=(rows-1)*(columns+1)+i;indices.push(a,pole,a+1);}
+ const shell=adopt(new B.Mesh('interior-quarter-dome',scene),bank.dome,'dome'),data=new B.VertexData();data.positions=positions;data.indices=indices;data.uvs=uvs;data.normals=[];B.VertexData.ComputeNormals(positions,indices,data.normals);data.applyToMesh(shell);shell.metadata.projection={azimuthDegrees:180,elevationDegrees:90,radius,height,centerZ};
+ // True 3D decorations with grounded bases, outside the interaction corridor.
+ for(const [x,z,size]of [[-15,7,1.4],[15,7,1.4],[-19,2,1.1],[19,2,1.1]]){
+  const body=mesh('CreateSphere','ribbed-pumpkin',{diameter:1,segments:32},x,floorY+size*.36,z,bank.pumpkin);
+  const p=body.getVerticesData(B.VertexBuffer.PositionKind);for(let i=0;i<p.length;i+=3){const a=Math.atan2(p[i+2],p[i]),rib=1+.1*Math.cos(8*a)*Math.max(0,1-4*p[i+1]*p[i+1]);p[i]*=rib;p[i+2]*=rib;}body.setVerticesData(B.VertexBuffer.PositionKind,p);const normals=[];B.VertexData.ComputeNormals(p,body.getIndices(),normals);body.setVerticesData(B.VertexBuffer.NormalKind,normals);body.scaling.set(size,size*.72,size);body.refreshBoundingInfo();
+  const stem=mesh('CreateCylinder','pumpkin-stem',{height:size*.2,diameter:size*.12,tessellation:24},x,floorY+size*.8,z,bank.wood);stem.rotation.z=x<0?.2:-.2;
  }
- // Environment planes are decorative views; their pixels are never used as playable objects.
- mesh('CreatePlane','room-view',{width:26,height:26/3},0,4.8,18,bank.art);
- for(const x of [-13,13]){const view=mesh('CreatePlane','side-view',{width:18,height:10,frontUVs:new B.Vector4(x<0?0:.4,0,x<0?.6:1,1)},x,4.8,9,bank.art);view.rotation.y=x<0?Math.PI/2:-Math.PI/2;}
- for(const x of [-12.6,-8.5,8.5,12.6]){
-  mesh('CreateCylinder','column',{height:9.8,diameter:.5,tessellation:48},x,4.7,17.7,bank.wood);
-  for(const y of [.2,.4,8.7,9.1]){const ring=mesh('CreateTorus','carved-capital',{diameter:.7,thickness:.1,tessellation:64},x,y,17.7,bank.gold);ring.rotation.x=0;}
-  for(let i=0;i<8;i++){const a=i*Math.PI/4;mesh('CreateCylinder','fluted-carving',{height:8.1,diameter:.045,tessellation:12},x+Math.cos(a)*.26,4.6,17.7+Math.sin(a)*.26,bank.gold);}
- }
- for(const y of [-.1,9.7])mesh('CreateBox','wall-moulding',{width:26,height:.2,depth:.3},0,y,17.65,bank.wood);
- // Two framed interior pictures beside the activity, outside its interaction corridor.
- for(const x of [-10,10]){
-  mesh('CreateBox','picture-frame',{width:3.5,height:1.4,depth:.2},x,3.5,10,bank.gold);
-  mesh('CreatePlane','interior-picture',{width:3.15,height:1.05},x,3.5,9.88,bank.art);
+ for(const x of [-11,11]){
+  mesh('CreateBox','lantern-pedestal',{width:1,height:1.4,depth:1},x,floorY+.7,9,bank.wood);
+  for(const y of [1.46,2.2])mesh('CreateBox','lantern-cap',{width:.82,height:.1,depth:.82},x,floorY+y,9,bank.brass);
+  for(const dx of [-.34,.34])for(const dz of [-.34,.34])mesh('CreateCylinder','lantern-frame',{height:.74,diameter:.055,tessellation:12},x+dx,floorY+1.83,9+dz,bank.brass);
+  mesh('CreateSphere','lantern-light',{diameter:.48,segments:24},x,floorY+1.83,9,bank.glow);
  }
  return meshes;
 }

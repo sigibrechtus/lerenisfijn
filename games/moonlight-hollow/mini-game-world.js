@@ -64,11 +64,12 @@ function create({B,scene,quality='balanced',reducedMotion=false,onUpdate=()=>{},
   const accent=material('stage-accent',stageColors[(s.round-1)%6]);
   stageFrames=Array.from({length:s.rounds},(_,i)=>stageFrame(i,driving));arenaFrame=stageFrames[s.round-1];meshFrame=arenaFrame;frameBase=driving?stage:0;
   const light=owned(new B.HemisphericLight('mini-stage-light',new B.Vector3(0,1,0),scene));light.includeOnlyWithLayerMask=LAYER;light.intensity=.95;light.groundColor=B.Color3.FromHexString('#47506a');
-  if(['mansion','potions'].includes(t.id)){const interior=root.MoonInteriors?.decorate({B,scene,parent:arenaFrame,originY:origin,layer:LAYER});if(interior)for(const m of interior)owned(m);}
+  const indoors=['mansion','potions'].includes(t.id);
+  if(indoors){const interior=root.MoonInteriors?.decorate({B,scene,parent:arenaFrame,originY:origin,floorY:.004,layer:LAYER});if(interior)for(const m of interior)owned(m);}
   const savedBase=frameBase;frameBase=0;stageDecor(s,wood,pale,accent);frameBase=savedBase;
   for(let i=0;i<s.rounds;i++){meshFrame=stageFrames[i];frameBase=driving?i*24:0;mesh('CreateBox','floor',{width:52,depth:52,height:.3},[0,-.25,frameBase],ground);}meshFrame=arenaFrame;frameBase=driving?stage:0;
-  mesh('CreateSphere','moon',{diameter:4,segments:quality==='low'?8:16},[-12,11,driving?stage+24:24],pale);
-  for(let i=0;i<5;i++){mesh('CreateSphere','pumpkin',{diameter:1.2,segments:10},[-14+i*7,.5,driving?stage+23:23],orange);mesh('CreateCylinder','stem',{height:.35,diameter:.17},[-14+i*7,1.15,driving?stage+23:23],wood);}
+  if(!indoors){mesh('CreateSphere','moon',{diameter:4,segments:quality==='low'?8:16},[-12,11,driving?stage+24:24],pale);
+   for(let i=0;i<5;i++){mesh('CreateSphere','pumpkin',{diameter:1.2,segments:10},[-14+i*7,.5,driving?stage+23:23],orange);mesh('CreateCylinder','stem',{height:.35,diameter:.17},[-14+i*7,1.15,driving?stage+23:23],wood);}}
   if(s.completed){mounted(s.rounds+(s.lang==='fr'?' manches réussies !':' rondes gelukt!'),0,3,driving?stage+31:9,null,6,-.1,wood);if(!driving)return;}
   if(driving){
    const fly=t.id==='broom';const sky=material('clear-sky','#102943');sky.disableLighting=true;mesh('CreateBox','clear-backdrop',{width:38,height:20,depth:.2},[0,7,stage+29],sky);mesh('CreateSphere','checkpoint-beacon',{diameter:1.1,segments:24},[0,10,stage+20],pale);
