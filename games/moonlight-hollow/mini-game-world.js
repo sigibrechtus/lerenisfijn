@@ -92,7 +92,7 @@ function create({B,scene,quality='balanced',reducedMotion=false,onUpdate=()=>{},
    const finishNode=owned(new B.TransformNode('rally-finish-gantry',scene));finishNode.position.set(finish.x,finish.y,finish.z);finishNode.rotation.y=finish.heading;
    for(const x of [-11.5,11.5]){const tower=mesh('CreateCylinder','rally-finish-tower',{height:9,diameter:1.1,tessellation:12},[x,4.4,0],wood);tower.parent=finishNode;const beacon=mesh('CreateSphere','rally-finish-beacon',{diameter:1.35,segments:16},[x,9.15,0],orange);beacon.parent=finishNode;}
    const beam=mesh('CreateBox','rally-finish-banner-beam',{width:24,height:1.0,depth:.65},[0,8.5,0],black);beam.parent=finishNode;
-   const finishLabel=label(s.lang==='fr'?'ARRIVÉE':'FINISH',0,10.6,-.3,null,9,false,'#f1b96e');if(finishLabel)finishLabel.parent=finishNode;
+   const finishLabel=label(s.lang==='fr'?'ARRIVÉE':'FINISH',0,10.6,-.3,null,9,false,'#f1b96e');if(finishLabel){finishLabel.parent=finishNode;finishLabel.metadata={...finishLabel.metadata,raceFinishSign:true};}
    for(const side of [-1,1]){const pole=mesh('CreateCylinder','rally-finish-flagpole',{height:3.8,diameter:.11},[side*10.4,11.1,0],white);pole.parent=finishNode;
       for(let j=0;j<16;j++){const col=j%4,row=Math.floor(j/4),square=mesh('CreateBox','rally-finish-flag',{width:.65,height:.55,depth:.07},[side*10.4+side*(.38+col*.65),12.4-row*.55,.05],(col+row)%2?black:white);square.parent=finishNode;square.metadata={raceFinishFlag:true,phase:j*.3+side};}}
    // A 45-metre safe, visible deceleration lane begins beyond the timing line.
