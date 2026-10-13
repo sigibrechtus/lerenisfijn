@@ -1,0 +1,329 @@
+{
+  "schemaVersion": 1,
+  "version": "2026-10-13",
+  "source": {
+    "repository": "Hidencod/tge-assets",
+    "commit": "2c8950b716e6765930b2b51409c59adf3d66fd5c",
+    "license": "CC0-1.0",
+    "creator": "Kenney",
+    "licenseEvidence": "https://github.com/Hidencod/tge-assets/blob/2c8950b716e6765930b2b51409c59adf3d66fd5c/LICENSE",
+    "note": "Visual-ready efficient GLB models; this collection does not itself contain 4K textures."
+  },
+  "assets": [
+    {
+      "id": "pumpkin-carved",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/pumpkin-carved.glb",
+      "sourcePath": "packs/graveyard-kit/pumpkin-carved.glb",
+      "gitBlobSha": "c318f93f783fa3d1f25f52cc610de9274f285002",
+      "bytes": 57156,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "pumpkin-tall-carved",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/pumpkin-tall-carved.glb",
+      "sourcePath": "packs/graveyard-kit/pumpkin-tall-carved.glb",
+      "gitBlobSha": "a2507e12eacced29b44d8ef6792592ff8d1859a5",
+      "bytes": 55240,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "pumpkin",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/pumpkin.glb",
+      "sourcePath": "packs/graveyard-kit/pumpkin.glb",
+      "gitBlobSha": "ff0f1b997e6b853ffe7b2d67a84f2c60d2957fa1",
+      "bytes": 46336,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "gravestone-round",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/gravestone-round.glb",
+      "sourcePath": "packs/graveyard-kit/gravestone-round.glb",
+      "gitBlobSha": "25da01004f86bb941ebaeb85492e163a7fa13640",
+      "bytes": 27824,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "gravestone-cross",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/gravestone-cross.glb",
+      "sourcePath": "packs/graveyard-kit/gravestone-cross.glb",
+      "gitBlobSha": "b3ed565b697bcacac42b6cff5384c4da254ab3ad",
+      "bytes": 31576,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "gravestone-broken",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/gravestone-broken.glb",
+      "sourcePath": "packs/graveyard-kit/gravestone-broken.glb",
+      "gitBlobSha": "60506cbb28e51c58f365ff892c983eae730f254c",
+      "bytes": 23912,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "gravestone-decorative",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/gravestone-decorative.glb",
+      "sourcePath": "packs/graveyard-kit/gravestone-decorative.glb",
+      "gitBlobSha": "5bd54018b7389dbefe56e25ac75151465f751bb7",
+      "bytes": 20996,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "coffin",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/coffin.glb",
+      "sourcePath": "packs/graveyard-kit/coffin.glb",
+      "gitBlobSha": "5d11c7bf44cf1809cf650bfa512486617f3a7704",
+      "bytes": 35660,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "lantern-candle",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/lantern-candle.glb",
+      "sourcePath": "packs/graveyard-kit/lantern-candle.glb",
+      "gitBlobSha": "c05c1959722b029bdbf626600987ea3411bddcfe",
+      "bytes": 33116,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "lightpost-single",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/lightpost-single.glb",
+      "sourcePath": "packs/graveyard-kit/lightpost-single.glb",
+      "gitBlobSha": "c4a64b04f26cfa99eef01cb4f9edd02d04c8b528",
+      "bytes": 45432,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "bench",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/bench.glb",
+      "sourcePath": "packs/graveyard-kit/bench.glb",
+      "gitBlobSha": "1575b15bea05442c0d0196cba4dcaad00732baab",
+      "bytes": 26940,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "iron-fence",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/iron-fence.glb",
+      "sourcePath": "packs/graveyard-kit/iron-fence.glb",
+      "gitBlobSha": "ae84eac0c85a225d18bd12a65b470c6cc3d8c245",
+      "bytes": 49568,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "crypt-small",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/crypt-small.glb",
+      "sourcePath": "packs/graveyard-kit/crypt-small.glb",
+      "gitBlobSha": "7e7bdf224b8f7731f1d4d25b9063d5376236cce4",
+      "bytes": 47856,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "character-ghost",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/character-ghost.glb",
+      "sourcePath": "packs/graveyard-kit/character-ghost.glb",
+      "gitBlobSha": "7a30156c112020264c1a26ffb2652ee98af54643",
+      "bytes": 123744,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "character-zombie",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/character-zombie.glb",
+      "sourcePath": "packs/graveyard-kit/character-zombie.glb",
+      "gitBlobSha": "06e0654eece04beeec5a2d3e2b6d67a99708fbf4",
+      "bytes": 254212,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "character-skeleton",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/character-skeleton.glb",
+      "sourcePath": "packs/graveyard-kit/character-skeleton.glb",
+      "gitBlobSha": "72419a675c632fa03fe7d462fff568288e5b32f6",
+      "bytes": 211500,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "pine-crooked",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/pine-crooked.glb",
+      "sourcePath": "packs/graveyard-kit/pine-crooked.glb",
+      "gitBlobSha": "5b8fb2e7e789149130e559d748f7f023e01a1341",
+      "bytes": 46940,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "rocks",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/rocks.glb",
+      "sourcePath": "packs/graveyard-kit/rocks.glb",
+      "gitBlobSha": "222259f34d5748431aa35d8ed5c2cfda7c443676",
+      "bytes": 47836,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "fence-gate",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/fence-gate.glb",
+      "sourcePath": "packs/graveyard-kit/fence-gate.glb",
+      "gitBlobSha": "d47a02a269bbb4ee0253237a9df10ba9c46c4189",
+      "bytes": 39840,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "candle-multiple",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/candle-multiple.glb",
+      "sourcePath": "packs/graveyard-kit/candle-multiple.glb",
+      "gitBlobSha": "28ccf153b5b09638c7ee3c7830a1516a530c4bfd",
+      "bytes": 28308,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "hay-bale",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/hay-bale.glb",
+      "sourcePath": "packs/graveyard-kit/hay-bale.glb",
+      "gitBlobSha": "b132bc33756791dc18e9ecdc9d457fdcd14f36d8",
+      "bytes": 28820,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "lightpost-double",
+      "pack": "graveyard-kit",
+      "path": "assets/models/kenney/graveyard-kit/lightpost-double.glb",
+      "sourcePath": "packs/graveyard-kit/lightpost-double.glb",
+      "gitBlobSha": "0e93415561ffb1792a41ed711d688182c0556091",
+      "bytes": 65224,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "mushroom-redgroup",
+      "pack": "nature-kit",
+      "path": "assets/models/kenney/nature-kit/mushroom-redgroup.glb",
+      "sourcePath": "packs/nature-kit/mushroom-redgroup.glb",
+      "gitBlobSha": "2fe18326f55a4ba1f191e1a717518ef67647244b",
+      "bytes": 14960,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "plant-bushdetailed",
+      "pack": "nature-kit",
+      "path": "assets/models/kenney/nature-kit/plant-bushdetailed.glb",
+      "sourcePath": "packs/nature-kit/plant-bushdetailed.glb",
+      "gitBlobSha": "e5279fa53adb3037ae93bbed23a0716322cae79a",
+      "bytes": 10172,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "flower-purpleb",
+      "pack": "nature-kit",
+      "path": "assets/models/kenney/nature-kit/flower-purpleb.glb",
+      "sourcePath": "packs/nature-kit/flower-purpleb.glb",
+      "gitBlobSha": "3b54cb468724cb56453cb223d6edbf490fde992c",
+      "bytes": 8084,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "rock-largea",
+      "pack": "nature-kit",
+      "path": "assets/models/kenney/nature-kit/rock-largea.glb",
+      "sourcePath": "packs/nature-kit/rock-largea.glb",
+      "gitBlobSha": "40e1365a43b706bd78c2658b48b189c9a35f8923",
+      "bytes": 7552,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "tree-oak",
+      "pack": "nature-kit",
+      "path": "assets/models/kenney/nature-kit/tree-oak.glb",
+      "sourcePath": "packs/nature-kit/tree-oak.glb",
+      "gitBlobSha": "b136723ada4b5574b71f727120ab21fa579bf2fb",
+      "bytes": 14644,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "rock-largeb",
+      "pack": "nature-kit",
+      "path": "assets/models/kenney/nature-kit/rock-largeb.glb",
+      "sourcePath": "packs/nature-kit/rock-largeb.glb",
+      "gitBlobSha": "52cdb4c8f63256a9756e9aced040808439c47e5b",
+      "bytes": 8560,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "fence-simple",
+      "pack": "nature-kit",
+      "path": "assets/models/kenney/nature-kit/fence-simple.glb",
+      "sourcePath": "packs/nature-kit/fence-simple.glb",
+      "gitBlobSha": "9b4839f428b9f5b8d9efd201232eae3753ed2874",
+      "bytes": 5712,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "tower-square",
+      "pack": "castle-kit",
+      "path": "assets/models/kenney/castle-kit/tower-square.glb",
+      "sourcePath": "packs/castle-kit/tower-square.glb",
+      "gitBlobSha": "9a1107d39ad3a0ec2a5c49df97f4f92e873bf36f",
+      "bytes": 24116,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "tower-hexagon-top",
+      "pack": "castle-kit",
+      "path": "assets/models/kenney/castle-kit/tower-hexagon-top.glb",
+      "sourcePath": "packs/castle-kit/tower-hexagon-top.glb",
+      "gitBlobSha": "6f7afcbc19a164224eecb3d4168d757aa9fa1934",
+      "bytes": 21404,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "wall-narrow",
+      "pack": "castle-kit",
+      "path": "assets/models/kenney/castle-kit/wall-narrow.glb",
+      "sourcePath": "packs/castle-kit/wall-narrow.glb",
+      "gitBlobSha": "2e641a7a0f90a7f09f411691d0827e8c3c71baf9",
+      "bytes": 19708,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "tree-large",
+      "pack": "castle-kit",
+      "path": "assets/models/kenney/castle-kit/tree-large.glb",
+      "sourcePath": "packs/castle-kit/tree-large.glb",
+      "gitBlobSha": "3a4b4defaba65f623e06be511c8d95e884b30e79",
+      "bytes": 28804,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "door",
+      "pack": "castle-kit",
+      "path": "assets/models/kenney/castle-kit/door.glb",
+      "sourcePath": "packs/castle-kit/door.glb",
+      "gitBlobSha": "255c14aa4d144b870f346f21cc20215ea330fce4",
+      "bytes": 24516,
+      "license": "CC0-1.0"
+    },
+    {
+      "id": "chest",
+      "pack": "mini-dungeon",
+      "path": "assets/models/kenney/mini-dungeon/chest.glb",
+      "sourcePath": "packs/mini-dungeon/chest.glb",
+      "gitBlobSha": "04c69e7cefec4a34ada418856174bbcafa93ed69",
+      "bytes": 44768,
+      "license": "CC0-1.0"
+    }
+  ]
+}
