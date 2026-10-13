@@ -30,3 +30,10 @@
 @media(max-width:700px){.mini-panel p{font-size:15px}.mini-choices button{font-size:16px;padding:9px 11px}.flight-mode .mini-driving{grid-template-columns:52px 52px 52px 1fr 52px 52px 52px;gap:4px}.flight-mode .mini-driving button{font-size:12px}.vehicle-mode .mini-tools summary{font-size:14px}.vehicle-mode .mini-choices button{font-size:15px;min-height:44px}}
 @media(max-width:370px){.flight-mode .mini-driving{grid-template-columns:46px 46px 46px 1fr 46px 46px 46px;gap:3px}}
 @media(max-height:520px){.mini-panel p{font-size:14px}.vehicle-mode #mini-question{font-size:19px}.vehicle-mode .mini-driving button{min-height:44px}}
+/* Pumpkin rally: race-specific palette and compact answer legend; the road stays exposed. */
+.rally-mode .mini-mission,.rally-mode .race-telemetry,.rally-mode .mini-tools{background:#261b32ed;border-color:#e99b55aa;box-shadow:0 4px 20px #120c2266}
+.rally-mode #mini-question{color:#ffe2a5}.rally-mode #mini-progress{color:#dab9f5}.rally-mode .mini-driving button{background:#352440f2;border-color:#eea453aa}.rally-mode .mini-driving button.held{background:#956030}
+.rally-mode #mini-answer-legend{display:flex;gap:8px;justify-content:center;margin:6px 0;font-size:16px;font-weight:700}.rally-mode #mini-answer-legend span{padding:5px 18px;border:2px solid #ffd17c;border-radius:10px;background:#181421}.rally-mode #mini-answer-legend span:first-child{border-color:#9ed9ef}.rally-mode #mini-answer-legend span:last-child{border-color:#c4a8eb}
+@media(max-height:520px){.rally-mode #mini-answer-legend{position:absolute;left:50%;top:100px;transform:translateX(-50%);margin:0;font-size:15px}.rally-mode #mini-answer-legend span{padding:3px 16px}}
+
+#mini-answer-legend[hidden]{display:none!important}
