@@ -62,6 +62,9 @@ test('successful import preserves model upgrade and hides procedural visual',asy
  assert.equal(calls.length,1);
  assert.equal(calls[0].id,'moon-express-locomotive');
  assert.equal(calls[0].opts.quality,'balanced');
+ assert.equal(calls[0].opts.geometryQuality,'high');
+ assert.equal(calls[0].opts.textureQuality,'balanced');
+ assert.equal(calls[0].opts.scale,.85);
  assert.deepEqual(r.hidden,[false]);
 });
 
@@ -82,19 +85,36 @@ test('desktop HD retains the full 69K-triangle model and 4K PBR path',async()=>{
  assert.deepEqual(qualities,['high']);
 });
 
-test('Eco mode does not import a production train at startup',async()=>{
- let called=false;
- const r=await simulate({quality:'low',library:{placeProduction:()=>{called=true;}}});
- assert.equal(called,false);
- assert.deepEqual(r.hidden,[]);
+test('Eco mode still uses the hero locomotive as transport when available',async()=>{
+ const calls=[];
+ const r=await simulate({quality:'low',library:{placeProduction:(_scene,_id,_train,opts)=>{calls.push(opts);return Promise.resolve({setEnabled(){}});}}});
+ assert.equal(calls.length,1);
+ assert.equal(calls[0].geometryQuality,'high');
+ assert.equal(calls[0].textureQuality,'balanced');
+ assert.deepEqual(r.hidden,[false]);
 });
 
-test('HTML and service-worker both reference the same v44 game scripts',()=>{
+test('HTML and service worker publish the same versioned train scripts',()=>{
  const html=fs.readFileSync(path.join(base,'index.html'),'utf8');
  const sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
  for(const name of ['asset-library.js','world.js','adventure.js']){
-  assert.ok(html.includes('src="'+name+'?v=44"'),name+' HTML version');
-  assert.ok(sw.includes('./'+name+'?v=44'),name+' service worker version');
+  const version=html.match(new RegExp('src="'+name.replace('.','\\.')+'\\?v=\\d+"'));
+  assert.ok(version,name+' must have versioned HTML script');
+  assert.ok(sw.includes('./'+version[0].slice(5,-1)),name+' service-worker version must match');
  }
- assert.match(sw,/moonlight-hollow-3d-v44/);
+ assert.match(sw,/moonlight-hollow-3d-v\d+/);
 });
+test('boarding and moving never hide the production locomotive; ride camera is inside hero cabin',()=>{
+ const src=fs.readFileSync(path.join(base,'world.js'),'utf8');
+ const board=src.slice(src.indexOf('function boardTrain('),src.indexOf('function tickRide(',src.indexOf('function boardTrain(')));
+ const tick=src.slice(src.indexOf('function tickRide('),src.indexOf('function interactable(',src.indexOf('function tickRide(')));
+ const finish=src.slice(src.indexOf('function finishRide('),src.indexOf('function nearbyStation('));
+ assert.doesNotMatch(board,/productionTrain\?\.setEnabled\(false\)/);
+ assert.doesNotMatch(tick,/productionTrain\?\.setEnabled\(false\)/);
+ assert.doesNotMatch(finish,/productionTrain\?\.setEnabled\(true\)/);
+ assert.match(board,/hero\.parent=train/);
+ assert.match(board,/rideCamera\.position\.set\(-4\*railMotion\.snapshot\(\)\.direction,1\.82,-1\.7\)/);
+ assert.match(tick,/rideCamera\.position\.set\(-4\*state\.direction\*\(1-t\),1\.82,-1\.7\)/);
+ assert.match(src,/function moveTrain\(state,rollDistance=0\)\{train\.position\.set\(state\.x,0,state\.z\)/);
+});
+
