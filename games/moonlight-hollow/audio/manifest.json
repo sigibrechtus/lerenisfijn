@@ -4,12 +4,13 @@
   "provenance": "Original compositions and deterministic procedural sound design; no third-party samples.",
   "music": {
     "menu": {
-      "file": "menu.mp3",
-      "duration": 51.892,
+      "file": "orchestral-opening.wav",
+      "duration": 30.1,
       "loop": true,
-      "bpm": 74,
-      "bars": 16,
-      "instrument": "bell"
+      "bpm": 100,
+      "bars": 12,
+      "instrument": "12-part orchestral ensemble",
+      "provenance": "Re-synthesized multitrack arrangement from the Midify orchestral score"
     },
     "village": {
       "file": "village.mp3",
@@ -45,7 +46,7 @@
     },
     "tower": {
       "file": "tower.mp3",
-      "duration": 48.0,
+      "duration": 48,
       "loop": true,
       "bpm": 80,
       "bars": 16,
@@ -71,32 +72,32 @@
   "ambience": {
     "ambient-village": {
       "file": "ambient-village.mp3",
-      "duration": 12.0,
+      "duration": 12,
       "loop": true
     },
     "ambient-woods": {
       "file": "ambient-woods.mp3",
-      "duration": 12.0,
+      "duration": 12,
       "loop": true
     },
     "ambient-garden": {
       "file": "ambient-garden.mp3",
-      "duration": 12.0,
+      "duration": 12,
       "loop": true
     },
     "ambient-library": {
       "file": "ambient-library.mp3",
-      "duration": 12.0,
+      "duration": 12,
       "loop": true
     },
     "ambient-tower": {
       "file": "ambient-tower.mp3",
-      "duration": 12.0,
+      "duration": 12,
       "loop": true
     },
     "ambient-castle": {
       "file": "ambient-castle.mp3",
-      "duration": 12.0,
+      "duration": 12,
       "loop": true
     }
   },
