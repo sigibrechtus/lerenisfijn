@@ -5,12 +5,13 @@
   "music": {
     "menu": {
       "file": "orchestral-opening.wav",
-      "duration": 30.1,
+      "duration": 33.304,
       "loop": true,
-      "bpm": 100,
+      "bpm": 92,
       "bars": 12,
       "instrument": "12-part orchestral ensemble",
-      "provenance": "Re-synthesized multitrack arrangement from the Midify orchestral score"
+      "provenance": "Re-synthesized multitrack arrangement from the Midify orchestral score",
+      "description": "Continuously voiced orchestral opening with overlapping harmonies, legato melodies and hall reflections"
     },
     "village": {
       "file": "village.mp3",
