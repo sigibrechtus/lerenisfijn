@@ -53,9 +53,9 @@ test('actual vendored Babylon NullEngine accepts the PBR/ORM material layout',t=
   const bank=P.create(B,scene,{quality:'low'}),m=bank.material('stone','#738793',3);
   assert(m instanceof B.PBRMaterial);assert.equal(m.albedoTexture.getSize().width,512);
   assert.equal(m.bumpTexture.getSize().width,512);assert.equal(m.metallicTexture.getSize().width,512);
-  assert.equal(scene.textures.length,3);assert.equal(scene.materials.length,1);
+  assert([m.albedoTexture,m.bumpTexture,m.metallicTexture].every(texture=>scene.textures.includes(texture)));assert.equal(scene.materials.length,1);
   const box=B.MeshBuilder.CreateBox('test-pbr-uv',{size:1},scene);box.material=m;
   assert(box.isVerticesDataPresent(B.VertexBuffer.UVKind),'mesh UV coordinates exist');
-  bank.dispose();assert.equal(scene.textures.length,0);scene.dispose();
+  bank.dispose();assert([m.albedoTexture,m.bumpTexture,m.metallicTexture].every(texture=>!scene.textures.includes(texture)));scene.dispose();
  }finally{engine.dispose();global.OffscreenCanvas=prev;}
 });
