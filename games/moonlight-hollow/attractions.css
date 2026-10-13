@@ -69,3 +69,19 @@
 .rally-mode .race-track-picker[hidden]{display:none!important}.race-track-picker label{display:grid;gap:3px;font-size:11px;color:#fff1d8}.race-track-picker button{min-height:42px}
 .rally-mode .mini-actions{grid-row:6}
 @media(max-width:600px){.rally-mode .race-track-picker:not([hidden]){padding:6px;flex-wrap:wrap;justify-content:center}.race-track-picker button{font-size:12px}}
+
+/* Dedicated finish menu with large buttons, without blurring the game behind it. */
+.rally-mode .race-finish:not([hidden]){position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(650px,calc(100vw - 28px));max-height:calc(100dvh - 100px);overflow:auto;z-index:25;display:flex;flex-direction:column;gap:10px;padding:22px;background:#21182ff7;border:2px solid #efad65;border-radius:18px;box-shadow:0 14px 60px #10091aee;color:#fff0d7;text-align:center;pointer-events:auto}
+.rally-mode .race-finish[hidden]{display:none!important}
+.rally-mode .race-finish h3{margin:0;font:700 clamp(21px,3vw,30px) Georgia,serif;color:#ffd18f}
+.rally-mode .race-finish p{margin:0;font-size:14px;line-height:1.5}
+.rally-mode #mini-race-finish-stats{font-weight:700;font-variant-numeric:tabular-nums}
+.rally-mode .race-finish-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.rally-mode .race-finish-actions button{min-height:52px;padding:8px;font-size:13px;white-space:normal}
+.rally-mode .race-finish-actions button:disabled{opacity:.48;cursor:not-allowed}
+.rally-mode .race-world-exit{align-self:center;min-height:44px;padding:6px 16px;font-size:12px}
+.rally-mode .race-finish .race-track-picker:not([hidden]){position:static;transform:none;grid-row:auto;grid-column:auto;max-width:none;width:100%;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:3px;padding:10px}
+.rally-mode .race-finish .race-track-picker[hidden]{display:none!important}
+.rally-mode .race-finish .race-track-picker label{min-width:min(245px,100%);flex:1}
+@media(max-width:600px){.rally-mode .race-finish:not([hidden]){padding:12px;gap:7px;max-height:calc(100dvh - 55px)}.rally-mode .race-finish-actions{grid-template-columns:1fr}.rally-mode .race-finish-actions button{min-height:45px}.rally-mode .race-finish p{font-size:12px}}
+@media(max-height:520px){.rally-mode .race-finish:not([hidden]){max-height:calc(100dvh - 30px);padding:10px}.rally-mode .race-finish-actions button{min-height:42px}}
