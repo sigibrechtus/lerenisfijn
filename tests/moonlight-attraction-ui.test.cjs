@@ -37,8 +37,8 @@ test('landmark offers follow proximity and are hidden while paused or in campaig
 test('all six completions save progress once plus round history and leave campaign/profile data isolated',()=>{
  const h=harness();h.controller.start();const campaigns=JSON.stringify(h.profiles.map(p=>p.campaign));assert.equal(Games.create('mansion').snapshot().rounds,6);
  for(const id of Object.keys(Games.catalog)){assert(h.controller.enter(id));const done=h.finish(),rt=h.runtimeCalls.at(-1);rt.options.onComplete(done);assert.equal(h.profiles[0].attractions[id].sessions,1);assert.equal(h.profiles[0].attractions[id].bestLevel,1);assert.match(h.profiles[0].attractions[id].lastPlayed,/^\d{4}-/);h.controller.leave();}
- assert.equal(h.$('mini-progress').textContent,`★ ${Games.create('mansion').snapshot().rounds} rondes gelukt`);assert.equal(h.saved,6*(1+Games.create('mansion').snapshot().rounds));assert.deepEqual(h.profiles[1].attractions,{});assert.equal(JSON.stringify(h.profiles.map(p=>p.campaign)),campaigns);
- h.setProfile(1);h.controller.enter('mansion');h.finish();h.controller.leave();assert.equal(h.profiles[1].attractions.mansion.sessions,1);assert.equal(h.profiles[0].attractions.mansion.sessions,1);assert.equal(h.saved,7*(1+Games.create('mansion').snapshot().rounds));
+ assert.equal(h.$('mini-progress').textContent,`★ ${Games.create('mansion').snapshot().rounds} rondes gelukt`);assert.equal(h.saved,6*(1+Games.create('mansion').snapshot().rounds)+1);assert.deepEqual(h.profiles[1].attractions,{});assert.equal(JSON.stringify(h.profiles.map(p=>p.campaign)),campaigns);
+ h.setProfile(1);h.controller.enter('mansion');h.finish();h.controller.leave();assert.equal(h.profiles[1].attractions.mansion.sessions,1);assert.equal(h.profiles[0].attractions.mansion.sessions,1);assert.equal(h.saved,7*(1+Games.create('mansion').snapshot().rounds)+1);
 });
 test('replay advances automatic difficulty, caps at three, and honors explicit difficulty',()=>{
  const h=harness();h.controller.start();h.controller.enter('mansion');assert.equal(h.runtimeCalls.at(-1).config.level,1);h.finish();h.$('mini-replay').onclick();assert.equal(h.runtimeCalls.at(-1).config.level,2);h.finish();h.$('mini-replay').onclick();assert.equal(h.runtimeCalls.at(-1).config.level,3);h.finish();h.$('mini-replay').onclick();assert.equal(h.runtimeCalls.at(-1).config.level,3);h.controller.leave();h.prefs.difficulty='1';h.controller.enter('mansion');assert.equal(h.runtimeCalls.at(-1).config.level,1);h.finish();assert.equal(h.profiles[0].attractions.mansion.bestLevel,3);
@@ -106,4 +106,18 @@ test('rally records and leaderboard persist per explorer, circuit and difficulty
  assert.equal(h.$('mini-leaderboard-rows').children[1].textContent,'2. one — 01:35.00 ★');
  h.controller.leave();result(103,27);assert.equal(h.profiles[0].attractions.rally.records['0:1:3'].seconds,95);assert.equal(h.profiles[0].attractions.rally.records['0:1:3'].bestLapSeconds,27);
  assert.equal(h.profiles[1].attractions.rally.records['0:1:3'].seconds,88);
+});
+
+test('three completed pumpkin races unlock a selectable replay, without shifting progression',()=>{
+ const R=require('../games/moonlight-hollow/pumpkin-race.js'),h=harness();h.controller.start();
+ const finish=(index,seconds)=>{assert(h.controller.enter('rally'));const rt=h.runtimeCalls.at(-1),s=R.create(rt.config).snapshot();rt.options.onComplete({...s,completed:true,result:{...s.result,accuracy:1,hints:0,elapsed:seconds,laps:s.laps.total,bestLapSeconds:seconds/s.laps.total}});};
+ finish(0,100);assert.equal(h.$('mini-race-track-picker').hidden,true);h.controller.leave();
+ finish(0,98);assert.equal(h.$('mini-race-track-picker').hidden,true);h.controller.leave();
+ finish(0,96);assert.equal(h.$('mini-race-track-picker').hidden,false);
+ const future=h.profiles[0].attractions.rally.rally.circuit;
+ h.$('mini-race-track').value='0';h.$('mini-race-track-play').onclick();assert.equal(h.runtimeCalls.at(-1).config.circuit,0);
+ assert.equal(h.runtimeCalls.at(-1).config.level,1);
+ const replay=h.runtimeCalls.at(-1),s=R.create(replay.config).snapshot();
+ replay.options.onComplete({...s,completed:true,result:{...s.result,accuracy:1,hints:0,elapsed:94,laps:3,bestLapSeconds:30}});
+ assert.equal(h.profiles[0].attractions.rally.rally.circuit,future,'replaying does not advance later circuit progression');
 });
