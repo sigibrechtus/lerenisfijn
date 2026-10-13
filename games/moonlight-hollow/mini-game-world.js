@@ -96,7 +96,7 @@ function create({B,scene,quality='balanced',reducedMotion=false,onUpdate=()=>{},
  }
  function updateRaceGates(){
   for(const item of raceSigns){item.dispose();resources=resources.filter(r=>r!==item);meshes=meshes.filter(m=>m!==item);}raceSigns=[];
-  const s=race.snapshot();raceRows.forEach((row,index)=>row.rows.forEach((m,lane)=>{const pass=s.passed.find(p=>p.index===index); m.setEnabled(!pass||pass.choice!=='pick:'+lane);if(pass)m.visibility=.18;}));
+  const s=race.snapshot();raceRows.forEach(row=>row.rows.forEach(m=>{m.setEnabled(false);m.metadata.driveThroughAnswer=true;}));
   if(s.awaitingFinish||s.completed)return;const row=raceRows[s.round-1],before=resources.length;
   s.task.items.forEach((item,i)=>{const sign=label(item.label,(i-1)*7,5.7,-.25,null,5.4,false,['#9ed9ef','#ffd17c','#c4a8eb'][i]);if(sign)sign.parent=row.node;});raceSigns=resources.slice(before);
  }

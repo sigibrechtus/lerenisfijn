@@ -6,9 +6,9 @@ for(let index=0;index<10;index++)for(const lang of ['nl','fr']){
  for(let gate=0;gate<track.gates.length;gate++){
   const s=r.snapshot(),correct=s.task.items.findIndex(i=>i.id===s.task.solution[0]),wrong=(correct+1)%3;
   assert.equal(new Set(s.task.items.map(i=>i.value)).size,3);
-  r.place(track.gates[gate].s-.1,(wrong-1)*7);r.tick(.05,0,1);assert.equal(r.snapshot().progress,gate/track.gates.length,'wrong lane stays closed');assert.equal(r.snapshot().speed,0);assert(r.snapshot().vehicle.s<track.gates[gate].s);
+  r.place(track.gates[gate].s-.1,(wrong-1)*7);r.tick(.05,0,1);assert.equal(r.snapshot().progress,gate/track.gates.length,'wrong lane stays closed');assert.equal(r.snapshot().speed,0);assert.equal(r.snapshot().vehicle.s,track.gates[gate].s-10,'wrong gate returns exactly ten metres');assert.equal(r.snapshot().task,s.task,'same question remains for retry');assert.equal(r.snapshot().vehicle.heading,R.at(track,track.gates[gate].s-10).heading,'retry faces the gates');assert(!r.snapshot().choices.some(c=>c.id.startsWith('pick:')),'no answer buttons');
   r.place(track.gates[gate].s-.1,-3.5);r.tick(.05,0,1);assert.equal(r.snapshot().progress,gate/track.gates.length,'divider cannot bypass');
-  r.place(track.gates[gate].s-.1,(correct-1)*7);r.tick(.05,0,1);assert.equal(r.snapshot().progress,(gate+1)/track.gates.length);assert.equal(r.snapshot().completed,false,'must reach finish physically');
+  r.place(track.gates[gate].s-.1,(correct-1)*7);r.tick(.05,0,1);assert.equal(r.snapshot().progress,(gate+1)/track.gates.length);assert(r.snapshot().speed>0,'correct gate preserves forward speed');assert.equal(r.snapshot().completed,false,'must reach finish physically');
  }
  r.place(track.length-6.1);for(let i=0;i<20&&!r.snapshot().completed;i++)r.tick(.05,0,1);assert(r.snapshot().completed);assert(r.snapshot().result.accuracy<.8);
 }
