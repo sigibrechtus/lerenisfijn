@@ -256,3 +256,10 @@ The main world has twelve creatures at each of 26 configured anchors (312 total)
 Eight original surface families use 512/1024/selected 2048 native albedo/normal maps by quality tier, subject to device limits. Mip budgets are 32/96/192 MiB. Terrain has 25,921 vertices, cottages 350 instanced roof shingles and important curved geometry is smoother. Native tests cover actual texture dimensions, periodic seams, ownership and quality replacement; no device FPS result is claimed.
 
 See [the copy-ready brief](implementation-brief.md), [the per-activity review](activity-review.md) and [the Godot/Babylon recommendation](engine-guide.md). The Studio CLI is unavailable; validation uses existing native Babylon/controller tests. This release retains the current WebGL renderer.
+
+
+## Pumpkin race timing and local leaderboard (v38)
+
+The five closed-loop circuits now run **three complete laps**, each requiring all educational checkpoint gates before crossing the finish line. The five point-to-point circuits remain **one timed run**. Race time is accumulated from active gameplay updates; pauses, backgrounded tabs, and blocked screens do not advance it. Each finish records the individual lap durations and fastest lap. The dashboard shows the running time, current lap, personal best race time, and best lap.
+
+Completing a race stores a per-explorer personal record in `attractions.rally.records`, keyed by circuit, difficulty and lap count. The leaderboard shows the fastest valid completed runs for up to eight explorer profiles **on this device only**, not a cloud or public ranking. Existing race progression and camera preferences are retained, and unfinished races never become records. The original per-device storage policy is unchanged.

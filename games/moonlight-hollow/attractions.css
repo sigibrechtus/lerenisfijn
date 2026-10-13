@@ -38,3 +38,20 @@
 .rally-mode .vignette{display:none}
 
 .race-telemetry #mini-speed-cap{grid-column:1/-1;color:var(--gold);font-size:11px}.race-telemetry #mini-camera{grid-column:1/-1;min-height:38px;font-size:12px;padding:5px 8px}
+
+/* Pumpkin race timing and per-device leaderboard. */
+.rally-mode .mini-panel{grid-template-rows:auto auto 1fr auto auto}
+.rally-mode .race-stats,.rally-mode .race-leaderboard{background:#261b32ed;border:1px solid #e99b55aa;box-shadow:0 4px 20px #120c2266;border-radius:12px;padding:9px 12px;color:#f8e4cb;pointer-events:auto}
+.rally-mode .race-stats[hidden],.rally-mode .race-leaderboard[hidden]{display:none!important}
+.rally-mode .race-stats{grid-row:2;grid-column:1;align-self:start;justify-self:start;display:grid;grid-template-columns:repeat(2,minmax(90px,1fr));gap:6px 12px;min-width:min(235px,47vw)}
+.rally-mode .race-stats>div{display:flex;flex-direction:column;gap:2px}
+.rally-mode .race-stats span{font-size:10px;line-height:1.25;color:#dfc8b4}
+.rally-mode .race-stats strong{font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rally-mode .race-leaderboard{grid-row:2;grid-column:2;justify-self:end;align-self:start;max-width:min(285px,44vw);font-size:12px}
+.rally-mode .race-leaderboard summary{cursor:pointer;font-weight:650;color:#ffe0a4;list-style-position:inside}
+.rally-mode .race-leaderboard ol{margin:8px 0 0;padding-left:18px;max-height:30dvh;overflow:auto;line-height:1.7;font-variant-numeric:tabular-nums}
+.rally-mode .mini-tools{grid-row:3/5}
+.rally-mode .race-telemetry{grid-row:4}
+.rally-mode .mini-actions{grid-row:5}
+@media(max-width:600px){.rally-mode .race-stats{padding:6px 8px;gap:4px 8px;min-width:0}.rally-mode .race-stats span{font-size:9px}.rally-mode .race-stats strong{font-size:14px}.rally-mode .race-leaderboard{padding:7px 8px;font-size:10px;max-width:45vw}}
+@media(max-height:520px){.rally-mode .race-stats{grid-row:2;grid-column:1}.rally-mode .race-leaderboard{grid-row:2;grid-column:2}.rally-mode .mini-tools{grid-row:3/5}.rally-mode .race-telemetry{grid-row:4;grid-column:1}.rally-mode .mini-actions{grid-row:5}}

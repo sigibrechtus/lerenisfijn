@@ -18,7 +18,7 @@ function harness(){
  const destinationCalls={language:[],ticks:[]};
  const win={BABYLON:{Vector3:{Up:()=>({}),TransformNormal:()=>({normalize:()=>({})})}},addEventListener:(k,fn)=>events[k]=fn,MoonVariety:require('../games/moonlight-hollow/variety.js'),MoonPumpkinRace:require('../games/moonlight-hollow/pumpkin-race.js'),MoonMiniGames:Games,MoonDestinations:{sites:Destinations.sites,create:()=>({nearest:Destinations.nearest,language:l=>destinationCalls.language.push(l),tick:(...args)=>destinationCalls.ticks.push(args)})},MoonMiniGameWorld:{create(options){if(failCreate)throw Error('create');const rt={options,inputCalls:[],disposed:false,start(id,config){if(failStart)throw Error('start');this.id=id;this.config=config;this.previous=world.scene.activeCamera;world.scene.activeCamera={name:'mini',computeWorldMatrix(){},getForwardRay:()=>({direction:{}}),getWorldMatrix:()=>({})};this.game=Games.create(id,config);options.onUpdate(this.game.snapshot());},action(id){const snap=this.game.action(id);options.onUpdate(snap);if(snap.completed)options.onComplete({...snap,result:{accuracy:1,hints:0}});},input(...axes){this.inputCalls.push(axes);},refit(){},tick(dt){this.lastTick=dt;},dispose(){this.disposed=true;world.scene.activeCamera=this.previous;}};runtimeCalls.push(rt);return rt;}}};
  vm.runInNewContext(source,{window:win,document:doc,console:{error(){}}});
- const controller=win.MoonAttractions.attach({$,world,prefs:()=>prefs,profile:()=>profiles[current],save:()=>saveCount++,blocked:()=>blocked,leaveCampaign:()=>leaveCount++,soundtrack:{vehicle:s=>motors.push(s),weather(){},setMusic:(...args)=>music.push(args),setContext:next=>music.push(next),position(){}},effect(){},frame:()=>({width:1,height:1})});
+ const controller=win.MoonAttractions.attach({$,world,prefs:()=>prefs,profile:()=>profiles[current],profiles:()=>profiles,save:()=>saveCount++,blocked:()=>blocked,leaveCampaign:()=>leaveCount++,soundtrack:{vehicle:s=>motors.push(s),weather(){},setMusic:(...args)=>music.push(args),setContext:next=>music.push(next),position(){}},effect(){},frame:()=>({width:1,height:1})});
  function finish(){const rt=runtimeCalls.at(-1);while(!rt.game.snapshot().completed){const s=rt.game.snapshot();if(s.id==='potions'){for(let i=0;i<2;i++)for(let n=0;n<s.task.solution[i];n++)rt.action('add:'+i);rt.action('check');}else{for(const id of s.task.solution)rt.action(id);if(['garden','railway'].includes(s.id))rt.action('check');}}return rt.game.snapshot();}
  return {$,doc,prefs,profiles,world,events,controller,runtimeCalls,destinationCalls,music,motors,finish,setProfile:i=>current=i,setBlocked:v=>blocked=v,setFailStart:v=>failStart=v,setFailCreate:v=>failCreate=v,get saved(){return saveCount;},get resets(){return resetCount;},get external(){return external;},get campaignLeaves(){return leaveCount;}};
 }
@@ -93,4 +93,17 @@ test('pumpkin circuits advance only after two accurate, unassisted completed rac
 
 test('camera preference survives replay and re-entry, with profile isolation',()=>{
  const h=harness();h.controller.start();assert(h.controller.enter('rally'));let rt=h.runtimeCalls.at(-1);assert.equal(rt.config.view,'third');rt.options.onUpdate({...rt.game.snapshot(),view:'first'});assert.equal(h.profiles[0].rallyView,'first');h.$('mini-replay').onclick();rt=h.runtimeCalls.at(-1);assert.equal(rt.config.view,'first','next race retains cockpit');h.controller.leave();h.controller.enter('rally');rt=h.runtimeCalls.at(-1);assert.equal(rt.config.view,'first','re-entry retains cockpit');rt.options.onUpdate({...rt.game.snapshot(),view:'third'});h.controller.leave();h.controller.enter('rally');assert.equal(h.runtimeCalls.at(-1).config.view,'third');h.controller.leave();h.setProfile(1);h.controller.enter('rally');assert.equal(h.runtimeCalls.at(-1).config.view,'third','other profile does not inherit cockpit');assert.equal(h.profiles[0].rallyView,'third');h.controller.leave();
+});
+
+test('rally records and leaderboard persist per explorer, circuit and difficulty',()=>{
+ const R=require('../games/moonlight-hollow/pumpkin-race.js'),h=harness();h.controller.start();
+ function result(seconds,bestLap){assert(h.controller.enter('rally'));const rt=h.runtimeCalls.at(-1),s=R.create(rt.config).snapshot();rt.options.onComplete({...s,completed:true,result:{...s.result,accuracy:1,hints:0,elapsed:seconds,laps:3,bestLapSeconds:bestLap}});h.controller.leave();}
+ result(95,29);assert.equal(h.profiles[0].attractions.rally.records['0:1:3'].seconds,95);
+ h.setProfile(1);result(88,28);assert.equal(h.profiles[1].attractions.rally.records['0:1:3'].seconds,88);
+ h.setProfile(0);assert(h.controller.enter('rally'));const rt=h.runtimeCalls.at(-1);rt.options.onUpdate(R.create(rt.config).snapshot());
+ assert.equal(h.$('mini-race-best').textContent,'01:35.00');
+ assert.equal(h.$('mini-leaderboard-rows').children[0].textContent,'1. two — 01:28.00');
+ assert.equal(h.$('mini-leaderboard-rows').children[1].textContent,'2. one — 01:35.00 ★');
+ h.controller.leave();result(103,27);assert.equal(h.profiles[0].attractions.rally.records['0:1:3'].seconds,95);assert.equal(h.profiles[0].attractions.rally.records['0:1:3'].bestLapSeconds,27);
+ assert.equal(h.profiles[1].attractions.rally.records['0:1:3'].seconds,88);
 });

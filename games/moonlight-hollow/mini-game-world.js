@@ -123,7 +123,7 @@ function create({B,scene,quality='balanced',reducedMotion=false,onUpdate=()=>{},
  function lookContext(e){if(race&&raceView==='first')e.preventDefault();}
  function look(dx,dy){if(!race||raceView!=='first'||paused())return;headLook.yaw=Math.max(-1.4,Math.min(1.4,headLook.yaw+dx));headLook.pitch=Math.max(-.55,Math.min(.55,headLook.pitch+dy));raceCamera();}
  function tickRace(dt){raceResolution();if(paused()){neutral();race.stop();onTelemetry(race.snapshot());return;}const x=axis.x+(keys.arrowright||keys.d?1:0)-(keys.arrowleft||keys.a?1:0),z=axis.z+(keys.arrowup||keys.w?1:0)-(keys.arrowdown||keys.s?1:0);let event={};for(let n=0;n<Math.ceil(dt/.025);n++){const next=race.tick(dt/Math.ceil(dt/.025),x,z);if(next.changed){event=next;if(!next.correct)break;}}raceCamera();for(const m of meshes)if(m.metadata?.roadWheel)m.rotation.x+=race.snapshot().speed*dt/.45;else if(m.metadata?.raceSpectator&&!reducedMotion)m.position.y=m.metadata.baseY+Math.sin(race.snapshot().result.elapsed*1.7+m.metadata.phase)*.35;
-  if(event.changed){updateRaceGates();effect(event.correct?'lantern':event.finished?'solve':'retry');emit();}telemetryTime+=dt;if(telemetryTime>=.1){telemetryTime=0;onTelemetry(snapshot());}}
+  if(event.changed){updateRaceGates();effect(event.correct?'lantern':event.lapCompleted?'chapter':event.finished?'solve':'retry');emit();}telemetryTime+=dt;if(telemetryTime>=.1){telemetryTime=0;onTelemetry(snapshot());}}
  function build(){
   clearArena();const s=game.snapshot(),t=s.task;lastRound=s.round;
   const ground=material('ground','#314960'),wood=material('wood','#846045'),orange=material('pumpkin','#e39142'),mint=material('mint','#9fd9bd'),pale=material('moon','#f5e1ad'),driving=['broom','rally'].includes(t.id),stage=(s.round-1)*24,courseEnd=s.rounds*24;
