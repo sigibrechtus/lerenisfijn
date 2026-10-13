@@ -42,3 +42,11 @@ assert.equal(timed.snapshot().timing.elapsed,.05);
 const open=R.create({circuit:1});assert.equal(open.snapshot().laps.total,1);
 const key=R.recordKey(0,2,3);const players=[{id:'a',name:'Alice',attractions:{rally:{records:{[key]:{seconds:96}}}}},{id:'b',name:'Bob',attractions:{rally:{records:{[key]:{seconds:82}}}}},{id:'c',name:'C',attractions:{rally:{records:{'1:2:1':{seconds:50}}}}}];
 assert.deepEqual(R.standings(players,0,2,3).map(x=>x.id),['b','a']);assert.equal(R.standings(players,0,3,3).length,0);
+
+// Fresh seeds and extended race history prevent repeating first-attempt questions on a replay.
+const V=require('../games/moonlight-hollow/variety.js');
+const earlier=R.create({circuit:2,level:2,seed:100003}),first=V.signature(earlier.snapshot().task);
+const newer=R.create({circuit:2,level:2,seed:100004,recent:[first]});
+assert.notEqual(V.signature(newer.snapshot().task),first);
+const themed=R.circuit(2);assert(themed.length>400);
+console.log('Replay question regeneration and Halloween finish circuit checks passed.');
