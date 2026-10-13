@@ -12,7 +12,7 @@ function value(o,x,y){const ix=o.indices[x],iy=o.indices[y],fx=o.weights[x],fy=o
 function resolutionFor(type,quality='balanced'){return quality==='low'?512:quality==='high'&&['wood','stone','roof'].includes(type)?2048:1024;}
 function generate(type,resolution=1024){
  if(!types.includes(type))throw new RangeError('Unknown Moonlight surface: '+type);
- if(![128,256,512,1024,2048].includes(resolution))throw new RangeError('Surface resolution must be a supported power of two');
+ if(![128,256,512,1024,2048,4096].includes(resolution))throw new RangeError('Surface resolution must be a supported power of two');
  const seed=types.indexOf(type)*977+31,period=resolution-1,coarse=octave(resolution,8,seed),medium=octave(resolution,32,seed+7),fine=octave(resolution,128,seed+19),height=new Float32Array(resolution*resolution),albedo=new Uint8ClampedArray(resolution*resolution*4),normal=new Uint8ClampedArray(albedo.length);
  const sinX=new Float32Array(resolution),sinY=new Float32Array(resolution);for(let i=0;i<resolution;i++){sinX[i]=Math.sin(TAU*i/period);sinY[i]=Math.sin(TAU*i/period);}
  for(let y=0;y<resolution;y++)for(let x=0;x<resolution;x++){
