@@ -105,19 +105,19 @@ let productionTrain=null;
 // can interrupt construction of the Babylon scene.
 const productionLibrary=root.MoonAssetLibrary;
 const requestedTrainQuality=api.prefs().quality;
-if(requestedTrainQuality!=='low'&&typeof productionLibrary?.placeProduction==='function'){
+if(typeof productionLibrary?.placeProduction==='function'){
  Promise.resolve().then(()=>productionLibrary.placeProduction(scene,'moon-express-locomotive',train,{
-  // The detailed 69K-triangle model and 4K PBR set remain available on desktop HD.
-  // iOS devices use the improved mobile GLB with embedded 512px PBR maps.
-  quality:mobileSafari?'balanced':requestedTrainQuality==='high'?'high':'balanced',scale:.66
+  // The 69K-triangle hero geometry is the ONLY visible transport train at every quality tier.
+  // Keep the optional 4K texture upgrade separate from mesh selection to protect mobile memory.
+  quality:mobileSafari?'balanced':requestedTrainQuality==='high'?'high':'balanced',
+  geometryQuality:'high',textureQuality:!mobileSafari&&requestedTrainQuality==='high'?'high':'balanced',scale:.85
  })).then(art=>{
   if(!art||scene.isDisposed()||train.isDisposed())return;
   productionTrain=art;
   trainProxyMeshes.filter(m=>!m.isDisposed()).forEach(m=>m.setEnabled(false));
-  if(mode==='ride')art.setEnabled(false); // keep cockpit sight lines unobstructed
  }).catch(e=>console.warn('Moon Express GLB fallback:',e));
 }
-const railMotion=R.create(),rideCamera=new B.UniversalCamera('train-first-person',new B.Vector3(0,2.05,-.35),scene);rideCamera.minZ=.08;rideCamera.maxZ=500;rideCamera.fov=.9;rideCamera.parent=train;rideCamera.inputs.clear();pipeline.addCamera(rideCamera);
+const railMotion=R.create(),rideCamera=new B.UniversalCamera('train-first-person',new B.Vector3(0,1.82,-1.7),scene);rideCamera.minZ=.08;rideCamera.maxZ=500;rideCamera.fov=.9;rideCamera.parent=train;rideCamera.inputs.clear();pipeline.addCamera(rideCamera);
 // Friendly castle and observatory.
 let moonMachine;district('lights',()=>{obstacles.push({x:0,z:49,w:14,d:6.5});
 box('castle',[0,4,49],[11,8,6],stone);for(const x of [-6,6]){cyl('castle-tower',[x,5,49],10,3,stone);cyl('spire',[x,11,49],4,4,roof,null,0);}box('castle-door',[0,1.9,45.9],[2.5,3.8,.15],wood);for(const x of [-4.8,-1.8,1.8,4.8]){box('castle-buttress',[x,2.7,45.7],[.65,5.4,.7],stone);box('buttress-cap',[x,5.6,45.7],[.85,.25,.85],gold);}for(let x=-5;x<=5;x+=1.25)box('battlement',[x,8.45,49],[.75,.9,6.2],stone);for(const y of [.3,7.75])box('castle-cornice',[0,y,45.85],[11.4,.3,.45],stone);const arch=Array.from({length:21},(_,i)=>new B.Vector3(Math.cos(i*Math.PI/20)*1.55,2.1+Math.sin(i*Math.PI/20)*1.7,45.7));mesh('CreateTube','castle-door-arch',{path:arch,radius:.19,tessellation:10},[0,0,0],gold);for(const x of [-3.5,3.5])for(const y of [3,6])box('castle-window',[x,y,45.9],[1,1.4,.15],warm);moonMachine=mesh('CreateTorus','moon-machine',{diameter:4,thickness:.16,tessellation:40},[0,9,48],gold);moonMachine.rotation.x=Math.PI/2;
@@ -244,17 +244,17 @@ canvas.addEventListener('pointermove',e=>{if(!rideMouse||rideMouse.id!==e.pointe
 for(const type of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(type,()=>{rideMouse=null;});
 function moveTrain(state,rollDistance=0){train.position.set(state.x,0,state.z);train.rotation.y=state.heading;for(const wheel of wheels){wheel.metadata.roll-=rollDistance/.32;wheel.rotationQuaternion=B.Quaternion.RotationAxis(B.Vector3.Right(),wheel.metadata.roll).multiply(B.Quaternion.RotationAxis(B.Vector3.Forward(),Math.PI/2));}train.computeWorldMatrix(true);}
 function stationUI(){if(externalActive)return;const state=railMotion.snapshot(),index=nearbyStation();api.station?.(index,state);api.callStation?.(index>=0&&(state.active||index!==state.station),state.active,index);api.ride(index>=0&&index===state.station&&!state.active,false,'idle',(state.station+1)%R.stations.length);}
-function finishRide(persist=true){if(mode!=='ride')return;productionTrain?.setEnabled(true);const state=railMotion.finish(),p=R.platform(state.station);moveTrain(state);hero.parent=null;hero.position.set(p.x,.25,p.z);hero.setEnabled(true);ghost.parent=null;ghost.position.set(p.x+.7,1.7,p.z+.4);mode='world';if(!externalActive)scene.activeCamera=camera;controls.reset();keys={};rideMouse=null;destination=null;camera.target.copyFrom(hero.position.add(new B.Vector3(0,1.3,0)));applyCamera({...rideSaved,target:camera.target.clone()});restoreCameraControls();rideSaved=null;stationUI();if(persist){api.position(hero.position.x,hero.position.z);api.trainStation?.(state.station);}}
+function finishRide(persist=true){if(mode!=='ride')return;const state=railMotion.finish(),p=R.platform(state.station);moveTrain(state);hero.parent=null;hero.position.set(p.x,.25,p.z);hero.setEnabled(true);ghost.parent=null;ghost.position.set(p.x+.7,1.7,p.z+.4);mode='world';if(!externalActive)scene.activeCamera=camera;controls.reset();keys={};rideMouse=null;destination=null;camera.target.copyFrom(hero.position.add(new B.Vector3(0,1.3,0)));applyCamera({...rideSaved,target:camera.target.clone()});restoreCameraControls();rideSaved=null;stationUI();if(persist){api.position(hero.position.x,hero.position.z);api.trainStation?.(state.station);}}
 function nearbyStation(){return R.stations.findIndex((s,i)=>{const p=R.platform(i);return Math.hypot(hero.position.x-p.x,hero.position.z-p.z)<4;});}
 function callTrain(requested){const index=nearbyStation();if(!started||externalActive||mode!=='world'||api.blocked()||index<0||(requested!==undefined&&requested!==index)||!railMotion.call(index))return false;moveTrain(railMotion.snapshot());stationUI();api.effect('train',{gain:.35,point:()=>train.getAbsolutePosition()});return true;}
 function trainSound(dt,state){railTimer+=dt;if(state.phase==='travel'&&railTimer>.75){railTimer=0;api.effect('train-roll',{gain:.28,point:()=>train.getAbsolutePosition()});}}
 function tickCalledTrain(dt){const before=railMotion.snapshot(),state=railMotion.tick(dt);moveTrain(state,Math.max(0,state.travelled-before.travelled));trainSound(dt,state);if(!state.active)api.trainStation?.(state.station);}
 function boardTrain(target){const state=railMotion.snapshot();if(!started||externalActive||mode!=='world'||api.blocked()||nearbyStation()!==state.station||!railMotion.begin(target))return false;
  controls.reset();keys={};destination=null;cameraTransition=null;rideSaved={alpha:camera.alpha,beta:camera.beta,radius:camera.radius};camera.detachControl();clearCameraInertia();moveTrain(railMotion.snapshot());
- hero.parent=train;hero.position.set(0,.65,0);hero.rotation.set(0,0,0);hero.setEnabled(false);ghost.parent=train;ghost.position.set(.65,1.4,.65);ghost.rotation.set(0,Math.PI,0);rideCamera.rotation.set(0,0,0);rideCamera.position.set(-4*railMotion.snapshot().direction,1.95,-.35);scene.activeCamera=rideCamera;mode='ride';productionTrain?.setEnabled(false);api.near(null);wasNear=null;api.callStation?.(false);api.station?.(-1,railMotion.snapshot());api.ride(true,true,'boarding',railMotion.snapshot().target);api.effect('train',{point:()=>train.getAbsolutePosition()});return true;
+ hero.parent=train;hero.position.set(0,.65,0);hero.rotation.set(0,0,0);hero.setEnabled(false);ghost.parent=train;ghost.position.set(.65,1.4,.65);ghost.rotation.set(0,Math.PI,0);rideCamera.rotation.set(0,0,0);rideCamera.position.set(-4*railMotion.snapshot().direction,1.82,-1.7);scene.activeCamera=rideCamera;mode='ride';api.near(null);wasNear=null;api.callStation?.(false);api.station?.(-1,railMotion.snapshot());api.ride(true,true,'boarding',railMotion.snapshot().target);api.effect('train',{point:()=>train.getAbsolutePosition()});return true;
 }
 function tickRide(dt){const before=railMotion.snapshot(),state=railMotion.tick(dt);moveTrain(state,Math.max(0,state.travelled-before.travelled));
- const t=state.phase==='boarding'?F.ease(state.progress):1;rideCamera.position.set(-4*state.direction*(1-t),1.95+.1*t,-.35);hero.computeWorldMatrix(true);ghost.computeWorldMatrix(true);
+ const t=state.phase==='boarding'?F.ease(state.progress):1;rideCamera.position.set(-4*state.direction*(1-t),1.82,-1.7);hero.computeWorldMatrix(true);ghost.computeWorldMatrix(true);
  trainSound(dt,state);api.ride(true,true,state.phase,state.target);if(!state.active)finishRide();
 }
 function interactable(m,name,fn){const use=()=>{actionPoint=m.getAbsolutePosition().clone();fn();};m.isPickable=true;m.metadata={use,name};objects.push({m,name,fn:use});return m;}
