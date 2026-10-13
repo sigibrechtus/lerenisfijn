@@ -1,0 +1,27 @@
+name: Pumpkin Race regression tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/moonlight-hollow/**'
+      - 'tests/pumpkin-race*.test.cjs'
+      - 'tests/moonlight-attraction-ui.test.cjs'
+      - '.github/workflows/pumpkin-race-tests.yml'
+  workflow_dispatch:
+jobs:
+  race-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Babylon canvas test dependency
+        run: npm install --no-save --no-package-lock @napi-rs/canvas
+      - name: Race physics and questions
+        run: node tests/pumpkin-race.test.cjs
+      - name: Replay menus and profile isolation
+        run: node --test tests/moonlight-attraction-ui.test.cjs
+      - name: Babylon race integration (NullEngine)
+        run: node tests/pumpkin-race-world.test.cjs
