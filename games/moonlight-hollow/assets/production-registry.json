@@ -28,7 +28,9 @@
   },
   "counts": {
     "sourceMeshIdentifiers": 299,
-    "assetFamilies": 18
+    "assetFamilies": 18,
+    "publishedProductionAssets": 1,
+    "familiesPendingFullQA": 18
   },
   "families": [
     {
@@ -73,12 +75,12 @@
         "mobileLODRequired": true
       },
       "status": {
-        "artDirection": "reference_images_generated",
-        "referenceViews": "eight_geometry_views_rendered_locally_and_scripted_in_CI",
-        "mesh": "69_772_triangle_GLb_generated_locally_build_script_committed",
-        "pbr": "four_k_maps_generated_locally_build_script_committed",
-        "runtime": "loader_integrated_unverified",
-        "qa": "live_browser_pending"
+        "artDirection": "concept_images_used_as_inspiration_not_3d_reconstruction",
+        "referenceViews": "eight_consistent_orthographic_diagnostic_images_published",
+        "mesh": "69_772_triangle_hero_and_12_636_triangle_mobile_GLBs_published",
+        "pbr": "4096_albedo_normal_ORM_maps_published;512_embedded_mobile",
+        "runtime": "GLB_loader_and_4K_high_tier_mapping_integrated_live_validation_pending",
+        "qa": "desktop_and_mobile_WebGL_unverified"
       }
     },
     {
@@ -4279,5 +4281,6 @@
       "meshRequirement": "member_of_20k_triangulated_source_asset",
       "inGameStatus": "existing-procedural"
     }
-  ]
+  ],
+  "lastPublishedTrainBuild": "2026-10-13"
 }
