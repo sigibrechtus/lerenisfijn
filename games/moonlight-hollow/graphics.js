@@ -2,10 +2,14 @@
 (function(root){'use strict';
 const tiers=['low','balanced','high'];
 function profile(tier,width,height,dpr=1){
-  const config={low:{ratio:.85,pixels:1100000,shadow:512,glow:false},balanced:{ratio:1.5,pixels:2400000,shadow:1024,glow:true},high:{ratio:2,pixels:4200000,shadow:2048,glow:true}}[tier]||null;
+  // Sharp prioritises final framebuffer resolution, not high-polygon geometry or 2K/4K PBR maps.
+  // 8,294,400 is a 3840x2160 pixel budget; on phones use native DPR, not 4K supersampling.
+  const config={low:{ratio:.85,pixels:1100000,shadow:512,glow:false},balanced:{ratio:1.5,pixels:2400000,shadow:1024,glow:true},high:{ratio:2,pixels:4200000,shadow:2048,glow:true},sharp:{ratio:3,pixels:8294400,shadow:1024,glow:false}}[tier]||null;
   if(!config)throw Error('Unknown graphics tier');
-  const ratio=Math.min(config.ratio,Math.max(1,Number(dpr)||1),Math.sqrt(config.pixels/Math.max(1,width*height)));
-  return {...config,tier,ratio,scaling:1/ratio,fxaa:tier!=='low'};
+  const deviceRatio=Math.max(1,Number(dpr)||1);
+  const maxRatio=tier==='sharp'?Math.max(2,Math.min(3,deviceRatio)):deviceRatio;
+  const ratio=Math.min(config.ratio,maxRatio,Math.sqrt(config.pixels/Math.max(1,width*height)));
+  return {...config,tier,ratio,scaling:1/ratio,fxaa:tier!=='low'&&tier!=='sharp'};
 }
 function adaptive(){let tier=1,warmup=0,windowTime=0,frames=0,goodTime=0,cooldown=0,gapGuard=0;
   function reset(){tier=1;warmup=0;windowTime=0;frames=0;goodTime=0;cooldown=0;gapGuard=0;}
