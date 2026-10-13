@@ -19,6 +19,6 @@ function signature(q){
  else data=[q.question];
  return JSON.stringify([type,...data]);
 }
-function fresh(make,seed=0,recent=[]){const history=new Set(Array.isArray(recent)?recent.filter(v=>typeof v==='string').slice(-12):[]);let task,key;for(let n=0;n<256;n++){task=make(Number(seed)+n);key=signature(task);if(!history.has(key))return{task,seed:Number(seed)+n,key};}return{task,seed:Number(seed)+255,key};}
+function fresh(make,seed=0,recent=[]){const history=new Set(Array.isArray(recent)?recent.filter(v=>typeof v==='string').slice(-120):[]);let task,key;for(let n=0;n<256;n++){task=make(Number(seed)+n);key=signature(task);if(!history.has(key))return{task,seed:Number(seed)+n,key};}return{task,seed:Number(seed)+255,key};}
 const api={signature,fresh};root.MoonVariety=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
