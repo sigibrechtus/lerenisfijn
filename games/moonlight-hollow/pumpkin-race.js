@@ -38,7 +38,7 @@ function create(options={}){
  if(checkpoint===track.gates.length&&car.s>=track.length-6&&oldS<track.length-6){
   lastLapSeconds=elapsed-lapStart;lapTimes.push(lastLapSeconds);bestLapSeconds=Math.min(bestLapSeconds??Infinity,lastLapSeconds);lap++;
   if(lap<totalLaps){const momentum=car.speed;checkpoint=0;stageAttempts=0;hintStage=0;decisionTime=0;fastStreak=0;lapStart=elapsed;place(3);car.speed=momentum;task=makeTask();feedback=lang==='fr'?'Tour terminé ! Encore '+(totalLaps-lap)+' tour(s).':'Ronde voltooid! Nog '+(totalLaps-lap)+' ronde(n).';return{changed:true,lapCompleted:true};}
-  finished=true;finishElapsed=elapsed;runoutSpeed=Math.max(7,car.speed);car.speed=runoutSpeed;feedback=lang==='fr'?'Circuit terminé !':'Circuit voltooid!';return{changed:true,finished:true};
+  finished=true;finishElapsed=elapsed;car.heading=at(track,track.length-6).heading;runoutSpeed=Math.max(7,car.speed);car.speed=runoutSpeed;feedback=lang==='fr'?'Circuit terminé !':'Circuit voltooid!';return{changed:true,finished:true};
  }
  return{changed:false};}
  function action(id){if(finished)return snapshot();if(id==='hint'){hintStage=Math.min(3,hintStage+1);hints++;fastStreak=0;feedback=Games.hint(task,{selected:[],amounts:[0,0]},hintStage);}if(id==='reset')place(checkpoint?track.gates[checkpoint-1].s+9:3);if(id==='slower')speedLimit=Math.max(3,speedLimit-2);if(id==='faster')speedLimit=Math.min(speedCeiling,speedLimit+2);return snapshot();}
