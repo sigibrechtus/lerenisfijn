@@ -23,7 +23,7 @@ async function simulate({library,quality='auto',userAgent='',disposed=false}={})
  const scene={isDisposed:()=>disposed};
  vm.runInNewContext(importCode,{
   root:{MoonAssetLibrary:library,navigator:{userAgent}},
-  api:{prefs:()=>({quality})},scene,train,mode:'world',
+  api:{prefs:()=>({quality})},scene,train,mode:'world',mobileSafari:/iPhone|iPad|iPod/i.test(userAgent),
   console:{warn:(...args)=>warnings.push(args)},
   Promise
  },{filename:'moonlight-production-import.js'});
