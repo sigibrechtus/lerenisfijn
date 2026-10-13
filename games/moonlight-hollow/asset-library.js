@@ -117,7 +117,9 @@ const PRODUCTION={
 async function placeProduction(scene,id,parent,opts={}){
  const B=root.BABYLON,info=PRODUCTION[id];
  if(!scene||!B?.SceneLoader?.ImportMeshAsync||!info||!parent||parent.isDisposed())return null;
- const quality=opts.quality==='high'?'high':'balanced',path=info[quality];
+ const geometryQuality=opts.geometryQuality==='high'||opts.quality==='high'?'high':'balanced';
+ const textureQuality=opts.textureQuality==='high'?'high':'balanced';
+ const path=info[geometryQuality];
  if(!path)return null;
  let result;
  try{
@@ -140,7 +142,7 @@ async function placeProduction(scene,id,parent,opts={}){
  }
  // High-tier PBR explicitly switches the locomotive's UV-compatible paint maps
  // to 4096² images. The GLB embeds 512px equivalents for balanced/mobile.
- if(quality==='high'&&(scene.getEngine()?.getCaps()?.maxTextureSize||0)>=4096){
+ if(geometryQuality==='high'&&textureQuality==='high'&&(scene.getEngine()?.getCaps()?.maxTextureSize||0)>=4096){
   const prefix='assets/models/custom/moon-express/textures-4k/';
   const paintMaterials=new Set(node.getChildMeshes().map(m=>m.material).filter(m=>
    m instanceof B.PBRMaterial&&m.name.includes('moon-red-pbr')));
@@ -156,7 +158,7 @@ async function placeProduction(scene,id,parent,opts={}){
    m.useAmbientInGrayScale=true;
   }
  }
- node.metadata={productionAsset:id,quality,source:path};
+ node.metadata={productionAsset:id,quality:geometryQuality,geometryQuality,textureQuality,source:path};
  return node;
 }
 root.MoonAssetLibrary={place,replace,enhanceWorld,enhanceRace,enhanceInterior,placeProduction,PRODUCTION};
