@@ -76,7 +76,7 @@ function attach(options){
   for(const key of editIds)$(key).disabled=true;
   world.externalActivity(true);
   const p=gameProgress(id),requestedValid=id==='rally'&&Number.isInteger(requestedCircuit)&&requestedCircuit>=0&&requestedCircuit<10&&(requestedCircuit===(p.rally?.circuit||0)||raceTrackChoices().indices.includes(requestedCircuit)),trackIndex=id==='rally'?(requestedValid?requestedCircuit:selectedCircuit(p)):0,level=prefs().difficulty==='auto'?(id==='rally'?Math.min(3,1+Math.floor(trackIndex/3)):Math.min(3,p.bestLevel+1)):Number(prefs().difficulty)||1;
-  try{runtime=root.MoonMiniGameWorld.create({B:root.BABYLON,scene:world.scene,materials:world.materials,quality:prefs().quality==='low'?'low':'balanced',reducedMotion:!!prefs().motion,paused:blocked,frame,onUpdate:render,onTelemetry:telemetry,onComplete:complete,effect:(k,opts)=>effect(k==='success'?'solve':k,opts)});
+  try{runtime=root.MoonMiniGameWorld.create({B:root.BABYLON,scene:world.scene,materials:world.materials,quality:prefs().quality==='low'?'low':prefs().quality==='high'?'high':'balanced',reducedMotion:!!prefs().motion,paused:blocked,frame,onUpdate:render,onTelemetry:telemetry,onComplete:complete,effect:(k,opts)=>effect(k==='success'?'solve':k,opts)});
   historyKey=id==='rally'?id+'/'+trackIndex+'/'+level+'/'+prefs().lang:id+'/'+level+'/'+prefs().lang;seenTask='';const savedRace=raceRecord(trackIndex,level,trackIndex%2===0?3:1);if(id==='rally'){profile().raceStartCount=(profile().raceStartCount||0)+1;save();}runtime.start(id,{bestSeconds:savedRace?.seconds,bestLapSeconds:savedRace?.bestLapSeconds,view:profile().rallyView==='first'?'first':'third',speedTier:p.rally?.speedTier||0,circuit:trackIndex,level,lang:prefs().lang,seed:id==='rally'?(seedFor(id)+Math.imul(profile().raceStartCount||1,2654435761))>>>0:seedFor(id),recent:profile().attractionHistory?.[historyKey]||[]});}catch(error){leave();console.error(error);$('lumi-line').textContent=say('Dit avontuur kon niet starten. Probeer opnieuw.','Cette aventure n’a pas pu démarrer. Réessaie.');return false;}
   soundtrack.weather({rain:0,wind:0});soundtrack.setContext({mode:'minigame',id});if(id==='rally')syncCloud();effect('ui');localize();$('mini-title').focus({preventScroll:true});return true;
  }
@@ -131,7 +131,7 @@ function attach(options){
  }
  root.addEventListener('blur',resetMovement);document.addEventListener('visibilitychange',()=>{if(document.hidden)resetMovement();});
  root.addEventListener('keydown',e=>{if(e.repeat||e.key.toLowerCase()!=='e'||active||!near||blocked()||/INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target?.tagName)||e.target?.isContentEditable)return;e.preventDefault();enter();});
- localize();return{start(){begun=true;renderMap();syncCloud();},localize,renderMap,frame:tick,enter,leave,refit(){runtime?.refit();},get active(){return active;},get near(){return near;},destinations};
+ localize();return{start(){begun=true;renderMap();syncCloud();},localize,renderMap,frame:tick,enter,leave,quality(value){runtime?.setQuality?.(value==='auto'?'balanced':value);},refit(){runtime?.refit();},get active(){return active;},get near(){return near;},destinations};
 }
 root.MoonAttractions={attach};
 })(window);
