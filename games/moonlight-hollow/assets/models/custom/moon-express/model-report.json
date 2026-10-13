@@ -1,0 +1,39 @@
+{
+  "id": "moon-express-locomotive",
+  "generator": "original procedural geometry",
+  "coordinates": "+Y up; +Z forward",
+  "hero": {
+    "triangles": 69772,
+    "parts": 388
+  },
+  "mobile": {
+    "triangles": 12636,
+    "parts": 208
+  },
+  "maps": {
+    "resolution": 4096,
+    "colorSpace": {
+      "albedo": "sRGB",
+      "normal": "linear",
+      "orm": "linear"
+    },
+    "packing": {
+      "occlusion": "R",
+      "roughness": "G",
+      "metallic": "B"
+    },
+    "files": {
+      "albedo": "textures-4k/albedo.png",
+      "normal": "textures-4k/normal.png",
+      "orm": "textures-4k/orm.png"
+    }
+  },
+  "qa": {
+    "geometryVerified": true,
+    "pbrMapsGenerated": true,
+    "eightViewImagesVerified": false,
+    "liveWebGLVerified": false,
+    "rigged": false,
+    "collisionProxyVerified": false
+  }
+}
