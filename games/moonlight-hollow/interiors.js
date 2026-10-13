@@ -42,6 +42,7 @@ function decorate({B,scene,parent,originY=0,layer=0x10000000,topView=false,floor
   for(const dx of [-.34,.34])for(const dz of [-.34,.34])mesh('CreateCylinder','lantern-frame',{height:.74,diameter:.055,tessellation:12},x+dx,floorY+1.83,9+dz,bank.brass);
   mesh('CreateSphere','lantern-light',{diameter:.48,segments:24},x,floorY+1.83,9,bank.glow);
  }
+ root.MoonAssetLibrary?.enhanceInterior(scene,parent);
  return meshes;
 }
 root.MoonInteriors={decorate};if(typeof module!=='undefined')module.exports={decorate};
