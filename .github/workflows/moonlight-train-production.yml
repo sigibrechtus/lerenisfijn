@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'games/moonlight-hollow/tools/generate_moon_express.py'
+      - 'games/moonlight-hollow/tools/render_moon_express_views.py'
       - '.github/workflows/moonlight-train-production.yml'
   workflow_dispatch:
 permissions:
@@ -22,7 +23,9 @@ jobs:
       - name: Install pinned mesh/PBR toolchain
         run: python -m pip install 'numpy==2.3.5' 'trimesh==4.11.1' 'Pillow==12.3.0'
       - name: Generate hero/mobile GLBs, 4K PBR textures and report
-        run: python games/moonlight-hollow/tools/generate_moon_express.py
+        run: |
+          python games/moonlight-hollow/tools/generate_moon_express.py
+          python games/moonlight-hollow/tools/render_moon_express_views.py
       - name: Validate actual files and PBR semantics
         run: |
           python - <<'PY'
@@ -44,6 +47,8 @@ jobs:
           for file in ['albedo','normal','orm']:
               with Image.open(p/'textures-4k'/(file+'.png')) as img:
                   assert img.size==(4096,4096) and img.mode=='RGB'
+          assert len(list((p/'reference-views').glob('view-*.png')))==8
+          assert (p/'reference-views/contact-sheet.png').exists()
           assert not r['qa']['liveWebGLVerified']
           print('GLB topology and map integrity validated.')
           PY
