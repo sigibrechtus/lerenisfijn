@@ -59,6 +59,9 @@ test('late train downloads cannot override a newer exercise or become active aft
 test('OGG decode failure transparently falls back to the corresponding MP3 arrangement',async()=>{
  const h=harness();await h.audio.unlock();await h.flush();let attempts=0;h.context().decodeAudioData=()=>++attempts===1?Promise.reject(Error('unsupported codec')):Promise.resolve({decoded:true});assert.equal(await h.audio.setMusic('train'),true);assert(h.requests.includes('audio/halloween-train.ogg'));assert(h.requests.includes('audio/halloween-train.mp3'));assert.equal(h.audio.state().music,'train');
 });
+test('decoded music cache remains bounded when visiting every soundtrack context',async()=>{
+ const h=harness();await h.audio.unlock();for(const name of ['village','woods','garden','library','tower','castle','train','carnival','broom-flight','pumpkin-rally']){await h.audio.setMusic(name);assert(h.audio.state().cachedMusic<=4);assert.equal(h.audio.state().music,name);}await h.audio.setMusic('village');assert.equal(h.requests.filter(v=>v==='audio/halloween-village.ogg').length,2);assert.equal(h.audio.state().music,'village');
+});
 test('context changes recover from a locked festival and remain muted when the master is muted',async()=>{
  const h=harness();await h.audio.unlock();await h.audio.setMusic('festival',{lock:true});h.prefs.muted=true;h.audio.setContext({mode:'train'});await h.flush();assert.equal(h.audio.state().music,'train');h.audio.setContext({mode:'world'});h.audio.position(19,-13);await h.flush();assert.equal(h.audio.state().music,'garden');assert(h.nodes.filter(n=>n.gain).some(n=>n.gain.value===0));
 });

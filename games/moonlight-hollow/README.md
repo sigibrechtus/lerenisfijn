@@ -1,6 +1,6 @@
 # Moonlight Hollow — The Lantern Chronicles (3D)
 
-## Adaptive Halloween fairground soundtrack (v31)
+## Adaptive Halloween fairground soundtrack (v32)
 
 The existing 12-part orchestral opening is preserved. Sixteen new original 16-bar arrangements share a D-minor lantern motif, with celesta/music-box colours, clarinet, flute, flowing string harmony, pizzicato, bassoon, a restrained fairground organ and wooden percussion. Six regional exploration cues, five quieter exercise cues, carnival, broom-flight, pumpkin-rally, Moon Express and festival music have different pacing and orchestration. The complete ten-voice, four-section preview suite was inserted into Midify without notation warnings. Game audio is a deterministic local synthesis of those scores, rather than a sampled orchestral recording or an audio export from Midify.
 
