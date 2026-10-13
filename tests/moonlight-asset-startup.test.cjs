@@ -68,12 +68,15 @@ test('successful import preserves model upgrade and hides procedural visual',asy
  assert.deepEqual(r.hidden,[false]);
 });
 
-test('iPhone HD uses the PBR-enabled mobile GLB, avoiding optional 4K maps',async()=>{
- const qualities=[];
+test('iPhone HD uses high-poly train with mobile-safe 512px PBR textures',async()=>{
+ const options=[];
  const r=await simulate({quality:'high',userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)',library:{
-  placeProduction:(_scene,_id,_parent,opts)=>{qualities.push(opts.quality);return Promise.resolve({setEnabled(){}});}
+  placeProduction:(_scene,_id,_parent,opts)=>{options.push(opts);return Promise.resolve({setEnabled(){}});}
  }});
- assert.deepEqual(qualities,['balanced']);
+ assert.equal(options.length,1);
+ assert.equal(options[0].geometryQuality,'high');
+ assert.equal(options[0].quality,'balanced');
+ assert.equal(options[0].textureQuality,'balanced');
  assert.deepEqual(r.hidden,[false]);
 });
 
