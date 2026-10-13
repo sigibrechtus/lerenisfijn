@@ -1,5 +1,15 @@
 # Moonlight Hollow — The Lantern Chronicles (3D)
 
+## Adaptive Halloween fairground soundtrack (v31)
+
+The existing 12-part orchestral opening is preserved. Sixteen new original 16-bar arrangements share a D-minor lantern motif, with celesta/music-box colours, clarinet, flute, flowing string harmony, pizzicato, bassoon, a restrained fairground organ and wooden percussion. Six regional exploration cues, five quieter exercise cues, carnival, broom-flight, pumpkin-rally, Moon Express and festival music have different pacing and orchestration. The complete ten-voice, four-section preview suite was inserted into Midify without notation warnings. Game audio is a deterministic local synthesis of those scores, rather than a sampled orchestral recording or an audio export from Midify.
+
+Music context explicitly distinguishes exploration, exercises, minigames, the train and celebrations. Riding takes precedence over district changes; leaving a ride/activity restores music for the player's actual region. Quiet exercise arrangements are mixed lower. Stale downloads are cancelled, previews yield to a new gameplay context, and cues crossfade over 1.8 seconds. Region hysteresis, master mute, separate volumes, narration ducking and background suspension remain in effect.
+
+All new loops are in `audio/halloween-*.ogg`, with corresponding MP3 fallbacks for browsers that cannot decode OGG. `audio/manifest.json` describes the file mapping and provenance; the ABC and MIDI sources are in `audio/scores/`. `tools/compose-moonlight-context-music.py` reproduces the source scores, rendered loops and ten musical feedback cues; `--effects-only` regenerates feedback without rendering music. The train's repeated horn has been replaced by a quiet wheel rhythm during travel; its whistle remains for calling and boarding.
+
+The settings/HUD name every cue in Dutch and French. The service worker caches OGG and MP3 arrangements for offline reuse. Audio decoding/levels, score durations, context priority, train departure/return, rapid context changes, muted playback and codec fallback are checked separately from real-device speaker playback.
+
 A browser-native educational Halloween adventure with first- and third-person exploration in Leren is fijn. Original procedural 3D artwork; Babylon.js 9.30.0 is vendored with its Apache 2.0 license. No external runtime graphics CDN, advertising or child account required.
 
 ## Play

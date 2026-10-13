@@ -30,7 +30,7 @@ test('iOS playback session and silent source start happen synchronously before a
 test('an unsupported audio-session setter does not prevent other browsers from playing',async()=>{const h=harness({sessionThrows:true});assert.equal(await h.audio.unlock(),true);assert.equal(await h.audio.testEffect('ui'),true);});
 test('a browser that keeps its context suspended reports the block and does not claim playback',async()=>{const h=harness({blocked:true});assert.equal(await h.audio.unlock(),false);assert.equal(h.audio.state().unlocked,false);assert(h.statuses.some(v=>v[0]==='blocked'));assert.equal(h.requests.length,0);});
 test('repeated world positions during a slow download share the same loop request',async()=>{
-  const h=harness({hold:true});await h.audio.unlock();for(let i=0;i<20;i++)h.audio.position(0,0);for(const done of h.waiting.splice(0))done();await h.flush();assert.equal(h.requests.filter(v=>v==='audio/village.mp3').length,1);assert.equal(h.audio.state().music,'village');assert.equal(h.audio.state().ambience,'village');assert.equal(h.audio.state().loops,2);
+  const h=harness({hold:true});await h.audio.unlock();for(let i=0;i<20;i++)h.audio.position(0,0);for(const done of h.waiting.splice(0))done();await h.flush();assert.equal(h.requests.filter(v=>v==='audio/halloween-village.ogg').length,1);assert.equal(h.audio.state().music,'village');assert.equal(h.audio.state().ambience,'village');assert.equal(h.audio.state().loops,2);
 });
 test('returning to the current region cancels a slow pending transition',async()=>{
   const h=harness();await h.audio.unlock();await h.flush();const original=h.audio.state().music;assert.equal(original,'menu');h.context().decodeAudioData=()=>new Promise(resolve=>h.waiting.push(()=>resolve({decoded:true})));const travel=h.audio.setMusic('woods');await h.flush();await h.audio.setMusic(original);h.waiting.splice(0).forEach(fn=>fn());await travel;assert.equal(h.audio.state().music,original);
@@ -45,6 +45,22 @@ test('suspending cancels an in-flight effect so it does not play later on resume
 });
 test('music volume changed from zero starts the previously selected music',async()=>{
   const h=harness();h.prefs.music=0;await h.audio.unlock();await h.flush();assert.equal(h.audio.state().music,undefined);h.prefs.music=45;h.audio.update();await h.flush();assert.equal(h.audio.state().music,'menu');
+});
+test('train music takes priority over every region and returns to the region at disembarkation',async()=>{
+ const h=harness();await h.audio.unlock();h.audio.position(19,-13);await h.flush();assert.equal(h.audio.state().music,'garden');h.audio.setContext({mode:'train'});await h.flush();assert.equal(h.audio.state().music,'train');h.audio.position(-22,20);await h.flush();assert.equal(h.audio.state().music,'train');h.audio.setContext({mode:'world'});await h.flush();assert.equal(h.audio.state().music,'library');
+});
+test('each exercise and minigame has a deliberate context cue which region updates cannot replace',async()=>{
+ const h=harness();await h.audio.unlock();for(const [area,name]of Object.entries({bridge:'exercise-woods',garden:'exercise-garden',library:'exercise-library',clock:'exercise-tower',lights:'exercise-castle'})){h.audio.setContext({mode:'exercise',area});await h.flush();assert.equal(h.audio.state().music,name);h.audio.position(0,0);await h.flush();assert.equal(h.audio.state().music,name);}
+ for(const [id,name]of Object.entries({mansion:'exercise-castle',potions:'exercise-garden',broom:'broom-flight',garden:'carnival',railway:'exercise-tower',rally:'pumpkin-rally'})){h.audio.setContext({mode:'minigame',id});await h.flush();assert.equal(h.audio.state().music,name);h.audio.position(19,-13);await h.flush();assert.equal(h.audio.state().music,name);}
+});
+test('late train downloads cannot override a newer exercise or become active after background suspension',async()=>{
+ const h=harness({hold:true});await h.audio.unlock();h.audio.setContext({mode:'train'});h.audio.setContext({mode:'exercise',area:'library'});h.waiting.splice(0).forEach(fn=>fn());await h.flush();assert.equal(h.audio.state().music,'exercise-library');h.audio.setContext({mode:'minigame',id:'rally'});await h.audio.suspend();h.waiting.splice(0).forEach(fn=>fn());await h.flush();assert.equal(h.audio.state().music,'exercise-library');await h.audio.resume();await h.flush();assert.equal(h.audio.state().music,'pumpkin-rally');
+});
+test('OGG decode failure transparently falls back to the corresponding MP3 arrangement',async()=>{
+ const h=harness();await h.audio.unlock();await h.flush();let attempts=0;h.context().decodeAudioData=()=>++attempts===1?Promise.reject(Error('unsupported codec')):Promise.resolve({decoded:true});assert.equal(await h.audio.setMusic('train'),true);assert(h.requests.includes('audio/halloween-train.ogg'));assert(h.requests.includes('audio/halloween-train.mp3'));assert.equal(h.audio.state().music,'train');
+});
+test('context changes recover from a locked festival and remain muted when the master is muted',async()=>{
+ const h=harness();await h.audio.unlock();await h.audio.setMusic('festival',{lock:true});h.prefs.muted=true;h.audio.setContext({mode:'train'});await h.flush();assert.equal(h.audio.state().music,'train');h.audio.setContext({mode:'world'});h.audio.position(19,-13);await h.flush();assert.equal(h.audio.state().music,'garden');assert(h.nodes.filter(n=>n.gain).some(n=>n.gain.value===0));
 });
 test('preview reports mute rather than a misleading success and verifies an output signal when enabled',async()=>{
   const h=harness();h.prefs.muted=true;assert.equal(await h.audio.testEffect('ui'),false);assert(h.statuses.some(v=>v[0]==='muted'));h.prefs.muted=false;assert.equal(await h.audio.testEffect('ui'),true);h.timers.splice(0).forEach(fn=>fn());assert(h.statuses.some(v=>v[0]==='signal'));

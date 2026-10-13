@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "sampleRate": 22050,
   "provenance": "Original compositions and deterministic procedural sound design; no third-party samples.",
   "music": {
@@ -14,60 +14,228 @@
       "description": "Continuously voiced orchestral opening with overlapping harmonies, legato melodies and hall reflections"
     },
     "village": {
-      "file": "village.mp3",
-      "duration": 49.231,
+      "file": "halloween-village.ogg",
+      "fallback": "halloween-village.mp3",
+      "duration": 45.714,
       "loop": true,
-      "bpm": 78,
+      "bpm": 84,
       "bars": 16,
-      "instrument": "harp"
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "Lanterns at the Little Fair",
+      "context": "world",
+      "score": "scores/village.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
     },
     "woods": {
-      "file": "woods.mp3",
+      "file": "halloween-woods.ogg",
+      "fallback": "halloween-woods.mp3",
+      "duration": 51.892,
+      "loop": true,
+      "bpm": 74,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "Whispers Beyond the Pumpkins",
+      "context": "world",
+      "score": "scores/woods.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "garden": {
+      "file": "halloween-garden.ogg",
+      "fallback": "halloween-garden.mp3",
+      "duration": 48.0,
+      "loop": true,
+      "bpm": 80,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "Moonflowers and Mischief",
+      "context": "world",
+      "score": "scores/garden.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "library": {
+      "file": "halloween-library.ogg",
+      "fallback": "halloween-library.mp3",
       "duration": 54.857,
       "loop": true,
       "bpm": 70,
       "bars": 16,
-      "instrument": "flute"
-    },
-    "garden": {
-      "file": "garden.mp3",
-      "duration": 46.829,
-      "loop": true,
-      "bpm": 82,
-      "bars": 16,
-      "instrument": "bell"
-    },
-    "library": {
-      "file": "library.mp3",
-      "duration": 56.471,
-      "loop": true,
-      "bpm": 68,
-      "bars": 16,
-      "instrument": "harp"
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "The Books That Whisper",
+      "context": "world",
+      "score": "scores/library.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
     },
     "tower": {
-      "file": "tower.mp3",
-      "duration": 48,
-      "loop": true,
-      "bpm": 80,
-      "bars": 16,
-      "instrument": "bell"
-    },
-    "castle": {
-      "file": "castle.mp3",
-      "duration": 58.182,
-      "loop": true,
-      "bpm": 66,
-      "bars": 16,
-      "instrument": "flute"
-    },
-    "festival": {
-      "file": "festival.mp3",
+      "file": "halloween-tower.ogg",
+      "fallback": "halloween-tower.mp3",
       "duration": 43.636,
       "loop": true,
       "bpm": 88,
       "bars": 16,
-      "instrument": "bell"
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "Tick-Tock Moon Carnival",
+      "context": "world",
+      "score": "scores/tower.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "castle": {
+      "file": "halloween-castle.ogg",
+      "fallback": "halloween-castle.mp3",
+      "duration": 50.526,
+      "loop": true,
+      "bpm": 76,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "A Friendly Ghost at the Gate",
+      "context": "world",
+      "score": "scores/castle.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "festival": {
+      "file": "halloween-festival.ogg",
+      "fallback": "halloween-festival.mp3",
+      "duration": 38.4,
+      "loop": true,
+      "bpm": 100,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "The Lantern Fair Awakens",
+      "context": "celebration",
+      "score": "scores/festival.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "exercise-woods": {
+      "file": "halloween-exercise-woods.ogg",
+      "fallback": "halloween-exercise-woods.mp3",
+      "duration": 53.333,
+      "loop": true,
+      "bpm": 72,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "Count the Firefly Lights",
+      "context": "exercise",
+      "score": "scores/exercise-woods.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "exercise-garden": {
+      "file": "halloween-exercise-garden.ogg",
+      "fallback": "halloween-exercise-garden.mp3",
+      "duration": 51.892,
+      "loop": true,
+      "bpm": 74,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "A Drop of Moonlight",
+      "context": "exercise",
+      "score": "scores/exercise-garden.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "exercise-library": {
+      "file": "halloween-exercise-library.ogg",
+      "fallback": "halloween-exercise-library.mp3",
+      "duration": 56.471,
+      "loop": true,
+      "bpm": 68,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "Letters in the Candlelight",
+      "context": "exercise",
+      "score": "scores/exercise-library.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "exercise-tower": {
+      "file": "halloween-exercise-tower.ogg",
+      "fallback": "halloween-exercise-tower.mp3",
+      "duration": 50.526,
+      "loop": true,
+      "bpm": 76,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "The Clockmaker\u2019s Riddle",
+      "context": "exercise",
+      "score": "scores/exercise-tower.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "exercise-castle": {
+      "file": "halloween-exercise-castle.ogg",
+      "fallback": "halloween-exercise-castle.mp3",
+      "duration": 54.857,
+      "loop": true,
+      "bpm": 70,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "The Secret of the Stars",
+      "context": "exercise",
+      "score": "scores/exercise-castle.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "carnival": {
+      "file": "halloween-carnival.ogg",
+      "fallback": "halloween-carnival.mp3",
+      "duration": 39.184,
+      "loop": true,
+      "bpm": 98,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "The Friendly Haunted Fair",
+      "context": "minigame",
+      "score": "scores/carnival.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "broom-flight": {
+      "file": "halloween-broom-flight.ogg",
+      "fallback": "halloween-broom-flight.mp3",
+      "duration": 36.923,
+      "loop": true,
+      "bpm": 104,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "Brooms Above the Fairground",
+      "context": "minigame",
+      "score": "scores/broom-flight.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "pumpkin-rally": {
+      "file": "halloween-pumpkin-rally.ogg",
+      "fallback": "halloween-pumpkin-rally.mp3",
+      "duration": 34.909,
+      "loop": true,
+      "bpm": 110,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "Pumpkin Wheels and Lanterns",
+      "context": "minigame",
+      "score": "scores/pumpkin-rally.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
+    },
+    "train": {
+      "file": "halloween-train.ogg",
+      "fallback": "halloween-train.mp3",
+      "duration": 40.851,
+      "loop": true,
+      "bpm": 94,
+      "bars": 16,
+      "instrument": "10-part celesta, woodwinds, legato strings, pizzicato and fairground organ",
+      "description": "The Moon Express Waltzes On",
+      "context": "train",
+      "score": "scores/train.mid",
+      "sampleRate": 32000,
+      "provenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
     }
   },
   "ambience": {
@@ -115,13 +283,15 @@
     },
     "pickup": {
       "file": "pickup.wav",
-      "duration": 0.45,
-      "loop": false
+      "duration": 0.42,
+      "loop": false,
+      "provenance": "Original Midify-suite motif arranged as a gentle musical cue"
     },
     "place": {
       "file": "place.wav",
-      "duration": 0.45,
-      "loop": false
+      "duration": 0.42,
+      "loop": false,
+      "provenance": "Original Midify-suite motif arranged as a gentle musical cue"
     },
     "remove": {
       "file": "remove.wav",
@@ -180,38 +350,45 @@
     },
     "hint": {
       "file": "hint.wav",
-      "duration": 0.45,
-      "loop": false
+      "duration": 0.65,
+      "loop": false,
+      "provenance": "Original Midify-suite motif arranged as a gentle musical cue"
     },
     "retry": {
       "file": "retry.wav",
-      "duration": 0.45,
-      "loop": false
+      "duration": 0.7,
+      "loop": false,
+      "provenance": "Original Midify-suite motif arranged as a gentle musical cue"
     },
     "solve": {
       "file": "solve.wav",
-      "duration": 0.95,
-      "loop": false
+      "duration": 1.15,
+      "loop": false,
+      "provenance": "Original Midify-suite motif arranged as a gentle musical cue"
     },
     "lantern": {
       "file": "lantern.wav",
-      "duration": 0.95,
-      "loop": false
+      "duration": 1.1,
+      "loop": false,
+      "provenance": "Original Midify-suite motif arranged as a gentle musical cue"
     },
     "path": {
       "file": "path.wav",
-      "duration": 1.5,
-      "loop": false
+      "duration": 1.6,
+      "loop": false,
+      "provenance": "Original Midify-suite motif arranged as a gentle musical cue"
     },
     "chapter": {
       "file": "chapter.wav",
       "duration": 2.8,
-      "loop": false
+      "loop": false,
+      "provenance": "Original Midify-suite motif arranged as a gentle musical cue"
     },
     "festival": {
       "file": "festival.wav",
       "duration": 2.8,
-      "loop": false
+      "loop": false,
+      "provenance": "Original Midify-suite motif arranged as a gentle musical cue"
     },
     "train": {
       "file": "train.wav",
@@ -220,8 +397,9 @@
     },
     "ghost": {
       "file": "ghost.wav",
-      "duration": 0.45,
-      "loop": false
+      "duration": 0.9,
+      "loop": false,
+      "provenance": "Original Midify-suite motif arranged as a gentle musical cue"
     },
     "reset": {
       "file": "reset.wav",
@@ -257,6 +435,13 @@
       "file": "thunder.wav",
       "duration": 3,
       "description": "Original soft distant thunder rumble"
+    },
+    "train-roll": {
+      "file": "train-roll.wav",
+      "duration": 0.62,
+      "loop": false,
+      "provenance": "Original quiet wood-and-wheel rhythm; train whistle reserved for boarding and calling"
     }
-  }
+  },
+  "scoreProvenance": "Original multivoice Midify ABC suite, with deterministic local renders of the same notes; no third-party samples."
 }
