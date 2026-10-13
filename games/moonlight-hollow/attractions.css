@@ -58,3 +58,14 @@
 
 /* Ordered ranks are already rendered as localized textual positions. */
 .rally-mode .race-leaderboard ol{list-style:none;padding-left:0}
+
+/* 3–2–1 countdown floats above the cockpit without intercepting driving. */
+.rally-mode .race-countdown:not([hidden]){position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at center,#261633a8,#0a092455 50%,transparent 75%);z-index:20;pointer-events:none!important;user-select:none}
+.rally-mode .race-countdown[hidden]{display:none!important}.race-countdown span{font:bold clamp(90px,17vw,190px) Georgia,serif;line-height:1;color:#ffce7d;text-shadow:0 0 20px #eb673c,0 7px 8px #170b23;-webkit-text-stroke:2px #fff1bb;animation:rally-countdown-burst .28s ease-out}
+.race-countdown small{font:bold clamp(18px,3vw,30px) sans-serif;color:#fff6df;letter-spacing:.13em;text-shadow:0 3px 8px #170b23}
+@keyframes rally-countdown-burst{from{transform:scale(1.35);opacity:.6}to{transform:scale(1);opacity:1}}
+.race-track-offer{display:grid;gap:5px;margin:12px auto;color:#fff1d8;font-size:13px}.race-track-offer[hidden]{display:none!important}.race-track-offer select,.race-track-picker select{width:100%;min-height:40px;color:#fbe8c8;background:#1f2035;border:1px solid #d6a76d;border-radius:8px;padding:5px 10px}
+.rally-mode .race-track-picker:not([hidden]){grid-column:1/-1;grid-row:5;justify-self:center;align-items:center;display:flex;gap:9px;background:#261b32f2;border:1px solid #e99b55aa;border-radius:12px;padding:9px 13px;pointer-events:auto;max-width:min(550px,92vw)}
+.rally-mode .race-track-picker[hidden]{display:none!important}.race-track-picker label{display:grid;gap:3px;font-size:11px;color:#fff1d8}.race-track-picker button{min-height:42px}
+.rally-mode .mini-actions{grid-row:6}
+@media(max-width:600px){.rally-mode .race-track-picker:not([hidden]){padding:6px;flex-wrap:wrap;justify-content:center}.race-track-picker button{font-size:12px}}
