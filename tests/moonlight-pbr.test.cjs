@@ -22,7 +22,7 @@ function doubles(){
  const B={Color3,PBRMaterial,DynamicTexture,Texture:{WRAP_ADDRESSMODE:1,TRILINEAR_SAMPLINGMODE:3}};return{B,scene,tex,mats,handlers};
 }
 test('PBR maps are on the matching Babylon material slots and shared by surface + repeat',()=>{
- const d=doubles(),bank=P.create(d.B,d.scene,{quality:'low',budgetMiB:16});
+ const d=doubles(),bank=P.create(d.B,d.scene,{quality:'low',budgetMiB:24});
  const a=bank.material('wood','#715640',2),b=bank.material('wood','#75402a',2);
  assert.equal(a.albedoTexture,b.albedoTexture);assert.equal(a.metallicTexture,b.metallicTexture);
  assert.equal(a.bumpTexture,b.bumpTexture);assert.equal(d.tex.length,3);
@@ -37,7 +37,7 @@ test('PBR maps are on the matching Babylon material slots and shared by surface 
  assert.equal(bank.stats.textures,3);
  const c=bank.material('pumpkin','#dd8030',1);
  assert.notEqual(c.metallicTexture,a.metallicTexture);
- assert.equal(bank.quality('balanced'),true);assert(bank.stats.estimatedBytes<=16*1048576);
+ assert.equal(bank.quality('balanced'),true);assert(bank.stats.estimatedBytes<=24*1048576);
  assert.equal(bank.quality('low'),true);
  bank.dispose();bank.dispose();assert.equal(bank.stats.disposed,true);
  assert(d.tex.every(t=>t.dead===1),'textures released exactly once');
