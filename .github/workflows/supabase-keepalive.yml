@@ -1,0 +1,32 @@
+name: Supabase Leren is fijn Keepalive
+
+on:
+  schedule:
+    - cron: '23 6,12,18 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Query Leren is fijn Supabase database
+        env:
+          SUPABASE_URL: https://drouoptqpggvaomqacho.supabase.co
+          # Publishable key is already public in supabase-client.js; never use a service-role key.
+          SUPABASE_PUBLISHABLE_KEY: sb_publishable_MCkhERDuogH8NoVK2OIL-Q_BzqK3I6l
+        run: |
+          set -euo pipefail
+          status="$(curl --silent --show-error --retry 2 --retry-delay 5 --max-time 25 --output /tmp/supabase-response --write-out '%{http_code}' \
+            --header "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+            --header "Accept: application/json" \
+            "$SUPABASE_URL/rest/v1/exercise_attempts?select=id&limit=1")"
+          echo "Supabase API HTTP status: $status"
+          if [ "$status" != "200" ]; then
+            echo "::error::Supabase query failed with HTTP $status"
+            exit 1
+          fi
+          echo "Leren is fijn database query succeeded."
