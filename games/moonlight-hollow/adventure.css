@@ -56,5 +56,5 @@
 /* iOS Safari: stop selection, image callouts and gesture-driven object dragging in active games. */
 html,body,body *{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important;-webkit-tap-highlight-color:transparent}
 input,textarea,[contenteditable="true"],[contenteditable="true"] *{-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important}
-canvas,#world,#mini-panel,.mini-driving,.rally-rc-control{touch-action:none;-webkit-user-drag:none;user-drag:none}
+canvas,#world,.mini-driving,.rally-rc-control{touch-action:none;-webkit-user-drag:none;user-drag:none}
 img,svg,canvas{ -webkit-user-drag:none;user-drag:none }
