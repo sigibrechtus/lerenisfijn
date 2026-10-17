@@ -27,7 +27,7 @@
     "runtime": "Babylon.js glTF2 with fallback, independent picking, collision, animation and low LOD"
   },
   "counts": {
-    "sourceMeshIdentifiers": 303,
+    "sourceMeshIdentifiers": 302,
     "assetFamilies": 18,
     "publishedProductionAssets": 1,
     "familiesPendingFullQA": 18
@@ -125,10 +125,9 @@
         "destinations.js:kart-seat",
         "mini-game-world.js:rally-dashboard",
         "mini-game-world.js:rally-steering-column",
-        "mini-game-world.js:rally-steering-wheel",
-        "mini-game-world.js:rally-steering-spoke"
+        "mini-game-world.js:rally-steering-wheel"
       ],
-      "sourceCount": 40,
+      "sourceCount": 39,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -4311,17 +4310,6 @@
       "key": "mini-game-world.js:rally-steering-wheel",
       "file": "mini-game-world.js",
       "meshName": "rally-steering-wheel",
-      "family": "pumpkin-kart",
-      "role": "vehicle",
-      "source": "procedural-js",
-      "productionStatus": "pending_asset_family",
-      "meshRequirement": "member_of_20k_triangulated_source_asset",
-      "inGameStatus": "existing-procedural"
-    },
-    {
-      "key": "mini-game-world.js:rally-steering-spoke",
-      "file": "mini-game-world.js",
-      "meshName": "rally-steering-spoke",
       "family": "pumpkin-kart",
       "role": "vehicle",
       "source": "procedural-js",
