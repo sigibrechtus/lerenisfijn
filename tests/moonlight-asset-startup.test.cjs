@@ -9,7 +9,7 @@ const vm=require('node:vm');
 
 const base=path.resolve(__dirname,'../games/moonlight-hollow');
 const worldSource=fs.readFileSync(path.join(base,'world.js'),'utf8');
-const start=worldSource.indexOf('const trainProxyMeshes=train.getChildMeshes().slice();');
+const start=worldSource.indexOf("const locomotiveMount=new B.TransformNode('moon-express-locomotive-front',scene);");
 const end=worldSource.indexOf('const railMotion=R.create()',start);
 assert.ok(start>0&&end>start,'Production import block must remain identifiable');
 const importCode=worldSource.slice(start,end);
@@ -21,9 +21,11 @@ async function simulate({library,quality='auto',userAgent='',disposed=false}={})
   isDisposed:()=>disposed
  };
  const scene={isDisposed:()=>disposed};
+ const locomotiveMount={parent:train,position:{x:0,y:0,z:4.5},isDisposed:()=>disposed};
+ const B={TransformNode:class {constructor(){return locomotiveMount;}}};
  vm.runInNewContext(importCode,{
   root:{MoonAssetLibrary:library,navigator:{userAgent}},
-  api:{prefs:()=>({quality})},scene,train,mode:'world',mobileSafari:/iPhone|iPad|iPod/i.test(userAgent),
+  api:{prefs:()=>({quality})},scene,train,B,mode:'world',mobileSafari:/iPhone|iPad|iPod/i.test(userAgent),
   console:{warn:(...args)=>warnings.push(args)},
   Promise
  },{filename:'moonlight-production-import.js'});
@@ -56,7 +58,7 @@ test('rejected production import leaves procedural train visible',async()=>{
  assert.equal(r.warnings.length,1);
 });
 
-test('successful import preserves model upgrade and hides procedural visual',async()=>{
+test('successful import preserves HD locomotive and boarding wagon',async()=>{
  const calls=[],art={setEnabled:()=>{}};
  const r=await simulate({library:{placeProduction:(scene,id,parent,opts)=>{calls.push({scene,id,parent,opts});return Promise.resolve(art);}}});
  assert.equal(calls.length,1);
@@ -65,7 +67,7 @@ test('successful import preserves model upgrade and hides procedural visual',asy
  assert.equal(calls[0].opts.geometryQuality,'high');
  assert.equal(calls[0].opts.textureQuality,'balanced');
  assert.equal(calls[0].opts.scale,.85);
- assert.deepEqual(r.hidden,[false]);
+ assert.deepEqual(r.hidden,[]);
 });
 
 test('iPhone HD uses high-poly train with mobile-safe 512px PBR textures',async()=>{
