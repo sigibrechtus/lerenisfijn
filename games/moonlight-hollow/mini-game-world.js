@@ -113,14 +113,14 @@ function create({B,scene,quality='balanced',reducedMotion=false,onUpdate=()=>{},
   child('CreateBox','rally-dashboard',{width:1.55,height:.24,depth:.6},[0,.35,.62],dark);
   // Center both RC levers on the kart dashboard, each around its own base pivot.
   // The right lever tilts on the X axis (forward = accelerator; back = brake/reverse).
-  for(const [x,role] of [[-.31,'steer'],[.31,'throttle']]){
-    child('CreateBox','rally-dashboard',{width:.57,height:.14,depth:.64},[x,.56,1.25],wood);
+  for(const [x,role] of [[-.73,'steer'],[.73,'throttle']]){
+    child('CreateBox','rally-dashboard',{width:.32,height:.09,depth:.35},[x,.48,1.05],wood);
     const hinge=owned(new B.TransformNode('mini-rally-rc-'+role,scene));
-    hinge.parent=vehicle;hinge.position.set(x,.68,1.25);hinge.rotationQuaternion=null;
-    const column=child('CreateCylinder','rally-steering-column',{height:.46,diameter:.11,tessellation:12},[0,0,0],dark);
-    column.parent=hinge;column.position.set(0,.23,0);
-    const knob=child('CreateSphere','rally-steering-wheel',{diameter:.31,segments:20},[0,0,0],gold);
-    knob.parent=hinge;knob.position.set(0,.48,0);
+    hinge.parent=vehicle;hinge.position.set(x,.52,1.05);hinge.rotationQuaternion=null;
+    const column=child('CreateCylinder','rally-steering-column',{height:.25,diameter:.075,tessellation:12},[0,0,0],dark);
+    column.parent=hinge;column.position.set(0,.12,0);
+    const knob=child('CreateSphere','rally-steering-wheel',{diameter:.19,segments:16},[0,0,0],gold);
+    knob.parent=hinge;knob.position.set(0,.27,0);
     if(role==='steer')raceSteeringWheel=hinge;else raceGasPedal=hinge;
   }
   // Isolated decorative ghosts, all outside the collision corridor.
