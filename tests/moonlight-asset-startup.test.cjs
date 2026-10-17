@@ -118,6 +118,6 @@ test('boarding and moving never hide the production locomotive; ride camera is i
  assert.match(board,/hero\.parent=train/);
  assert.match(board,/rideCamera\.position\.set\(-4\*railMotion\.snapshot\(\)\.direction,1\.82,-1\.7\)/);
  assert.match(tick,/rideCamera\.position\.set\(-4\*state\.direction\*\(1-t\),1\.82,-1\.7\)/);
- assert.match(src,/function moveTrain\(state,rollDistance=0\)\{train\.position\.set\(state\.x,0,state\.z\)/);
+ assert.match(src,/function moveTrain\(state,rollDistance=0\)\{train\.position\.set\(state\.x,typeof terrainHeight==='function'\?terrainHeight\(state\.x,state\.z\):0,state\.z\)/,'moving train follows the same terrain elevation as the rails');
 });
 
