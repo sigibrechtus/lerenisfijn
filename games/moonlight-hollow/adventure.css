@@ -119,3 +119,30 @@ body:not(.mini-game-mode):not(.puzzle-mode) #world-sprint{
  body:not(.mini-game-mode):not(.puzzle-mode) .train-controls{bottom:calc(46px + env(safe-area-inset-bottom))}
  body:not(.mini-game-mode):not(.puzzle-mode) .interact{bottom:calc(145px + env(safe-area-inset-bottom))}
 }
+
+/* Compact campaign exercise HUD: problem and progress together, actions grouped below. */
+.puzzle-mode .puzzle{
+ bottom:max(7px,env(safe-area-inset-bottom));width:min(720px,calc(100vw - 18px));
+ max-height:min(44dvh,390px);overflow-y:auto;overscroll-behavior:contain;
+ padding:9px 13px;border-radius:13px;background:#172a3ce8;
+ backdrop-filter:blur(7px)
+}
+.puzzle-mode .puzzle-heading{display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px}
+.puzzle-mode .puzzle .eyebrow,.puzzle-mode #exercise-kind{font-size:10px}
+.puzzle-mode .puzzle .mission-label{display:flex;justify-content:space-between;gap:9px;font-size:11px}
+.puzzle-mode .puzzle h2{font:700 clamp(15px,2vw,20px) system-ui,sans-serif;line-height:1.25;margin:3px 0}
+.puzzle-mode .puzzle #puzzle-how{font-size:11px;line-height:1.25;margin:3px 0;max-height:2.6em;overflow:auto}
+.puzzle-mode .puzzle .controls-label{font-size:10px}
+.puzzle-mode .puzzle .object-controls{gap:4px;margin:4px 0}
+.puzzle-mode .puzzle .object-controls button{min-height:36px;padding:5px 8px;font-size:12px}
+.puzzle-mode .puzzle .actions{gap:5px;margin-top:5px;justify-content:center}
+.puzzle-mode .puzzle .actions button{min-height:39px;padding:6px 9px;font-size:12px}
+.puzzle-mode .puzzle #feedback,.puzzle-mode .puzzle #hint-copy{font-size:11px;line-height:1.25;margin:3px 0}
+.puzzle-mode .world-options{top:auto;bottom:calc(min(44dvh,390px) + 14px);right:max(10px,env(safe-area-inset-right));max-width:min(200px,38vw);padding:5px;gap:3px}
+.puzzle-mode .world-options button{min-height:36px;padding:4px 7px}
+@media(max-height:530px){
+ .puzzle-mode .puzzle{max-height:49dvh;padding:5px 9px}
+ .puzzle-mode .puzzle #puzzle-how{display:none}
+ .puzzle-mode .puzzle h2{font-size:15px}
+ .puzzle-mode .world-options{bottom:calc(49dvh + 10px)}
+}
