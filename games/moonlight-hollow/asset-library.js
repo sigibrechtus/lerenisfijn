@@ -136,6 +136,18 @@ async function placeProduction(scene,id,parent,opts={}){
  result.meshes.filter(m=>!m.parent||!included.has(m.parent)).forEach(m=>m.setParent(node));
  node.parent=parent;
  node.scaling.setAll(opts.scale||.66);
+ // Align the GLB's actual bottom to the locomotive's rail-level transform.
+ // GLB exporters often bake a vertical offset into their mesh vertices.
+ // Run only on Babylon meshes with valid measured bounds; preserve procedural fallback.
+ if(id==='moon-express-locomotive'&&typeof node.getHierarchyBoundingVectors==='function'){
+  node.computeWorldMatrix(true);
+  const bounds=node.getHierarchyBoundingVectors(true),bottom=bounds?.min?.y;
+  if(Number.isFinite(bottom)){
+   const trainLevel=parent.getAbsolutePosition?.().y??parent.position?.y??0;
+   const offset=trainLevel+.12-bottom;
+   if(Math.abs(offset)<10){node.position.y+=offset;node.computeWorldMatrix(true);}
+  }
+ }
  for(const part of node.getChildMeshes()){
   part.checkCollisions=false;part.isPickable=false;part.receiveShadows=true;
   part.metadata={...part.metadata,moonVisualOnly:true,productionAsset:id};
