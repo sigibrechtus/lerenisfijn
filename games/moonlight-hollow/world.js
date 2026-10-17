@@ -85,7 +85,7 @@ for(const [i,station]of R.stations.entries()){
  const platform=R.platform(i),site=station.id==='centre'?{x:0,z:0}:sites[station.id],n=Math.ceil(Math.hypot(platform.x-site.x,platform.z-site.z)/2.5);
  for(let j=0;j<=n;j++)cyl('station-path',[site.x+(platform.x-site.x)*j/n,.03,site.z+(platform.z-site.z)*j/n],.06,3.9,path);
 }
-const train=new B.TransformNode('moon-express',scene);train.position=new B.Vector3(R.stations[0].x,0,R.stations[0].z);
+const train=new B.TransformNode('moon-express',scene);train.position=new B.Vector3(R.stations[2].x,0,R.stations[2].z);train.rotation.y=R.track.pose(R.stations[2].distance).heading;
 const trainMat=material('train','#607999'),wheels=[];
 box('carriage-floor',[0,.6,0],[2.4,.22,4],wood,train);box('carriage-roof',[0,2.8,0],[2.7,.22,4.5],roof,train);
 // Open windows and a left doorway leave a clear view from the passenger seat.
@@ -117,7 +117,7 @@ if(typeof productionLibrary?.placeProduction==='function'){
   trainProxyMeshes.filter(m=>!m.isDisposed()).forEach(m=>m.setEnabled(false));
  }).catch(e=>console.warn('Moon Express GLB fallback:',e));
 }
-const railMotion=R.create(),rideCamera=new B.UniversalCamera('train-first-person',new B.Vector3(0,1.82,-1.7),scene);rideCamera.minZ=.08;rideCamera.maxZ=500;rideCamera.fov=.9;rideCamera.parent=train;rideCamera.inputs.clear();pipeline.addCamera(rideCamera);
+const railMotion=R.create();railMotion.park(2);const rideCamera=new B.UniversalCamera('train-first-person',new B.Vector3(0,1.82,-1.7),scene);rideCamera.minZ=.08;rideCamera.maxZ=500;rideCamera.fov=.9;rideCamera.parent=train;rideCamera.inputs.clear();pipeline.addCamera(rideCamera);
 // Friendly castle and observatory.
 let moonMachine;district('lights',()=>{obstacles.push({x:0,z:49,w:14,d:6.5});
 box('castle',[0,4,49],[11,8,6],stone);for(const x of [-6,6]){cyl('castle-tower',[x,5,49],10,3,stone);cyl('spire',[x,11,49],4,4,roof,null,0);}box('castle-door',[0,1.9,45.9],[2.5,3.8,.15],wood);for(const x of [-4.8,-1.8,1.8,4.8]){box('castle-buttress',[x,2.7,45.7],[.65,5.4,.7],stone);box('buttress-cap',[x,5.6,45.7],[.85,.25,.85],gold);}for(let x=-5;x<=5;x+=1.25)box('battlement',[x,8.45,49],[.75,.9,6.2],stone);for(const y of [.3,7.75])box('castle-cornice',[0,y,45.85],[11.4,.3,.45],stone);const arch=Array.from({length:21},(_,i)=>new B.Vector3(Math.cos(i*Math.PI/20)*1.55,2.1+Math.sin(i*Math.PI/20)*1.7,45.7));mesh('CreateTube','castle-door-arch',{path:arch,radius:.19,tessellation:10},[0,0,0],gold);for(const x of [-3.5,3.5])for(const y of [3,6])box('castle-window',[x,y,45.9],[1,1.4,.15],warm);moonMachine=mesh('CreateTorus','moon-machine',{diameter:4,thickness:.16,tessellation:40},[0,9,48],gold);moonMachine.rotation.x=Math.PI/2;
