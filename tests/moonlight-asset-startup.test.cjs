@@ -79,7 +79,7 @@ test('iPhone HD uses high-poly train with mobile-safe 512px PBR textures',async(
  assert.equal(options[0].geometryQuality,'high');
  assert.equal(options[0].quality,'balanced');
  assert.equal(options[0].textureQuality,'balanced');
- assert.deepEqual(r.hidden,[false]);
+ assert.deepEqual(r.hidden,[],'the boarding wagon remains visible after successful HD import');
 });
 
 test('desktop HD retains the full 69K-triangle model and 4K PBR path',async()=>{
@@ -96,7 +96,7 @@ test('Eco mode still uses the hero locomotive as transport when available',async
  assert.equal(calls.length,1);
  assert.equal(calls[0].geometryQuality,'high');
  assert.equal(calls[0].textureQuality,'balanced');
- assert.deepEqual(r.hidden,[false]);
+ assert.deepEqual(r.hidden,[],'the boarding wagon remains visible after successful HD import');
 });
 
 test('HTML and service worker publish the same versioned train scripts',()=>{
