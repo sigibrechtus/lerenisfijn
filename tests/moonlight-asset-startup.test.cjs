@@ -21,7 +21,7 @@ async function simulate({library,quality='auto',userAgent='',disposed=false}={})
   isDisposed:()=>disposed
  };
  const scene={isDisposed:()=>disposed};
- const locomotiveMount={parent:train,position:{x:0,y:0,z:4.5},isDisposed:()=>disposed};
+ const locomotiveMount={parent:train,position:{x:0,y:0,z:4.5,set(x,y,z){this.x=x;this.y=y;this.z=z;}},isDisposed:()=>disposed};
  const B={TransformNode:class {constructor(){return locomotiveMount;}}};
  vm.runInNewContext(importCode,{
   root:{MoonAssetLibrary:library,navigator:{userAgent}},
