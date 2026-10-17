@@ -118,3 +118,43 @@
 .rally-mode .rally-rc-control{flex:0 1 130px;width:auto;min-width:0}
 .rally-mode .rally-rc-track{flex-shrink:0}
 @media(max-width:600px){.rally-mode .rally-rc-controller:not([hidden]){width:min(340px,calc(100vw - 20px));gap:12px}.rally-mode .rally-rc-control{flex:1 1 0}}
+
+/* Pumpkin Rally road-first HUD: edge-mounted compact widgets, unobstructed center. */
+.rally-mode .mini-panel{position:fixed;inset:var(--hud-top,56px) 0 0!important;width:100%!important;max-height:none!important;margin:0!important;transform:none!important;padding:4px 8px calc(6px + env(safe-area-inset-bottom))!important;display:block!important;overflow:visible!important;background:transparent!important;border:0!important;box-shadow:none!important;pointer-events:none!important}
+.rally-mode .mini-panel>*{pointer-events:none}
+.rally-mode .mini-mission{position:absolute;top:3px;left:50%;transform:translateX(-50%);width:min(480px,60vw);max-width:calc(100vw - 220px);padding:5px 10px!important;border-radius:9px;background:#23192bdc!important;text-align:center;pointer-events:none}
+.rally-mode .mini-mission h2,.rally-mode .mini-mission #mini-how,.rally-mode .mini-mission #mini-hint-label{display:none!important}
+.rally-mode .mini-mission .mini-meta{justify-content:center;font-size:10px;line-height:1.15}
+.rally-mode .mini-mission #mini-question{font-size:clamp(13px,1.7vw,18px)!important;line-height:1.15;margin:2px 0!important}
+.rally-mode .mini-mission #mini-feedback{font-size:10px;min-height:0;margin:1px 0;line-height:1.1}
+.rally-mode .race-stats:not([hidden]){position:absolute;top:3px;left:6px;display:grid;grid-template-columns:repeat(2,auto);width:auto;min-width:0;gap:2px 10px;padding:5px 7px;border-radius:9px;max-width:min(206px,27vw);pointer-events:none}
+.rally-mode .race-stats>div{gap:0}
+.rally-mode .race-stats span{font-size:9px;line-height:1.05}
+.rally-mode .race-stats strong{font-size:13px;line-height:1.25}
+.rally-mode .race-telemetry:not([hidden]){position:absolute;top:3px;right:6px;left:auto;bottom:auto;grid-row:auto;grid-column:auto;max-width:150px;width:150px;padding:5px 7px;gap:1px 7px;margin:0!important;display:grid;grid-template-columns:1fr auto;border-radius:9px;pointer-events:none}
+.rally-mode .race-telemetry strong{font-size:21px;line-height:1}
+.rally-mode .race-telemetry #mini-gear{font-size:16px}
+.rally-mode .race-telemetry #mini-speed-cap{font-size:9px;grid-column:1/-1}
+.rally-mode .race-telemetry #mini-distance{font-size:9px}
+.rally-mode .race-telemetry #mini-camera{grid-column:1/-1;min-height:28px;font-size:10px;padding:3px 5px;margin-top:2px;pointer-events:auto}
+.rally-mode .race-telemetry progress{height:3px}
+.rally-mode .race-leaderboard:not([hidden]){position:absolute;top:94px;right:6px;left:auto;max-width:min(160px,28vw);padding:4px 6px;font-size:10px;border-radius:8px;pointer-events:auto}
+.rally-mode .race-leaderboard:not([open]){background:#261b32b8;box-shadow:none}
+.rally-mode .race-leaderboard ol{max-height:20dvh}
+.rally-mode .mini-tools{position:absolute;right:7px;bottom:calc(8px + env(safe-area-inset-bottom));top:auto;left:auto;grid-row:auto;grid-column:auto;width:min(170px,25vw);max-width:170px;margin:0!important;padding:3px 7px;border-radius:8px;pointer-events:auto;background:#261b32bf;box-shadow:none}
+.rally-mode .mini-tools[open]{max-height:25dvh;overflow:auto;background:#261b32f0}
+.rally-mode .mini-tools summary{font-size:10px;padding:2px 0}
+.rally-mode .mini-choices{margin:3px 0;gap:3px}
+.rally-mode .mini-choices button{min-height:30px;font-size:10px;padding:3px 5px}
+.rally-mode .mini-driving:not([hidden]){position:absolute;left:50%;right:auto;bottom:calc(3px + env(safe-area-inset-bottom));width:min(315px,45vw);transform:translateX(-50%);margin:0;padding:0;pointer-events:none}
+.rally-mode .rally-rc-controller:not([hidden]){width:100%;padding:4px 8px;gap:8px;border-width:2px;border-radius:12px;pointer-events:auto;background:#261b32e3}
+.rally-mode .rally-rc-control{height:78px;gap:2px;font-size:9px}
+.rally-mode .rally-rc-track{width:54px;height:54px;border-width:4px}
+.rally-mode .rally-rc-stick{width:17px;height:17px}
+.rally-mode .rally-rc-knob{width:26px;height:26px}
+.rally-mode .mini-actions{position:absolute;bottom:calc(8px + env(safe-area-inset-bottom));left:7px;right:auto;grid-row:auto;grid-column:auto;padding:0;margin:0!important;pointer-events:auto}
+.rally-mode .mini-actions button{font-size:10px;min-height:30px;padding:4px 8px}
+.rally-mode .mini-actions #mini-replay[hidden]{display:none!important}
+.rally-mode .race-finish:not([hidden]){pointer-events:auto}
+@media(max-width:700px){.rally-mode .mini-mission{max-width:calc(100vw - 200px);width:calc(100vw - 200px);padding:4px 5px!important}.rally-mode .race-stats:not([hidden]){max-width:102px;grid-template-columns:1fr;gap:1px;padding:4px 5px}.rally-mode .race-stats>div:nth-child(n+3){display:none}.rally-mode .race-stats span{font-size:8px}.rally-mode .race-stats strong{font-size:11px}.rally-mode .race-telemetry:not([hidden]){width:99px;max-width:99px;padding:4px}.rally-mode .race-telemetry strong{font-size:17px}.rally-mode .race-telemetry #mini-speed-cap{display:none}.rally-mode .race-leaderboard:not([hidden]){top:77px;max-width:95px;font-size:9px}.rally-mode .mini-driving:not([hidden]){width:min(260px,50vw)}.rally-mode .mini-tools{max-width:95px;width:95px}.rally-mode .mini-tools[open]{max-width:min(220px,40vw);width:min(220px,40vw)}.rally-mode .mini-actions button{min-height:28px;font-size:9px;padding:4px}}
+@media(max-height:500px){.rally-mode .mini-mission .mini-meta{display:none}.rally-mode .mini-mission #mini-question{font-size:14px!important}.rally-mode .race-telemetry #mini-distance,.rally-mode .race-telemetry progress{display:none}.rally-mode .race-leaderboard:not([open]){top:69px}.rally-mode .rally-rc-control{height:67px}.rally-mode .rally-rc-track{height:49px;width:49px}.rally-mode .mini-driving:not([hidden]){width:min(270px,45vw)}}
