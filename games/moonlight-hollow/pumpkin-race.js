@@ -16,7 +16,7 @@ function circuit(index=0,lang='nl'){
  index=clamp(Math.trunc(Number(index)||0),0,9);const closed=index%2===0,points=[],count=240,scale=1+index*.12;
  for(let i=0;i<=count;i++){const t=i/count,a=t*Math.PI*2;points.push(closed?{x:Math.sin(a)*(68+index*4)*scale,z:(1-Math.cos(a))*(76+index*3)*scale+Math.sin(a*2)*(index*1.8)}:{x:Math.sin(t*Math.PI*(2+Math.floor(index/3)))*(18+index*3)*Math.sin(t*Math.PI),z:t*(330+index*36)});}
  points.forEach((p,i)=>{const a=i/count*Math.PI*2;p.y=(1.5+index*.75)*(1-Math.cos(a*(1+index%3)))/2;});const planarLength=points.slice(1).reduce((sum,p,i)=>sum+Math.hypot(p.x-points[i].x,p.z-points[i].z),0),targetLength=460+index*105,size=targetLength/planarLength;points.forEach(p=>{p.x*=size;p.z*=size;});let length=0;points[0].s=0;for(let i=1;i<points.length;i++){length+=Math.hypot(points[i].x-points[i-1].x,points[i].y-points[i-1].y,points[i].z-points[i-1].z);points[i].s=length;}
- const checkpoints=4+Math.floor(index/2),gates=Array.from({length:checkpoints},(_,i)=>({s:60+(length-110)*i/Math.max(1,checkpoints-1)}));
+ const checkpoints=4+Math.floor(index/2),startS=3,finishReserve=40,spacing=(length-startS-finishReserve)/(checkpoints+1),gates=Array.from({length:checkpoints},(_,i)=>({s:startS+(i+1)*spacing}));
  return{index,name:names[index][lang==='fr'?1:0],closed,points,length,halfWidth:12,gates};
 }
 function at(track,d,lateral=0){d=clamp(d,0,track.length);let i=1;while(i<track.points.length-1&&track.points[i].s<d)i++;const a=track.points[i-1],b=track.points[i],f=(d-a.s)/(b.s-a.s),heading=Math.atan2(b.x-a.x,b.z-a.z);return{y:a.y+(b.y-a.y)*f,grade:(b.y-a.y)/(b.s-a.s),x:a.x+(b.x-a.x)*f+Math.cos(heading)*lateral,z:a.z+(b.z-a.z)*f-Math.sin(heading)*lateral,heading,s:d};}
