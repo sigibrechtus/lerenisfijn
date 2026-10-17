@@ -85,3 +85,17 @@
 .rally-mode .race-finish .race-track-picker label{min-width:min(245px,100%);flex:1}
 @media(max-width:600px){.rally-mode .race-finish:not([hidden]){padding:12px;gap:7px;max-height:calc(100dvh - 55px)}.rally-mode .race-finish-actions{grid-template-columns:1fr}.rally-mode .race-finish-actions button{min-height:45px}.rally-mode .race-finish p{font-size:12px}}
 @media(max-height:520px){.rally-mode .race-finish:not([hidden]){max-height:calc(100dvh - 30px);padding:10px}.rally-mode .race-finish-actions button{min-height:42px}}
+
+/* Pumpkin Rally: raised metal pedals with press/release travel and steering display. */
+.rally-mode .mini-driving{grid-template-columns:58px 58px 1fr 94px 94px;align-items:end}
+.rally-mode #mini-left{grid-column:1}.rally-mode #mini-right{grid-column:2}.rally-mode #mini-back{grid-column:4}.rally-mode #mini-forward{grid-column:5}
+.rally-mode .mini-driving .rally-pedal{height:96px;min-height:96px;padding:6px;background:linear-gradient(145deg,#10101d,#41313a)!important;border:2px solid #a78d75;border-radius:14px;perspective:180px;overflow:hidden;touch-action:none}
+.rally-pedal-hinge{display:flex;height:100%;width:100%;align-items:center;justify-content:center;transform-origin:center bottom;transform:rotateX(14deg);transition:transform .1s ease-out}
+.rally-pedal-face{height:88%;width:82%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;border:2px solid #d0baa1;border-radius:9px;color:#fff1d8;background:repeating-linear-gradient(180deg,#69636a 0 5px,#494149 5px 10px);box-shadow:inset 0 3px 8px #14121a,0 6px 0 #17121b}
+.rally-brake .rally-pedal-face{background:repeating-linear-gradient(180deg,#843b40 0 6px,#51232c 6px 11px)}
+.rally-pedal-glyph{font-size:19px;line-height:1}.rally-pedal-text{font-size:10px;font-weight:800;line-height:1.2;text-shadow:0 1px 2px #17121b}
+.rally-pedal.held .rally-pedal-hinge,.rally-pedal.depressed .rally-pedal-hinge{transform:rotateX(30deg) translateY(7px)}
+.rally-mode .rally-steering:not([hidden]){position:absolute;bottom:102px;left:16px;width:90px;display:grid;place-items:center;gap:3px;pointer-events:none;color:#ffdcac;font-size:10px;font-weight:800}
+.rally-steering[hidden]{display:none!important}.rally-steering-wheel{width:82px;height:82px;border:10px solid #493341;outline:3px solid #bc9a6f;border-radius:50%;position:relative;background:linear-gradient(0deg,transparent 46%,#bd9267 46% 54%,transparent 54%),linear-gradient(60deg,transparent 47%,#bd9267 47% 53%,transparent 53%),linear-gradient(-60deg,transparent 47%,#bd9267 47% 53%,transparent 53%);transition:transform .08s linear;box-shadow:0 3px 12px #000a}
+.rally-steering-hub{position:absolute;inset:24px;border:5px solid #c79e6b;background:#322530;border-radius:50%}
+@media(max-width:650px){.rally-mode .mini-driving{grid-template-columns:45px 45px 1fr 65px 65px}.rally-mode .mini-driving .rally-pedal{min-height:82px;height:82px}.rally-pedal-text{font-size:8px}.rally-mode .rally-steering:not([hidden]){bottom:96px;left:8px;transform:scale(.72);transform-origin:bottom left}}
