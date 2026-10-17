@@ -58,3 +58,11 @@ html,body,body *{-webkit-user-select:none!important;user-select:none!important;-
 input,textarea,[contenteditable="true"],[contenteditable="true"] *{-webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important}
 canvas,#world,.mini-driving,.rally-rc-control{touch-action:none;-webkit-user-drag:none;user-drag:none}
 img,svg,canvas{ -webkit-user-drag:none;user-drag:none }
+
+/* World exploration sprint toggle: right of the movement joystick, without blocking it. */
+#world-sprint{position:fixed;left:155px;bottom:max(34px,env(safe-area-inset-bottom));z-index:5;min-width:104px;min-height:48px;padding:9px 12px;border:1px solid #eac782ab;border-radius:24px;background:#18384cdd;color:#f9dfa7;font-weight:750;touch-action:manipulation}
+#world-sprint[aria-pressed="true"]{background:#d7a34d;color:#1d2532;border-color:#ffe0a0}
+.mini-game-mode #world-sprint,.puzzle-mode #world-sprint,.train-mode #world-sprint{display:none!important}
+@media(any-pointer:fine){#world-sprint{left:24px;bottom:26px}}
+@media(any-pointer:coarse) and (max-height:500px){#world-sprint{left:132px;bottom:max(20px,env(safe-area-inset-bottom));min-width:89px;min-height:42px;padding:7px 9px;font-size:12px}}
+@media(max-width:410px){#world-sprint{left:138px;min-width:86px;font-size:12px}}
