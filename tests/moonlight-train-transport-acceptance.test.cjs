@@ -17,7 +17,7 @@ const importAndCamera=section('const trainProxyMeshes=train.getChildMeshes().sli
 const move=section('function moveTrain(state,rollDistance=0){','function finishRide(');
 async function exercise(importer){
  const hidden=[],loaded=[],cameras=[],warnings=[];
- class Vector3{constructor(x,y,z){this.x=x;this.y=y;this.z=z;}}
+ class Vector3{constructor(x,y,z){this.x=x;this.y=y;this.z=z;}set(x,y,z){this.x=x;this.y=y;this.z=z;}}
  class TransformNode{
   constructor(name){this.name=name;this.position=null;this.rotation={y:0};this.meshes=[{isDisposed:()=>false,setEnabled:v=>hidden.push(v)}];}
   getChildMeshes(){return this.meshes;}
@@ -30,7 +30,7 @@ async function exercise(importer){
  const scene={isDisposed:()=>false},pipeline={addCamera:camera=>cameras.push(camera)};
  const library=importer&&{placeProduction:(scene,id,parent,opts)=>{loaded.push({scene,id,parent,opts});return importer(scene,id,parent,opts);}};
  const scope={B,scene,R,root:{MoonAssetLibrary:library},api:{prefs:()=>({quality:'high'})},mobileSafari:false,pipeline,console:{warn:x=>warnings.push(x)},Promise};
- vm.runInNewContext(parking+importAndCamera+'\n'+move+'\nthis.acceptance={train,railMotion,rideCamera,moveTrain,wheels};',scope,{filename:'world-train-acceptance.js'});
+ vm.runInNewContext(parking+'\nconst wheels=[];\n'+importAndCamera+'\n'+move+'\nthis.acceptance={train,railMotion,rideCamera,moveTrain,wheels};',scope,{filename:'world-train-acceptance.js'});
  await new Promise(resolve=>setImmediate(resolve));
  return{...scope.acceptance,hidden,loaded,cameras,warnings,scene};
 }
