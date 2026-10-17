@@ -34,7 +34,7 @@ async function exercise(importer){
  await new Promise(resolve=>setImmediate(resolve));
  return{...scope.acceptance,hidden,loaded,cameras,warnings,scene};
 }
-test('hero GLB attaches to the actual train, castle parking and ride camera follow one transform',async()=>{
+test('hero GLB mounts ahead of the wagon, village parking and ride camera follow one transform',async()=>{
  const model={kind:'hero'};
  const s=await exercise((_scene,_id,parent)=>{model.parent=parent;return model;});
  assert.equal(s.loaded.length,1);
@@ -45,7 +45,7 @@ test('hero GLB attaches to the actual train, castle parking and ride camera foll
  assert.equal(s.loaded[0].opts.scale,.85);
  assert.deepEqual(s.hidden,[],'boarding wagon must remain visible');
  assert.equal(model.parent,s.locomotiveMount,'GLB is mounted ahead of wagon');
- assert.equal(s.railMotion.snapshot().station,0,'castle station is initial location');
+ assert.equal(s.railMotion.snapshot().station,0,'village station is initial location');
  assert.equal(s.train.position.x,R.stations[0].x);
  assert.equal(s.train.position.z,R.stations[0].z);
  assert.equal(s.rideCamera.parent,s.train);
@@ -54,7 +54,7 @@ test('hero GLB attaches to the actual train, castle parking and ride camera foll
  assert.equal(s.rideCamera.position.z,-1.7);
  assert.equal(s.rideCamera.minZ,.08);
  assert.equal(s.rideCamera.maxZ,500);
- assert.equal(s.railMotion.call(1),true,'empty train can be summoned to village');
+ assert.equal(s.railMotion.call(1),true,'empty train can be summoned to next station');
  const moving=s.railMotion.tick(s.railMotion.snapshot().duration/2);
  s.moveTrain(moving,0);
  assert.equal(s.train.position.x,moving.x);
@@ -70,9 +70,9 @@ test('GLB import failure keeps the procedural transport and camera functional',a
  const s=await exercise(()=>Promise.reject(Error('WebGL GLB unavailable')));
  assert.deepEqual(s.hidden,[]);
  assert.equal(s.warnings.length,1);
- assert.equal(s.railMotion.snapshot().station,2);
+ assert.equal(s.railMotion.snapshot().station,0);
  assert.equal(s.rideCamera.parent,s.train);
- assert.equal(s.railMotion.call(0),true);
+ assert.equal(s.railMotion.call(1),true);
 });
 
 test('HD train aligns to measured local bounds and preserves +Z-forward transport',()=>{
