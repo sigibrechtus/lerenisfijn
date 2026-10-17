@@ -196,3 +196,34 @@
  .rally-mode .rally-rc-track{width:49px;height:49px}
 }
 @media(max-width:470px){.rally-mode .mini-mission{width:calc(100vw - 218px);max-width:calc(100vw - 218px)}.rally-mode .race-info-group{width:103px}.rally-mode .mini-tools{width:100px;max-width:100px}.rally-mode .race-leaderboard:not([hidden]){width:100px;max-width:100px}.rally-mode #mini-question{font-size:15px!important}}
+
+/* Shared compact adventure HUD: all non-rally minigames (flight and stationary). */
+.mini-game-mode:not(.rally-mode) .mini-panel{
+ max-height:min(38dvh,340px);width:min(720px,calc(100vw - 20px));
+ padding:8px 11px;overflow-y:auto;border-radius:13px;
+ background:#172338dc;backdrop-filter:blur(6px);
+}
+.mini-game-mode:not(.rally-mode) .mini-mission h2{font:600 13px system-ui,sans-serif;margin:2px 0}
+.mini-game-mode:not(.rally-mode) .mini-mission .mini-meta{font-size:10px;gap:5px}
+.mini-game-mode:not(.rally-mode) #mini-question{font-size:clamp(14px,2vw,19px);font-weight:750;line-height:1.25;margin:3px 0}
+.mini-game-mode:not(.rally-mode) #mini-how{font-size:11px;line-height:1.25;margin:2px 0;max-height:2.5em;overflow:auto}
+.mini-game-mode:not(.rally-mode) #mini-feedback{font-size:11px;line-height:1.2;margin:3px 0}
+.mini-game-mode:not(.rally-mode) .mini-tools{padding:3px 7px;border-radius:9px}
+.mini-game-mode:not(.rally-mode) .mini-tools summary{font-size:11px;padding:2px 0}
+.mini-game-mode:not(.rally-mode) .mini-choices{gap:4px;margin:4px 0}
+.mini-game-mode:not(.rally-mode) .mini-choices button{min-height:36px;padding:5px 8px;font-size:12px}
+.mini-game-mode:not(.rally-mode) .mini-actions{margin-top:3px;gap:5px}
+.mini-game-mode:not(.rally-mode) .mini-actions button{min-height:36px;padding:5px 8px;font-size:11px}
+.flight-mode .mini-panel{background:none!important;border:0;box-shadow:none;backdrop-filter:none;overflow:visible}
+.flight-mode .mini-mission{max-width:min(500px,62vw);padding:5px 9px;background:#172338dc;border-radius:10px}
+.flight-mode .race-telemetry:not([hidden]){padding:5px 8px;max-width:150px}
+.flight-mode .mini-tools{max-width:min(190px,28vw);background:#172338d9}
+.flight-mode .mini-tools[open]{max-height:32dvh;overflow:auto}
+.flight-mode .mini-driving{bottom:0}
+@media(max-height:530px){
+ .mini-game-mode:not(.rally-mode):not(.flight-mode) .mini-panel{max-height:43dvh;padding:5px 9px}
+ .mini-game-mode:not(.rally-mode) #mini-how{display:none}
+ .flight-mode .mini-mission{max-width:min(410px,53vw)}
+ .flight-mode #mini-question{font-size:14px}
+ .flight-mode .mini-driving{bottom:0}
+}
