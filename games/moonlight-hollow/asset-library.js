@@ -136,16 +136,36 @@ async function placeProduction(scene,id,parent,opts={}){
  result.meshes.filter(m=>!m.parent||!included.has(m.parent)).forEach(m=>m.setParent(node));
  node.parent=parent;
  node.scaling.setAll(opts.scale||.66);
- // Align the GLB's actual bottom to the locomotive's rail-level transform.
- // GLB exporters often bake a vertical offset into their mesh vertices.
- // Run only on Babylon meshes with valid measured bounds; preserve procedural fallback.
- if(id==='moon-express-locomotive'&&typeof node.getHierarchyBoundingVectors==='function'){
-  node.computeWorldMatrix(true);
-  const bounds=node.getHierarchyBoundingVectors(true),bottom=bounds?.min?.y;
-  if(Number.isFinite(bottom)){
-   const trainLevel=parent.getAbsolutePosition?.().y??parent.position?.y??0;
-   const offset=trainLevel+.12-bottom;
-   if(Math.abs(offset)<10){node.position.y+=offset;node.computeWorldMatrix(true);}
+ // Calibrate the imported locomotive against the actual 2 m rail gauge.
+ // The GLB is authored +Y up / +Z forward; center its geometry on the
+ // transport transform, fit its width and length uniformly, then seat it on the rails.
+ if(id==='moon-express-locomotive'&&B.Matrix?.Invert&&B.Vector3?.TransformCoordinates){
+  parent.computeWorldMatrix(true);node.computeWorldMatrix(true);
+  const inverse=B.Matrix.Invert(parent.getWorldMatrix());
+  const mins=[Infinity,Infinity,Infinity],maxs=[-Infinity,-Infinity,-Infinity];
+  for(const part of node.getChildMeshes()){
+   if(!part.getBoundingInfo)continue;
+   part.computeWorldMatrix(true);
+   const corners=part.getBoundingInfo()?.boundingBox?.vectorsWorld||[];
+   for(const corner of corners){
+    const p=B.Vector3.TransformCoordinates(corner,inverse);
+    for(let i=0;i<3;i++){const v=[p.x,p.y,p.z][i];mins[i]=Math.min(mins[i],v);maxs[i]=Math.max(maxs[i],v);}
+   }
+  }
+  const width=maxs[0]-mins[0],height=maxs[1]-mins[1],length=maxs[2]-mins[2];
+  if([width,height,length].every(v=>Number.isFinite(v)&&v>.01)){
+   // Keep wheels inside the rails and prevent an oversized body overhanging the station.
+   const fit=Math.min(2.25/width,4.45/length,3.05/height,1.75);
+   if(Number.isFinite(fit)&&fit>.05){
+    node.scaling.scaleInPlace(fit);
+    node.computeWorldMatrix(true);
+    const midX=(mins[0]+maxs[0])/2,midZ=(mins[2]+maxs[2])/2;
+    node.position.x-=midX*fit;
+    node.position.z-=midZ*fit;
+    node.position.y+=.12-mins[1]*fit;
+    node.computeWorldMatrix(true);
+    node.metadata={...node.metadata,trackFit:{width:width*fit,length:length*fit,height:height*fit}};
+   }
   }
  }
  for(const part of node.getChildMeshes()){
