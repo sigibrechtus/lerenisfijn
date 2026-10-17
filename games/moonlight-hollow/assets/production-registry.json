@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastAudited": "2026-10-13",
+  "lastAudited": "2026-10-17",
   "repository": "sigibrechtus/lerenisfijn",
   "scope": "Moonlight Hollow programmatic scene mesh-name literals in JS; repeated instances captured once per file",
   "sources": [
@@ -27,7 +27,7 @@
     "runtime": "Babylon.js glTF2 with fallback, independent picking, collision, animation and low LOD"
   },
   "counts": {
-    "sourceMeshIdentifiers": 299,
+    "sourceMeshIdentifiers": 305,
     "assetFamilies": 18,
     "publishedProductionAssets": 1,
     "familiesPendingFullQA": 18
@@ -122,9 +122,15 @@
         "mini-game-world.js:checkpoint",
         "mini-game-world.js:checkpoint-post",
         "mini-game-world.js:checkpoint-lantern",
-        "destinations.js:kart-seat"
+        "destinations.js:kart-seat",
+        "mini-game-world.js:rally-dashboard",
+        "mini-game-world.js:rally-steering-column",
+        "mini-game-world.js:rally-steering-wheel",
+        "mini-game-world.js:rally-steering-spoke",
+        "mini-game-world.js:rally-gas-pedal",
+        "mini-game-world.js:rally-brake-pedal"
       ],
-      "sourceCount": 36,
+      "sourceCount": 42,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -4274,6 +4280,72 @@
       "key": "destinations.js:kart-seat",
       "file": "destinations.js",
       "meshName": "kart-seat",
+      "family": "pumpkin-kart",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "pending_asset_family",
+      "meshRequirement": "member_of_20k_triangulated_source_asset",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "mini-game-world.js:rally-dashboard",
+      "file": "mini-game-world.js",
+      "meshName": "rally-dashboard",
+      "family": "pumpkin-kart",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "pending_asset_family",
+      "meshRequirement": "member_of_20k_triangulated_source_asset",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "mini-game-world.js:rally-steering-column",
+      "file": "mini-game-world.js",
+      "meshName": "rally-steering-column",
+      "family": "pumpkin-kart",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "pending_asset_family",
+      "meshRequirement": "member_of_20k_triangulated_source_asset",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "mini-game-world.js:rally-steering-wheel",
+      "file": "mini-game-world.js",
+      "meshName": "rally-steering-wheel",
+      "family": "pumpkin-kart",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "pending_asset_family",
+      "meshRequirement": "member_of_20k_triangulated_source_asset",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "mini-game-world.js:rally-steering-spoke",
+      "file": "mini-game-world.js",
+      "meshName": "rally-steering-spoke",
+      "family": "pumpkin-kart",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "pending_asset_family",
+      "meshRequirement": "member_of_20k_triangulated_source_asset",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "mini-game-world.js:rally-gas-pedal",
+      "file": "mini-game-world.js",
+      "meshName": "rally-gas-pedal",
+      "family": "pumpkin-kart",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "pending_asset_family",
+      "meshRequirement": "member_of_20k_triangulated_source_asset",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "mini-game-world.js:rally-brake-pedal",
+      "file": "mini-game-world.js",
+      "meshName": "rally-brake-pedal",
       "family": "pumpkin-kart",
       "role": "vehicle",
       "source": "procedural-js",
