@@ -72,7 +72,7 @@ test('first-person flight shows altitude, held flight controls and optional guid
 });
 
 test('racing HUD keeps its riddle, separates guided help and reports live telemetry; pause/exit silence the engine',()=>{
- const h=harness();h.controller.start();h.controller.enter('rally');const rt=h.runtimeCalls.at(-1);assert(h.doc.body.classList.contains('rally-mode'));assert.equal(h.$('mini-tools').open,false);assert.equal(h.$('mini-race-telemetry').hidden,false);assert.match(h.$('mini-question').textContent,/poort/);
+ const h=harness();h.controller.start();h.controller.enter('rally');const rt=h.runtimeCalls.at(-1);assert(h.doc.body.classList.contains('rally-mode'));assert.equal(h.$('mini-tools').open,false);assert.equal(h.$('mini-race-telemetry').hidden,false);assert.match(h.$('mini-question-label').textContent,/poort/);assert.match(h.$('mini-question').textContent,/\d/);
  rt.options.onTelemetry({...rt.game.snapshot(),speed:5,speedKmh:18,speedLimit:6,gear:'D',distance:11});assert.equal(h.$('mini-speed').textContent,'18');assert.equal(h.$('mini-gear').textContent,'D');assert.match(h.$('mini-distance').textContent,/11 m/);assert.equal(h.motors.at(-1).active,true);
  rt.options.onUpdate({...rt.game.snapshot(),busy:true,animation:{kind:'gate'},choices:rt.game.snapshot().choices.map(c=>({...c,disabled:true}))});assert.equal(h.$('mini-panel').attributes['aria-busy'],'true');assert(h.$('mini-choices').children.every(b=>b.disabled));assert.equal(h.motors.at(-1).active,false);h.setBlocked(true);h.controller.frame(.1,{blocked:true});assert.equal(h.motors.at(-1),null);h.controller.leave();assert(!h.doc.body.classList.contains('rally-mode'));assert(h.$('mini-race-telemetry').hidden);assert.equal(h.motors.at(-1),null);
 });
