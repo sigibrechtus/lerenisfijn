@@ -19,7 +19,7 @@ async function exercise(importer){
  const hidden=[],loaded=[],cameras=[],warnings=[];
  class Vector3{constructor(x,y,z){this.x=x;this.y=y;this.z=z;}set(x,y,z){this.x=x;this.y=y;this.z=z;}}
  class TransformNode{
-  constructor(name){this.name=name;this.position=null;this.rotation={y:0};this.meshes=[{isDisposed:()=>false,setEnabled:v=>hidden.push(v)}];}
+  constructor(name){this.name=name;this.position=new Vector3(0,0,0);this.rotation={y:0};this.meshes=[{isDisposed:()=>false,setEnabled:v=>hidden.push(v)}];}
   getChildMeshes(){return this.meshes;}
   isDisposed(){return false;}
   computeWorldMatrix(){this.worldUpdated=true;}
