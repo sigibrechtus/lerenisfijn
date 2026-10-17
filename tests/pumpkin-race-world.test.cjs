@@ -21,3 +21,25 @@ console.log(`${signs} overhead answer signs fit portrait/landscape/desktop camer
  const road=r.scene.getMeshByName('mini-rally-continuous-road'),ys=road.getVerticesData(B.VertexBuffer.PositionKind).filter((_,i)=>i%3===1);assert(Math.max(...ys)-Math.min(...ys)>1,'rendered road follows elevation');assert(Math.abs(r.snapshot().vehicle.y-(R.at(R.circuit(0),r.snapshot().vehicle.s).y+1))<1e-6,'kart follows elevated road');r.dispose();assert.equal(listeners.size,0,'head-look listeners released');host.dispose();e.dispose();
 }
 console.log('Cockpit switching, pointer head look, elevation grounding and listener cleanup pass.');
+
+
+testRcLevers();
+function testRcLevers(){
+ const e=new B.NullEngine({renderWidth:1024,renderHeight:768}),scene=new B.Scene(e),r=W.create({B,scene});
+ r.start('rally',{circuit:0,level:1,seed:13});
+ const left=r.scene.getTransformNodeByName('mini-rally-rc-steer'),right=r.scene.getTransformNodeByName('mini-rally-rc-throttle');
+ assert(left&&right,'both kart RC levers are real Babylon transforms');
+ assert(Math.abs(left.position.x+right.position.x)<1e-8,'joysticks center symmetrically on dashboard');
+ assert.equal(left.position.z,right.position.z,'both joysticks are aligned');
+ for(let i=0;i<62;i++)r.tick(.05); // countdown completes before driving
+ r.input(0,1);r.tick(.05);
+ assert(right.rotation.x>0,'right lever tilts forward for acceleration');
+ r.input(0,-1);r.tick(.05);
+ assert(right.rotation.x<0,'right lever tilts backward for braking/reverse');
+ r.input(-1,0);r.tick(.05);
+ assert(left.rotation.z>0,'left lever steers sideways');
+ r.input(0,0);r.tick(.05);
+ assert.equal(right.rotation.x,0,'right lever springs back to center');
+ assert.equal(left.rotation.z,0,'left lever springs back to center');
+ r.dispose();scene.dispose();e.dispose();
+}
