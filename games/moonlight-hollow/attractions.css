@@ -99,3 +99,15 @@
 .rally-steering[hidden]{display:none!important}.rally-steering-wheel{width:82px;height:82px;border:10px solid #493341;outline:3px solid #bc9a6f;border-radius:50%;position:relative;background:linear-gradient(0deg,transparent 46%,#bd9267 46% 54%,transparent 54%),linear-gradient(60deg,transparent 47%,#bd9267 47% 53%,transparent 53%),linear-gradient(-60deg,transparent 47%,#bd9267 47% 53%,transparent 53%);transition:transform .08s linear;box-shadow:0 3px 12px #000a}
 .rally-steering-hub{position:absolute;inset:24px;border:5px solid #c79e6b;background:#322530;border-radius:50%}
 @media(max-width:650px){.rally-mode .mini-driving{grid-template-columns:45px 45px 1fr 65px 65px}.rally-mode .mini-driving .rally-pedal{min-height:82px;height:82px}.rally-pedal-text{font-size:8px}.rally-mode .rally-steering:not([hidden]){bottom:96px;left:8px;transform:scale(.72);transform-origin:bottom left}}
+
+/* RC-style two-stick controller supersedes steering wheel and foot pedals in Rally. */
+.rally-mode .mini-driving{grid-template-columns:1fr 1fr;justify-items:center;gap:12px;pointer-events:none}
+.rally-mode .mini-driving>button[data-axis]{display:none!important}
+.rally-mode .rally-rc-controller:not([hidden]){display:flex;position:relative;left:auto;bottom:auto;grid-column:1/-1;justify-content:space-around;align-items:center;width:min(460px,92vw);max-width:100%;padding:12px 14px;border:3px solid #bd9864;border-radius:18px;background:linear-gradient(155deg,#302c42,#15131e);box-shadow:inset 0 3px 8px #0008,0 4px 14px #0009;transform:none;pointer-events:auto}
+.rally-mode .rally-rc-controller[hidden]{display:none!important}
+.rally-rc-control{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;position:relative;width:44%;height:122px;touch-action:none;user-select:none;cursor:grab;color:#ffe0b3;font-size:11px;font-weight:800}
+.rally-rc-control:active{cursor:grabbing}.rally-rc-control:focus-visible{outline:3px solid #fff1ac;border-radius:10px}
+.rally-rc-track{height:86px;width:86px;display:grid;place-items:center;border:6px solid #17141e;border-radius:50%;background:radial-gradient(circle,#5e5b6b 0 12%,#343040 14% 50%,#191725 65%);box-shadow:inset 0 2px 12px #000b,0 2px 0 #a78b62;pointer-events:none}
+.rally-rc-stick{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#b5a5a0;box-shadow:0 6px 0 #5f5262,0 10px 6px #0009;transition:transform .045s linear;pointer-events:none}
+.rally-rc-knob{width:33px;height:33px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#f2d19c,#9c6855 70%,#4d3443);border:2px solid #f7dba7;box-shadow:0 2px 4px #0008}
+@media(max-width:600px){.rally-mode .rally-rc-controller:not([hidden]){padding:6px 8px;gap:6px}.rally-rc-control{height:102px}.rally-rc-track{width:72px;height:72px}}
