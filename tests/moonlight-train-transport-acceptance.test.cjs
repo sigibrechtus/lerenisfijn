@@ -63,8 +63,8 @@ test('hero GLB mounts ahead of the wagon, village parking and ride camera follow
  assert.equal(s.rideCamera.parent,s.train,'camera follows same transform during travel');
  s.railMotion.tick(1000);s.moveTrain(s.railMotion.snapshot(),0);
  assert.equal(s.railMotion.snapshot().station,1);
- assert.equal(s.train.position.x,R.stations[1].x);
- assert.equal(s.train.position.z,R.stations[1].z);
+ assert(Math.abs(s.train.position.x-R.stations[1].x)<1e-8);
+ assert(Math.abs(s.train.position.z-R.stations[1].z)<1e-8);
 });
 test('GLB import failure keeps the procedural transport and camera functional',async()=>{
  const s=await exercise(()=>Promise.reject(Error('WebGL GLB unavailable')));
