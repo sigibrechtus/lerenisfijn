@@ -38,3 +38,17 @@
 .train-destination{position:fixed;right:28px;bottom:140px;display:flex;flex-direction:column;gap:.25rem;padding:.6rem;background:#142637ed;border:1px solid #a1c4d43d;border-radius:14px;font-size:12px;max-width:260px}.train-destination select{font-size:12px}.puzzle-mode .train-destination{display:none}@media(max-width:650px){.train-destination{right:12px;bottom:170px;max-width:55vw}}
 
 .station-mode .movement-help{display:none}.station-mode .interact{bottom:235px}@media(max-width:650px){.station-mode .interact{bottom:270px}}
+
+/* iPhone/iPad gameplay: disable long-press text highlighting and callouts, not editing. */
+@media (hover:none) and (pointer:coarse){
+ body,body *:not(input):not(textarea):not([contenteditable]):not([contenteditable] *){
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+ }
+ input,textarea,[contenteditable],[contenteditable] *{
+  -webkit-user-select:text;
+  user-select:text;
+  -webkit-touch-callout:default;
+ }
+}
