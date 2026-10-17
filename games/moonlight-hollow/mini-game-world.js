@@ -111,13 +111,16 @@ function create({B,scene,quality='balanced',reducedMotion=false,onUpdate=()=>{},
   for(const x of [-1.15,1.15])for(const z of [-.75,.75]){const w=child('CreateCylinder','wheel',{height:.35,diameter:.9,tessellation:24},[x,-.925,z],dark);w.rotation.z=Math.PI/2;w.metadata={roadWheel:true};}
   for(const x of [-.55,.55])child('CreateSphere','kart-headlight',{diameter:.35,segments:16},[x,.12,1],gold);
   child('CreateBox','rally-dashboard',{width:1.55,height:.24,depth:.6},[0,.35,.62],dark);
-  // RC transmitter inspired dual levers: left moves laterally, right tilts for gas/brake.
-  for(const [x,role] of [[-.43,'steer'],[.43,'throttle']]){
-    const column=child('CreateCylinder','rally-steering-column',{height:.42,diameter:.12,tessellation:12},[x,.58,.95],dark);
-    const knob=child('CreateSphere','rally-steering-wheel',{diameter:.3,segments:20},[x,.86,.95],gold);
-    const hinge=owned(new B.TransformNode('mini-rally-rc-'+role,scene));hinge.parent=vehicle;hinge.position.set(x,.53,.95);
-    column.parent=hinge;column.position.set(0,.21,0);knob.parent=hinge;knob.position.set(0,.49,0);
-    child('CreateBox','rally-dashboard',{width:.68,height:.12,depth:.63},[x,.36,.96],wood);
+  // Center both RC levers on the kart dashboard, each around its own base pivot.
+  // The right lever tilts on the X axis (forward = accelerator; back = brake/reverse).
+  for(const [x,role] of [[-.31,'steer'],[.31,'throttle']]){
+    child('CreateBox','rally-dashboard',{width:.57,height:.14,depth:.64},[x,.56,1.25],wood);
+    const hinge=owned(new B.TransformNode('mini-rally-rc-'+role,scene));
+    hinge.parent=vehicle;hinge.position.set(x,.68,1.25);hinge.rotationQuaternion=null;
+    const column=child('CreateCylinder','rally-steering-column',{height:.46,diameter:.11,tessellation:12},[0,0,0],dark);
+    column.parent=hinge;column.position.set(0,.23,0);
+    const knob=child('CreateSphere','rally-steering-wheel',{diameter:.31,segments:20},[0,0,0],gold);
+    knob.parent=hinge;knob.position.set(0,.48,0);
     if(role==='steer')raceSteeringWheel=hinge;else raceGasPedal=hinge;
   }
   // Isolated decorative ghosts, all outside the collision corridor.
@@ -150,7 +153,7 @@ function create({B,scene,quality='balanced',reducedMotion=false,onUpdate=()=>{},
  function lookEnd(e){if(lookPointer?.id===e.pointerId)lookPointer=null;}
  function lookContext(e){if(race&&raceView==='first')e.preventDefault();}
  function look(dx,dy){if(!race||raceView!=='first'||paused())return;headLook.yaw=Math.max(-1.4,Math.min(1.4,headLook.yaw+dx));headLook.pitch=Math.max(-.55,Math.min(.55,headLook.pitch+dy));raceCamera();}
- function tickRace(dt){raceResolution();if(paused()||root.document?.hidden){neutral();race.stop();onTelemetry(snapshot());return;}if(raceCountdown>0){raceInput={steer:0,gas:0,brake:0};const old=Math.ceil(raceCountdown);raceCountdown=Math.max(0,raceCountdown-dt);if(Math.ceil(raceCountdown)!==old){effect('ui');onUpdate(snapshot());}if(!raceCountdown){raceGo=.85;effect('chapter');onUpdate(snapshot());}onTelemetry(snapshot());return;}if(raceGo>0){raceGo=Math.max(0,raceGo-dt);if(!raceGo)onUpdate(snapshot());}const x=Math.max(-1,Math.min(1,axis.x+(keys.arrowright||keys.d?1:0)-(keys.arrowleft||keys.a?1:0))),z=Math.max(-1,Math.min(1,axis.z+(keys.arrowup||keys.w?1:0)-(keys.arrowdown||keys.s?1:0)));raceInput={steer:x,gas:Math.max(0,z),brake:Math.max(0,-z)};if(raceSteeringWheel)raceSteeringWheel.rotation.z=-x*.48;if(raceGasPedal)raceGasPedal.rotation.x=-z*.48;let event={};for(let n=0;n<Math.ceil(dt/.025);n++){const next=race.tick(dt/Math.ceil(dt/.025),x,z);if(next.changed){event=next;if(!next.correct)break;}}raceCamera();for(const m of meshes)if(m.metadata?.roadWheel)m.rotation.x+=race.snapshot().speed*dt/.45;else if(m.metadata?.raceFinishFlag&&!reducedMotion)m.rotation.z=Math.sin((race.snapshot().timing.elapsed*5)+m.metadata.phase)*.12;else if(m.metadata?.raceSpectator&&!reducedMotion)m.position.y=m.metadata.baseY+Math.sin(race.snapshot().result.elapsed*1.7+m.metadata.phase)*.35;
+ function tickRace(dt){raceResolution();if(paused()||root.document?.hidden){neutral();race.stop();onTelemetry(snapshot());return;}if(raceCountdown>0){raceInput={steer:0,gas:0,brake:0};const old=Math.ceil(raceCountdown);raceCountdown=Math.max(0,raceCountdown-dt);if(Math.ceil(raceCountdown)!==old){effect('ui');onUpdate(snapshot());}if(!raceCountdown){raceGo=.85;effect('chapter');onUpdate(snapshot());}onTelemetry(snapshot());return;}if(raceGo>0){raceGo=Math.max(0,raceGo-dt);if(!raceGo)onUpdate(snapshot());}const x=Math.max(-1,Math.min(1,axis.x+(keys.arrowright||keys.d?1:0)-(keys.arrowleft||keys.a?1:0))),z=Math.max(-1,Math.min(1,axis.z+(keys.arrowup||keys.w?1:0)-(keys.arrowdown||keys.s?1:0)));raceInput={steer:x,gas:Math.max(0,z),brake:Math.max(0,-z)};if(raceSteeringWheel)raceSteeringWheel.rotation.z=-x*.48;if(raceGasPedal)raceGasPedal.rotation.x=z*.55;let event={};for(let n=0;n<Math.ceil(dt/.025);n++){const next=race.tick(dt/Math.ceil(dt/.025),x,z);if(next.changed){event=next;if(!next.correct)break;}}raceCamera();for(const m of meshes)if(m.metadata?.roadWheel)m.rotation.x+=race.snapshot().speed*dt/.45;else if(m.metadata?.raceFinishFlag&&!reducedMotion)m.rotation.z=Math.sin((race.snapshot().timing.elapsed*5)+m.metadata.phase)*.12;else if(m.metadata?.raceSpectator&&!reducedMotion)m.position.y=m.metadata.baseY+Math.sin(race.snapshot().result.elapsed*1.7+m.metadata.phase)*.35;
   if(event.changed){updateRaceGates();effect(event.correct?'lantern':event.lapCompleted?'chapter':event.finished?'solve':'retry');emit();}telemetryTime+=dt;if(telemetryTime>=.1){telemetryTime=0;onTelemetry(snapshot());}}
  function build(){
   clearArena();const s=game.snapshot(),t=s.task;lastRound=s.round;
