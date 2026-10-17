@@ -29,7 +29,7 @@ function testRcLevers(){
  r.start('rally',{circuit:0,level:1,seed:13});
  const left=r.scene.getTransformNodeByName('mini-rally-rc-steer'),right=r.scene.getTransformNodeByName('mini-rally-rc-throttle');
  assert(left&&right,'both kart RC levers are real Babylon transforms');
- assert(Math.abs(left.position.x+right.position.x)<1e-8,'joysticks center symmetrically on dashboard');
+ assert(Math.abs(left.position.x+right.position.x)<1e-8,'joysticks center symmetrically on dashboard');assert(Math.abs(left.position.x)>=.65,'side-mounted cockpit controls leave the center sightline clear');
  assert.equal(left.position.z,right.position.z,'both joysticks are aligned');
  for(let i=0;i<62;i++)r.tick(.05); // countdown completes before driving
  r.input(0,1);r.tick(.05);
