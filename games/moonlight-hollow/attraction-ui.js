@@ -132,7 +132,7 @@ function attach(options){
  // Twin RC controls: left stick steers sideways, right stick accelerates/brakes vertically.
  // Independent pointer IDs permit simultaneous steering and throttle on touchscreens.
  const rcPointers=new Map(),rcKeys=new Map();
- function rcInput(){if(active!=='rally')return;const values={steer:0,throttle:0};for(const item of [...rcKeys.values(),...rcPointers.values()])values[item.axis]=item.value;axis.x=values.steer;axis.z=values.throttle;updateInput();}
+ function rcInput(){if(active!=='rally')return;const values={steer:0,throttle:0};for(const item of [...rcKeys.values(),...rcPointers.values()])values[item.axis]=item.value;updateInput();axis.x=values.steer;axis.z=values.throttle;runtime?.input(axis.x,axis.z,axis.y);}
  for(const kind of ['steer','throttle']){const stick=$('mini-rally-stick-'+kind);if(!stick)continue;
   const move=e=>{if(!rcPointers.has(e.pointerId))return;const rect=stick.getBoundingClientRect(),centre=kind==='steer'?rect.left+rect.width/2:rect.top+rect.height/2,coordinate=kind==='steer'?e.clientX:e.clientY,reach=Math.max(20,(kind==='steer'?rect.width:rect.height)*.36);rcPointers.set(e.pointerId,{axis:kind,value:Math.max(-1,Math.min(1,(coordinate-centre)/reach*(kind==='steer'?1:-1)))});rcInput();};
   stick.onpointerdown=e=>{if(active!=='rally'||blocked()||e.button!==0)return;e.preventDefault();rcPointers.set(e.pointerId,{axis:kind,value:0});stick.setPointerCapture?.(e.pointerId);move(e);};
