@@ -50,3 +50,11 @@ const newer=R.create({circuit:2,level:2,seed:100004,recent:[first]});
 assert.notEqual(V.signature(newer.snapshot().task),first);
 const themed=R.circuit(2);assert(themed.length>400);
 console.log('Replay question regeneration and Halloween finish circuit checks passed.');
+
+// Start-to-first-gate distance must equal the distance between consecutive gates.
+for(let index=0;index<10;index++){
+ const t=R.circuit(index),interval=t.gates[0].s-3;
+ assert(interval>60,'enough space to accelerate and recognize the first gate');
+ for(let j=1;j<t.gates.length;j++)assert(Math.abs(t.gates[j].s-t.gates[j-1].s-interval)<1e-7,'equal opening and intermediate gate spacing, track '+index);
+ assert(t.length-t.gates.at(-1).s>40,'room to reach the finish after final gate');
+}
