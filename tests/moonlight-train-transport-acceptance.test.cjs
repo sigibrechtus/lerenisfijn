@@ -74,3 +74,13 @@ test('GLB import failure keeps the procedural transport and camera functional',a
  assert.equal(s.rideCamera.parent,s.train);
  assert.equal(s.railMotion.call(0),true);
 });
+
+test('HD train aligns to measured local bounds and preserves +Z-forward transport',()=>{
+ const asset=fs.readFileSync(path.join(__dirname,'../games/moonlight-hollow/asset-library.js'),'utf8');
+ assert.match(asset,/id==='moon-express-locomotive'&&B\.Matrix\?\.Invert/);
+ assert.match(asset,/2\.25\/width,4\.45\/length,3\.05\/height/);
+ assert.match(asset,/node\.position\.x-=midX\*fit/);
+ assert.match(asset,/node\.position\.z-=midZ\*fit/);
+ assert.match(asset,/node\.position\.y\+=\.12-mins\[1\]\*fit/);
+ assert.match(source,/geometryQuality:'high'/,'production hero mesh remains selected');
+});
