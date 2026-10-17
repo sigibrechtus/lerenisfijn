@@ -111,3 +111,10 @@
 .rally-rc-stick{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#b5a5a0;box-shadow:0 6px 0 #5f5262,0 10px 6px #0009;transition:transform .045s linear;pointer-events:none}
 .rally-rc-knob{width:33px;height:33px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#f2d19c,#9c6855 70%,#4d3443);border:2px solid #f7dba7;box-shadow:0 2px 4px #0008}
 @media(max-width:600px){.rally-mode .rally-rc-controller:not([hidden]){padding:6px 8px;gap:6px}.rally-rc-control{height:102px}.rally-rc-track{width:72px;height:72px}}
+
+/* Center the two stick bases as one handset, including iPhone landscape. */
+.rally-mode .mini-driving{display:flex;justify-content:center;align-items:flex-end;width:100%;left:0;right:0;box-sizing:border-box}
+.rally-mode .rally-rc-controller:not([hidden]){position:relative;inset:auto;left:auto;right:auto;bottom:auto;grid-column:auto;justify-content:center;gap:clamp(12px,5vw,36px);width:min(390px,calc(100vw - 28px));margin-inline:auto;box-sizing:border-box;transform:none}
+.rally-mode .rally-rc-control{flex:0 1 130px;width:auto;min-width:0}
+.rally-mode .rally-rc-track{flex-shrink:0}
+@media(max-width:600px){.rally-mode .rally-rc-controller:not([hidden]){width:min(340px,calc(100vw - 20px));gap:12px}.rally-mode .rally-rc-control{flex:1 1 0}}
