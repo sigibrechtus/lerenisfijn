@@ -27,7 +27,7 @@
     "runtime": "Babylon.js glTF2 with fallback, independent picking, collision, animation and low LOD"
   },
   "counts": {
-    "sourceMeshIdentifiers": 305,
+    "sourceMeshIdentifiers": 303,
     "assetFamilies": 18,
     "publishedProductionAssets": 1,
     "familiesPendingFullQA": 18
@@ -126,11 +126,9 @@
         "mini-game-world.js:rally-dashboard",
         "mini-game-world.js:rally-steering-column",
         "mini-game-world.js:rally-steering-wheel",
-        "mini-game-world.js:rally-steering-spoke",
-        "mini-game-world.js:rally-gas-pedal",
-        "mini-game-world.js:rally-brake-pedal"
+        "mini-game-world.js:rally-steering-spoke"
       ],
-      "sourceCount": 42,
+      "sourceCount": 40,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -4324,28 +4322,6 @@
       "key": "mini-game-world.js:rally-steering-spoke",
       "file": "mini-game-world.js",
       "meshName": "rally-steering-spoke",
-      "family": "pumpkin-kart",
-      "role": "vehicle",
-      "source": "procedural-js",
-      "productionStatus": "pending_asset_family",
-      "meshRequirement": "member_of_20k_triangulated_source_asset",
-      "inGameStatus": "existing-procedural"
-    },
-    {
-      "key": "mini-game-world.js:rally-gas-pedal",
-      "file": "mini-game-world.js",
-      "meshName": "rally-gas-pedal",
-      "family": "pumpkin-kart",
-      "role": "vehicle",
-      "source": "procedural-js",
-      "productionStatus": "pending_asset_family",
-      "meshRequirement": "member_of_20k_triangulated_source_asset",
-      "inGameStatus": "existing-procedural"
-    },
-    {
-      "key": "mini-game-world.js:rally-brake-pedal",
-      "file": "mini-game-world.js",
-      "meshName": "rally-brake-pedal",
       "family": "pumpkin-kart",
       "role": "vehicle",
       "source": "procedural-js",
