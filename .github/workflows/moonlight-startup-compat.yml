@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'games/moonlight-hollow/world.js'
+      - 'games/moonlight-hollow/railway.js'
+      - 'games/moonlight-hollow/destinations.js'
+      - 'tests/moonlight-railway.test.cjs'
       - 'games/moonlight-hollow/asset-library.js'
       - 'games/moonlight-hollow/adventure.js'
       - 'games/moonlight-hollow/index.html'
@@ -14,6 +17,9 @@ on:
     branches: [main]
     paths:
       - 'games/moonlight-hollow/world.js'
+      - 'games/moonlight-hollow/railway.js'
+      - 'games/moonlight-hollow/destinations.js'
+      - 'tests/moonlight-railway.test.cjs'
       - 'games/moonlight-hollow/asset-library.js'
       - 'games/moonlight-hollow/adventure.js'
       - 'games/moonlight-hollow/index.html'
@@ -33,9 +39,10 @@ jobs:
           node-version: '22'
       - name: JavaScript syntax
         run: |
+          node --check games/moonlight-hollow/railway.js
           node --check games/moonlight-hollow/world.js
           node --check games/moonlight-hollow/asset-library.js
           node --check games/moonlight-hollow/adventure.js
           node --check games/moonlight-hollow/sw.js
       - name: Optional-asset and cache regression tests
-        run: node --test tests/moonlight-asset-startup.test.cjs tests/moonlight-train-transport-acceptance.test.cjs
+        run: node --test tests/moonlight-railway.test.cjs tests/moonlight-asset-startup.test.cjs tests/moonlight-train-transport-acceptance.test.cjs
