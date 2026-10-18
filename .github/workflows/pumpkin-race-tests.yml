@@ -7,6 +7,8 @@ on:
       - 'tests/pumpkin-race*.test.cjs'
       - 'tests/moonlight-attraction-ui.test.cjs'
       - 'tests/moonlight-pbr.test.cjs'
+      - 'tests/moonlight-mini-game-world.test.cjs'
+      - 'games/moonlight-hollow/mini-game-world.js'
       - 'tests/moonlight-pbr-world-smoke.cjs'
       - '.github/workflows/pumpkin-race-tests.yml'
   workflow_dispatch:
@@ -25,6 +27,8 @@ jobs:
         run: node --test tests/moonlight-pbr.test.cjs
       - name: Full Moonlight world PBR integration
         run: node tests/moonlight-pbr-world-smoke.cjs
+      - name: Broom Flight full-screen arena and camera regression
+        run: node tests/moonlight-mini-game-world.test.cjs
       - name: Race physics and questions
         run: node tests/pumpkin-race.test.cjs
       - name: Replay menus and profile isolation
