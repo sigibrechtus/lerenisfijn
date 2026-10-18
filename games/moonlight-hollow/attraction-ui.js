@@ -113,7 +113,7 @@ function attach(options){
  function tick(dt,status){
   if(!begun)return;
   localizeViewAvailability();
-  if(active){if(status.blocked){soundtrack.vehicle?.(null);if(lastMotion!==true)resetMovement();runtime?.tick(dt);lastMotion=true;return active==='rally'?runtime?.scene:null;}lastMotion=false;runtime?.tick(dt);const camera=(runtime?.scene||world.scene).activeCamera;if(camera){camera.computeWorldMatrix();const B=root.BABYLON;options.listener?.(camera.globalPosition,camera.getForwardRay().direction,B.Vector3.TransformNormal(B.Vector3.Up(),camera.getWorldMatrix()).normalize());}return active==='rally'?runtime?.scene:null;}
+  if(active){if(status.blocked){soundtrack.vehicle?.(null);if(lastMotion!==true)resetMovement();runtime?.tick(dt);lastMotion=true;return ['rally','broom'].includes(active)?runtime?.scene:null;}lastMotion=false;runtime?.tick(dt);const camera=(runtime?.scene||world.scene).activeCamera;if(camera){camera.computeWorldMatrix();const B=root.BABYLON;options.listener?.(camera.globalPosition,camera.getForwardRay().direction,B.Vector3.TransformNormal(B.Vector3.Up(),camera.getWorldMatrix()).normalize());}return ['rally','broom'].includes(active)?runtime?.scene:null;}
   if(status.blocked||status.mode!=='world'){if(near){near=null;updateOffer();}return;}
   destinations.tick(dt,!!prefs().motion);const next=destinations.nearest(world.hero.position.x,world.hero.position.z);if(next!==near){near=next;updateOffer();}else if(near&&$('attraction-offer').hidden)updateOffer();
  }
