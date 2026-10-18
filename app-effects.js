@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const KEY='lerenisfijn-sound';
-  let enabled=true,volume=.8,request=0;
+  let enabled=true,volume=.8,request=0,speechActive=false;
   try {enabled=localStorage.getItem(KEY)!=='off';const saved=localStorage.getItem(KEY+'-volume');if(saved!==null)volume=Math.max(.1,Math.min(1,Number(saved)||.8));} catch (_) {}
   const scriptURL=document.currentScript?.src||new URL('app-effects.js',document.baseURI).href;
   const sources=Object.fromEntries(['tap','correct','incorrect','complete','back'].map(kind=>[kind,new URL('sounds/'+kind+'.wav',scriptURL).href]));
@@ -17,7 +17,7 @@
   slider.addEventListener('input',()=>{volume=Number(slider.value)/100;player.volume=volume;try{localStorage.setItem(KEY+'-volume',String(volume));}catch(_){}});volumeLabel.append(slider);
   function setEnabled(value){enabled=value;try{localStorage.setItem(KEY,enabled?'on':'off');}catch(_){}if(!enabled){request++;player.pause();player.dataset.playback='muted';}refresh();}
   function play(kind,{test=false}={}){
-    if(!enabled)return Promise.resolve(false);
+    if(!enabled||speechActive)return Promise.resolve(false);
     const current=++request;kind=Object.prototype.hasOwnProperty.call(sources,kind)?kind:'tap';
     player.pause();if(player.src!==sources[kind])player.src=sources[kind];try{player.currentTime=0;}catch(_){}player.muted=false;player.volume=volume;player.dataset.effect=kind;player.dataset.playback='starting';
     let result;try{result=player.play();}catch(error){result=Promise.reject(error);}
@@ -50,7 +50,7 @@
   // Capture runs before answer handlers, so their result cue takes precedence.
   document.addEventListener('click',event=>{
     const control=event.target.closest('button,a.app-home-link,a.app-settings-button,summary');
-    if(enabled&&control&&!control.closest('.lf-sound-tools')&&!control.classList.contains('app-sound-button')&&!isBack(control))play('tap');
+    if(enabled&&!speechActive&&!control?.matches('[data-mode], #btn-listen, #btn-test-voice')&&control&&!control.closest('.lf-sound-tools')&&!control.classList.contains('app-sound-button')&&!isBack(control))play('tap');
   },{capture:true});
   document.addEventListener('click',event=>{
     const control=event.target.closest('button,a.app-home-link');if(!control||control.closest('.lf-sound-tools')||control.classList.contains('app-sound-button'))return;
@@ -62,5 +62,7 @@
     }
   });
   window.addEventListener('storage',event=>{if(event.key===KEY){enabled=event.newValue!=='off';if(!enabled)player.pause();refresh();}else if(event.key===KEY+'-volume'){volume=Math.max(.1,Math.min(1,Number(event.newValue)||.8));slider.value=String(Math.round(volume*100));player.volume=volume;}});
-  window.lerenEffects={correct:target=>feedback('correct',target),incorrect:target=>feedback('incorrect',target),complete:target=>feedback('complete',target),tap:()=>play('tap'),back:()=>play('back'),test:kind=>{setEnabled(true);return play(kind,{test:true});}};
+  function beginSpeech(){speechActive=true;request++;player.pause();player.dataset.playback='speech';}
+  function endSpeech(){speechActive=false;}
+  window.lerenEffects={beginSpeech,endSpeech,correct:target=>feedback('correct',target),incorrect:target=>feedback('incorrect',target),complete:target=>feedback('complete',target),tap:()=>play('tap'),back:()=>play('back'),test:kind=>{setEnabled(true);return play(kind,{test:true});}};
 })();
