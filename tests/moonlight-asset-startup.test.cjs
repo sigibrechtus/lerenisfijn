@@ -1,104 +1,17 @@
 'use strict';
-// Regression: optional 3D model imports must never prevent the playable Babylon
-// world from starting, including when iOS holds an older cached asset-library.js.
-const test=require('node:test');
-const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const path=require('node:path');
-const vm=require('node:vm');
-
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const base=path.resolve(__dirname,'../games/moonlight-hollow');
 const worldSource=fs.readFileSync(path.join(base,'world.js'),'utf8');
-const start=worldSource.indexOf("const locomotiveMount=new B.TransformNode('moon-express-locomotive-front',scene);");
-const end=worldSource.indexOf('const railMotion=R.create()',start);
-assert.ok(start>0&&end>start,'Production import block must remain identifiable');
-const importCode=worldSource.slice(start,end);
-
-async function simulate({library,quality='auto',userAgent='',disposed=false}={}){
- const calls=[],warnings=[],hidden=[],artHidden=[];
- const train={
-  getChildMeshes:()=>[{isDisposed:()=>false,setEnabled:enabled=>hidden.push(enabled)}],
-  isDisposed:()=>disposed
- };
- const scene={isDisposed:()=>disposed};
- const locomotiveMount={parent:train,position:{x:0,y:0,z:4.5,set(x,y,z){this.x=x;this.y=y;this.z=z;}},isDisposed:()=>disposed};
- const B={TransformNode:class {constructor(){return locomotiveMount;}}};
- vm.runInNewContext(importCode,{
-  root:{MoonAssetLibrary:library,navigator:{userAgent}},
-  api:{prefs:()=>({quality})},scene,train,B,mode:'world',mobileSafari:/iPhone|iPad|iPod/i.test(userAgent),
-  console:{warn:(...args)=>warnings.push(args)},
-  Promise
- },{filename:'moonlight-production-import.js'});
- // Drain both the deferred import and its fulfillment/rejection handlers.
- await new Promise(resolve=>setImmediate(resolve));
- return {calls,warnings,hidden,artHidden,scene,train};
-}
-
-test('missing asset library does not crash or hide original locomotive',async()=>{
- const r=await simulate();
- assert.deepEqual(r.hidden,[]);
- assert.deepEqual(r.warnings,[]);
+test('HD model cannot spawn independently in village: no asynchronous production locomotive import',()=>{
+ assert.doesNotMatch(worldSource,/placeProduction\(scene,'moon-express-locomotive'/);
+ assert.match(worldSource,/new B\.TransformNode\('moon-express-locomotive-front',scene\)/);
+ assert.match(worldSource,/const boiler=cyl\('express-hd-boiler'/);
 });
-
-test('outdated cached asset library without placeProduction is harmless',async()=>{
- const r=await simulate({library:{place(){}}});
- assert.deepEqual(r.hidden,[]);
- assert.deepEqual(r.warnings,[]);
+test('single locomotive is parented directly to moving railway node',()=>{
+ assert.match(worldSource,/const locomotivePose=R\.track\.pose\(state\.distance\+state\.direction\*locomotiveLead\)/);
+ assert.match(worldSource,/box\('express-cab-roof',[^\n]*locomotiveMount\)/);
+ assert.match(worldSource,/locomotiveMount\.position\.set\(initialEnginePose\.x/);
 });
-
-test('failed production importer leaves procedural train visible',async()=>{
- const r=await simulate({library:{placeProduction:()=>{throw Error('Asset unavailable');}}});
- assert.deepEqual(r.hidden,[]);
- assert.equal(r.warnings.length,1);
-});
-
-test('rejected production import leaves procedural train visible',async()=>{
- const r=await simulate({library:{placeProduction:()=>Promise.reject(Error('HTTP 404'))}});
- assert.deepEqual(r.hidden,[]);
- assert.equal(r.warnings.length,1);
-});
-
-test('successful import preserves HD locomotive and boarding wagon',async()=>{
- const calls=[],art={setEnabled:()=>{}};
- const r=await simulate({library:{placeProduction:(scene,id,parent,opts)=>{calls.push({scene,id,parent,opts});return Promise.resolve(art);}}});
- assert.equal(calls.length,1);
- assert.equal(calls[0].id,'moon-express-locomotive');
- assert.equal(calls[0].opts.quality,'balanced');
- assert.equal(calls[0].opts.geometryQuality,'high');
- assert.equal(calls[0].opts.textureQuality,'balanced');
- assert.equal(calls[0].opts.scale,.85);
- assert.deepEqual(r.hidden,[]);
-});
-
-test('iPhone HD uses high-poly train with mobile-safe 512px PBR textures',async()=>{
- const options=[];
- const r=await simulate({quality:'high',userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)',library:{
-  placeProduction:(_scene,_id,_parent,opts)=>{options.push(opts);return Promise.resolve({setEnabled(){}});}
- }});
- assert.equal(options.length,1);
- assert.equal(options[0].geometryQuality,'high');
- assert.equal(options[0].quality,'balanced');
- assert.equal(options[0].textureQuality,'balanced');
- assert.deepEqual(r.hidden,[],'the boarding wagon remains visible after successful HD import');
-});
-
-test('desktop HD retains the full 69K-triangle model and 4K PBR path',async()=>{
- const qualities=[];
- await simulate({quality:'high',library:{
-  placeProduction:(_scene,_id,_parent,opts)=>{qualities.push(opts.quality);return null;}
- }});
- assert.deepEqual(qualities,['high']);
-});
-
-test('Eco mode still uses the hero locomotive as transport when available',async()=>{
- const calls=[];
- const r=await simulate({quality:'low',library:{placeProduction:(_scene,_id,_train,opts)=>{calls.push(opts);return Promise.resolve({setEnabled(){}});}}});
- assert.equal(calls.length,1);
- assert.equal(calls[0].geometryQuality,'high');
- assert.equal(calls[0].textureQuality,'balanced');
- assert.deepEqual(r.hidden,[],'the boarding wagon remains visible after successful HD import');
-});
-
 test('HTML and service worker publish the same versioned train scripts',()=>{
  const html=fs.readFileSync(path.join(base,'index.html'),'utf8');
  const sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
