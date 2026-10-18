@@ -95,35 +95,45 @@ for(const z of [-1.95,1.95]){box('carriage-end',[0,.95,z],[2.3,.5,.12],trainMat,
 box('passenger-seat',[0,.85,.35],[1.3,.25,1],trainMat,train);box('seat-back',[0,1.25,-.2],[1.3,.8,.15],trainMat,train);
 for(const x of [-1,1])for(const z of [-1.2,1.2]){const wheel=cyl('wheel',[x,.55,z],.22,.64,dark,train);wheel.rotationQuaternion=B.Quaternion.RotationAxis(B.Vector3.Forward(),Math.PI/2);wheel.metadata={roll:0};wheels.push(wheel);box('wheel-spoke',[0,0,0],[.5,.08,.08],gold,wheel);}
 pumpkin(0,1.05, .45,train);
-// Preserve train kinematics, audio and station logic; visual GLB is a sibling of the
-// procedural collision/animation proxies. The original scene survives failed loading.
-// Keep the locomotive independent of the wagon's rotation: each follows its own
-// point on the same arc-length railway, including on bends and when reversing.
-const locomotiveMount=new B.TransformNode('moon-express-locomotive-front',scene);const locomotiveLead=4.5;
-// Never show the imported engine at the village origin while loading.
-locomotiveMount.setEnabled(false);
-let productionTrain=null;
-// Production GLBs are optional. Stale/offline clients may load an older asset-library.js
-// without placeProduction; in that case preserve the fully playable procedural train.
-// Defer optional imports so neither a missing method nor a synchronous importer failure
-// can interrupt construction of the Babylon scene.
-const productionLibrary=root.MoonAssetLibrary;
-const requestedTrainQuality=api.prefs().quality;
-if(typeof productionLibrary?.placeProduction==='function'){
- Promise.resolve().then(()=>productionLibrary.placeProduction(scene,'moon-express-locomotive',locomotiveMount,{
-  // The 69K-triangle hero geometry is the ONLY visible transport train at every quality tier.
-  // Keep the optional 4K texture upgrade separate from mesh selection to protect mobile memory.
-  quality:mobileSafari?'balanced':requestedTrainQuality==='high'?'high':'balanced',
-  geometryQuality:'high',textureQuality:!mobileSafari&&requestedTrainQuality==='high'?'high':'balanced',scale:.85
- })).then(art=>{
-  if(!art||scene.isDisposed()||train.isDisposed()||locomotiveMount.isDisposed())return;
-  productionTrain=art;
-  // Only reveal the engine after it has been attached to the rail-following mount.
-  moveTrain(railMotion.snapshot());
-  locomotiveMount.setEnabled(true);
-  // Keep the separate passenger wagon visible: the GLB is the engine in front.
- }).catch(e=>console.warn('Moon Express GLB fallback:',e));
+// The locomotive is ONE scene-owned vehicle, built beneath its rail-following mount.
+// Do NOT import moon-express-hero.glb here: its detached model hierarchy previously
+// left a full locomotive at the village world origin while the wagon moved elsewhere.
+const locomotiveMount=new B.TransformNode('moon-express-locomotive-front',scene);
+const locomotiveLead=4.5;
+const engineRed=material('express-oxblood','#702b39'),engineTrim=material('express-brass','#d5a34e'),engineSteel=material('express-steel','#28313d'),engineGlass=material('express-glass','#88a9bc');
+const engineBody=box('express-engine-chassis',[0,.52,0],[1.85,.36,3.4],engineSteel,locomotiveMount);
+box('express-engine-running-board',[0,.75,0],[2.16,.12,3.85],engineTrim,locomotiveMount);
+const boiler=cyl('express-hd-boiler',[0,1.55,.65],2.55,1.42,engineRed,locomotiveMount);
+boiler.rotation.x=Math.PI/2;
+for(const z of [-.36,.12,.62,1.13,1.62]){
+ const band=cyl('express-boiler-brass-band',[0,1.55,z],.09,1.48,engineTrim,locomotiveMount);
+ band.rotation.x=Math.PI/2;
 }
+const smokebox=cyl('express-smokebox-front',[0,1.55,1.99],.18,1.47,engineSteel,locomotiveMount);smokebox.rotation.x=Math.PI/2;
+const frontPlate=cyl('express-smokebox-brass-rim',[0,1.55,2.105],.055,1.42,engineTrim,locomotiveMount);frontPlate.rotation.x=Math.PI/2;
+const headlamp=ell('express-headlamp',[0,1.55,2.2],[.24,.24,.16],warm,locomotiveMount);
+box('express-cab-floor',[0,.91,-1.24],[1.95,.19,1.35],engineRed,locomotiveMount);
+for(const x of [-.88,.88]){
+ box('express-cab-side',[x,1.65,-1.26],[.15,1.58,1.35],engineRed,locomotiveMount);
+ box('express-cab-window',[x+(x>0?.085:-.085),1.9,-1.24],[.035,.66,.65],engineGlass,locomotiveMount);
+}
+box('express-cab-roof',[0,2.56,-1.3],[2.15,.2,1.65],engineSteel,locomotiveMount);
+box('express-cab-rear',[0,1.75,-1.92],[1.85,1.45,.14],engineRed,locomotiveMount);
+const chimney=cyl('express-chimney',[0,2.61,1.18],.94,.37,engineSteel,locomotiveMount);
+cyl('express-chimney-lip',[0,3.1,1.18],.16,.56,engineTrim,locomotiveMount);
+cyl('express-steam-dome',[0,2.33,.18],.38,.68,engineTrim,locomotiveMount,.48);
+for(const x of [-.91,.91]){
+ for(const z of [-1.32,-.25,.87,1.52]){
+  const wheel=cyl('express-drive-wheel',[x,.49,z],.18,z===1.52?.61:.82,engineSteel,locomotiveMount);
+  wheel.rotation.z=Math.PI/2;
+  const hub=cyl('express-wheel-hub',[x+(x>0?.12:-.12),.49,z],.08,.24,engineTrim,locomotiveMount);hub.rotation.z=Math.PI/2;
+ }
+ box('express-side-rod',[x+(x>0?.13:-.13),.49,-.18],[.09,.09,2.54],engineTrim,locomotiveMount);
+}
+box('express-front-buffer',[0,.65,2.01],[2.16,.23,.21],engineSteel,locomotiveMount);
+for(const x of [-.72,.72])cyl('express-buffer',[x,.68,2.13],.24,.3,engineTrim,locomotiveMount);
+box('express-coupler',[0,.58,-2.03],[.24,.18,.65],engineSteel,locomotiveMount);
+locomotiveMount.metadata={trainRole:'single-rail-locomotive',railFollower:true};
 const railMotion=R.create();railMotion.park(0);
 // Position the locomotive before the deferred HD import resolves, so the GLB
 // never renders even one frame at the Babylon scene origin (village square).
