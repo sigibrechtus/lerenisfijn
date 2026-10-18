@@ -75,3 +75,19 @@ test('actual vendored Babylon NullEngine accepts the PBR/ORM material layout',t=
   bank.dispose();assert([m.albedoTexture,m.bumpTexture,m.metallicTexture].every(texture=>!scene.textures.includes(texture)));scene.dispose();
  }finally{engine.dispose();global.OffscreenCanvas=prev;}
 });
+
+test('PBR quality upgrades account for simultaneous old and new GPU textures',()=>{
+ const d=doubles(),bank=P.create(d.B,d.scene,{quality:'low',budgetMiB:24});
+ const wood=bank.material('wood','#715640',1);
+ const pumpkin=bank.material('pumpkin','#cb721b',1);
+ assert.equal(bank.stats.estimatedBytes,8*1048576);
+ assert.equal(bank.quality('balanced'),true);
+ assert(bank.stats.lastPeakBytes<=24*1048576,'upgrade must not exceed GPU budget during upload');
+ assert(bank.stats.estimatedBytes<=24*1048576,'steady-state resident bytes remain bounded');
+ assert.equal(wood.albedoTexture.dead,undefined,'bound materials retain live textures');
+ assert.equal(pumpkin.albedoTexture.dead,undefined,'other bound materials retain live textures');
+ assert(bank.stats.surfaces.some(surface=>surface.resolution===1024),'first pair can be upgraded');
+ assert(bank.stats.surfaces.some(surface=>surface.resolution===512),'later pair remains at fallback resolution');
+ bank.dispose();
+ assert(d.tex.every(t=>t.dead===1),'all replacement and retired textures disposed once');
+});
