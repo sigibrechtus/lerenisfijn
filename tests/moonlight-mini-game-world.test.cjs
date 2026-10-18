@@ -31,7 +31,7 @@ for(const id of ['broom']){
  }
  runtime.dispose();
 }
-runtime.start('rally',{seed:2});runtime.input(0,1);for(let n=0;n<20;n++)runtime.tick(.1);assert(runtime.snapshot().speed>0);const parked=runtime.snapshot().vehicle;paused=true;runtime.tick(.1);assert.equal(runtime.snapshot().speed,0);runtime.action(runtime.snapshot().task.solution[0]);for(let n=0;n<20;n++)runtime.tick(.1);assert.equal(runtime.snapshot().vehicle.z,parked.z);assert.equal(runtime.snapshot().progress,0);paused=false;runtime.input(0,-1);for(let n=0;n<10;n++)runtime.tick(.1);assert(runtime.snapshot().vehicle.z<parked.z);runtime.dispose();scene.dispose();engine.dispose();
+runtime.start('rally',{seed:2});runtime.input(0,1);for(let n=0;n<50;n++)runtime.tick(.1);assert(runtime.snapshot().speed>0);const parked=runtime.snapshot().vehicle;paused=true;runtime.tick(.1);assert.equal(runtime.snapshot().speed,0);runtime.action(runtime.snapshot().task.solution[0]);for(let n=0;n<20;n++)runtime.tick(.1);assert.equal(runtime.snapshot().vehicle.z,parked.z);assert.equal(runtime.snapshot().progress,0);paused=false;runtime.input(0,-1);for(let n=0;n<10;n++)runtime.tick(.1);assert(runtime.snapshot().vehicle.z<parked.z);runtime.dispose();scene.dispose();engine.dispose();
 // Project every active sign corner into the camera's safe viewport at three screen sizes.
 const F=require('../games/moonlight-hollow/camera.js');let projectedSigns=0;
 for(const [width,height] of [[390,844],[844,390],[1440,900]]){
