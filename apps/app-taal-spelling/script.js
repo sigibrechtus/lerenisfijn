@@ -170,10 +170,13 @@ let padEnabled = true;
 const padSize = () => ({ w: pad.clientWidth, h: pad.clientHeight });
 
 function resizePad() {
-  const dpr = window.devicePixelRatio || 1;
+  // Never resize while the canvas is hidden or collapsed: this would
+  // replace the backing buffer with a 0px (or compressed) writing guide.
   const { w, h } = padSize();
-  pad.width = Math.round(w * dpr);
-  pad.height = Math.round(h * dpr);
+  if (w <= 0 || h <= 0) return;
+  const dpr = window.devicePixelRatio || 1;
+  pad.width = Math.max(1, Math.round(w * dpr));
+  pad.height = Math.max(1, Math.round(h * dpr));
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   redraw();
 }
@@ -416,10 +419,12 @@ function setPromptText(text) {
 function resetWriting() {
   strokes = [];
   activeStroke = null;
-  redraw();
   $('result').hidden = true;
   $('write-actions').hidden = false;
   setWriting(true);
+  // Recalculate canvas dimensions after the result panel disappears.
+  // Otherwise the old bitmap stretches vertically and compresses the lines.
+  requestAnimationFrame(resizePad);
 }
 
 function showWord() {
