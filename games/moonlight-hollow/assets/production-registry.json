@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastAudited": "2026-10-17",
+  "lastAudited": "2026-10-18",
   "repository": "sigibrechtus/lerenisfijn",
   "scope": "Moonlight Hollow programmatic scene mesh-name literals in JS; repeated instances captured once per file",
   "sources": [
@@ -27,7 +27,7 @@
     "runtime": "Babylon.js glTF2 with fallback, independent picking, collision, animation and low LOD"
   },
   "counts": {
-    "sourceMeshIdentifiers": 302,
+    "sourceMeshIdentifiers": 323,
     "assetFamilies": 18,
     "publishedProductionAssets": 1,
     "familiesPendingFullQA": 18
@@ -49,9 +49,30 @@
         "world.js:wheel-spoke",
         "world.js:train-mist",
         "mini-game-world.js:train",
-        "destinations.js:display-carriage"
+        "destinations.js:display-carriage",
+        "world.js:express-engine-chassis",
+        "world.js:express-engine-running-board",
+        "world.js:express-hd-boiler",
+        "world.js:express-boiler-brass-band",
+        "world.js:express-smokebox-front",
+        "world.js:express-smokebox-brass-rim",
+        "world.js:express-headlamp",
+        "world.js:express-cab-floor",
+        "world.js:express-cab-side",
+        "world.js:express-cab-window",
+        "world.js:express-cab-roof",
+        "world.js:express-cab-rear",
+        "world.js:express-chimney",
+        "world.js:express-chimney-lip",
+        "world.js:express-steam-dome",
+        "world.js:express-drive-wheel",
+        "world.js:express-wheel-hub",
+        "world.js:express-side-rod",
+        "world.js:express-front-buffer",
+        "world.js:express-buffer",
+        "world.js:express-coupler"
       ],
-      "sourceCount": 13,
+      "sourceCount": 34,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -79,7 +100,7 @@
         "referenceViews": "eight_consistent_orthographic_diagnostic_images_published",
         "mesh": "69_772_triangle_hero_and_12_636_triangle_mobile_GLBs_published",
         "pbr": "4096_albedo_normal_ORM_maps_published;512_embedded_mobile",
-        "runtime": "GLB_loader_and_4K_high_tier_mapping_integrated_live_validation_pending",
+        "runtime": "single procedural locomotive mounted directly on railway transform; detached GLB import removed; live browser QA pending",
         "qa": "desktop_and_mobile_WebGL_unverified"
       }
     },
@@ -4315,6 +4336,237 @@
       "source": "procedural-js",
       "productionStatus": "pending_asset_family",
       "meshRequirement": "member_of_20k_triangulated_source_asset",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-engine-chassis",
+      "file": "world.js",
+      "meshName": "express-engine-chassis",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-engine-running-board",
+      "file": "world.js",
+      "meshName": "express-engine-running-board",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-hd-boiler",
+      "file": "world.js",
+      "meshName": "express-hd-boiler",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-boiler-brass-band",
+      "file": "world.js",
+      "meshName": "express-boiler-brass-band",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-smokebox-front",
+      "file": "world.js",
+      "meshName": "express-smokebox-front",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-smokebox-brass-rim",
+      "file": "world.js",
+      "meshName": "express-smokebox-brass-rim",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-headlamp",
+      "file": "world.js",
+      "meshName": "express-headlamp",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-cab-floor",
+      "file": "world.js",
+      "meshName": "express-cab-floor",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-cab-side",
+      "file": "world.js",
+      "meshName": "express-cab-side",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-cab-window",
+      "file": "world.js",
+      "meshName": "express-cab-window",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-cab-roof",
+      "file": "world.js",
+      "meshName": "express-cab-roof",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-cab-rear",
+      "file": "world.js",
+      "meshName": "express-cab-rear",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-chimney",
+      "file": "world.js",
+      "meshName": "express-chimney",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-chimney-lip",
+      "file": "world.js",
+      "meshName": "express-chimney-lip",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-steam-dome",
+      "file": "world.js",
+      "meshName": "express-steam-dome",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-drive-wheel",
+      "file": "world.js",
+      "meshName": "express-drive-wheel",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-wheel-hub",
+      "file": "world.js",
+      "meshName": "express-wheel-hub",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-side-rod",
+      "file": "world.js",
+      "meshName": "express-side-rod",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-front-buffer",
+      "file": "world.js",
+      "meshName": "express-front-buffer",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-buffer",
+      "file": "world.js",
+      "meshName": "express-buffer",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "world.js:express-coupler",
+      "file": "world.js",
+      "meshName": "express-coupler",
+      "family": "moon-express-train",
+      "role": "vehicle",
+      "source": "procedural-js",
+      "productionStatus": "runtime-procedural-rail-mount",
+      "meshRequirement": "scene-owned-railway-hierarchy",
       "inGameStatus": "existing-procedural"
     }
   ],
