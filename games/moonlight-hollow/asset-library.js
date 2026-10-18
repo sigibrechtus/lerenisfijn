@@ -133,7 +133,14 @@ async function placeProduction(scene,id,parent,opts={}){
  }
  const node=new B.TransformNode('moon-production-'+id,scene);
  const included=new Set(result.meshes);
- result.meshes.filter(m=>!m.parent||!included.has(m.parent)).forEach(m=>m.setParent(node));
+ // Imported GLB root transforms can contain absolute authoring offsets.
+ // Preserve their local geometry hierarchy but discard imported scene placement.
+ result.meshes.filter(m=>!m.parent||!included.has(m.parent)).forEach(m=>{
+  m.setParent(node);
+  m.position.set(0,0,0);
+  m.rotationQuaternion=null;
+  m.rotation.set(0,0,0);
+ });
  node.parent=parent;
  node.scaling.setAll(opts.scale||.66);
  // Calibrate the imported locomotive against the actual 2 m rail gauge.
