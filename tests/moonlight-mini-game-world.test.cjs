@@ -20,14 +20,14 @@ assert.equal(complete,5);assert(updates>30);
 for(const id of ['broom']){
  runtime.start(id,{level:1,seed:4});const arena=runtime.scene;for(let stage=1;stage<=3;stage++){
   const s=runtime.snapshot(),i=s.task.items.findIndex(t=>t.id===s.task.solution[0]),x=(i-1)*7,gateZ=19;
-  assert.equal(s.round,stage);assert.equal(s.gateZ,s.course.gate.z);assert.equal(s.vehicle.localZ,0);assert(Math.abs(s.vehicle.x-s.course.start.x)<1e-4);assert(Math.abs(s.vehicle.z-s.course.start.z)<1e-4);if(stage>1){assert.notEqual(s.course.heading,0);assert.notEqual(s.course.start.x,0);}
+  assert.equal(s.round,stage);assert.equal(s.gateZ,s.course.gate.z);if(stage===1)assert.equal(s.vehicle.localZ,0);else{assert(s.vehicle.localZ>=-6&&s.vehicle.localZ<0,'next stage begins just beyond previous gate');assert.equal(s.course.heading,0,'continuous broom corridor preserves heading');}
   const checkpoints=arena.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(checkpoints.length,s.rounds);assert.equal(checkpoints.filter(m=>m.metadata.completed).length,stage-1);
   const labels=arena.meshes.filter(m=>m.metadata?.miniLabel?.gate);assert.equal(labels.length,3);assert(labels.every(m=>m.position.z===gateZ));
   if(id==='broom'){
    const ring=arena.meshes.filter(m=>m.name==='mini-answer-ring')[i],targetY=ring.position.y-120;runtime.input(Math.sign(x),0,0);for(let n=0;n<Math.round(Math.abs(x)/.6);n++)runtime.tick(.1);
    const initialY=runtime.snapshot().vehicle.y;runtime.input(0,0,Math.sign(targetY-initialY));for(let n=0;n<Math.round(Math.abs(targetY-initialY)/.6);n++)runtime.tick(.1);runtime.input(0,1,0);for(let n=0;n<60&&runtime.snapshot().progress===(stage-1)/s.rounds;n++)runtime.tick(.1);
   }else for(let n=0;n<300&&runtime.snapshot().progress===(stage-1)/s.rounds;n++){const v=runtime.snapshot().vehicle,target=Math.atan2(x-v.localX,gateZ-v.localZ),localHeading=v.heading-s.course.heading,turn=Math.atan2(Math.sin(target-localHeading),Math.cos(target-localHeading));runtime.input(Math.max(-1,Math.min(1,turn*3)),1,0);runtime.tick(.05);}
-  for(let n=0;n<40&&runtime.snapshot().busy;n++)runtime.tick(.1);assert.equal(runtime.snapshot().progress,stage/s.rounds);assert.equal(runtime.snapshot().vehicle.localZ,0);assert.equal(runtime.snapshot().completed,false);const parked=runtime.snapshot().vehicle.z;runtime.tick(.1);assert.equal(runtime.snapshot().vehicle.z,parked,'next stage waits for fresh movement');
+  for(let n=0;n<40&&runtime.snapshot().busy;n++)runtime.tick(.1);assert.equal(runtime.snapshot().progress,stage/s.rounds);assert(runtime.snapshot().vehicle.localZ>=-6&&runtime.snapshot().vehicle.localZ<0,'correct gate retains progress instead of resetting');assert.equal(runtime.snapshot().completed,false);const next=runtime.snapshot().vehicle.z;runtime.input(0,0,0);runtime.tick(.1);assert(runtime.snapshot().vehicle.z>next,'flight continues forward after releasing the joystick');
  }
  runtime.dispose();
 }
