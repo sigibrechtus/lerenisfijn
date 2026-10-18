@@ -44,7 +44,7 @@ test('hero GLB mounts ahead of the wagon, village parking and ride camera follow
  assert.equal(s.loaded[0].opts.textureQuality,'high');
  assert.equal(s.loaded[0].opts.scale,.85);
  assert.deepEqual(s.hidden,[],'boarding wagon must remain visible');
- assert.equal(model.parent,s.locomotiveMount,'GLB is mounted ahead of wagon');
+ assert.equal(model.parent,s.locomotiveMount,'GLB is mounted on independent track transform');
  assert.equal(s.railMotion.snapshot().station,0,'village station is initial location');
  assert.equal(s.train.position.x,R.stations[0].x);
  assert.equal(s.train.position.z,R.stations[0].z);
@@ -60,7 +60,11 @@ test('hero GLB mounts ahead of the wagon, village parking and ride camera follow
  assert.equal(s.train.position.x,moving.x);
  assert.equal(s.train.position.z,moving.z);
  assert.equal(s.train.rotation.y,moving.heading);
- assert.equal(s.rideCamera.parent,s.train,'camera follows same transform during travel');
+ assert.equal(s.rideCamera.parent,s.train,'camera follows the wagon during travel');
+ const front=R.track.pose(moving.distance+moving.direction*4.5);
+ assert(Math.hypot(s.locomotiveMount.position.x-front.x,s.locomotiveMount.position.z-front.z)<1e-8,'engine on the actual rail curve');
+ assert(Math.abs(s.locomotiveMount.rotation.y-front.heading)<1e-8,'engine uses its own track tangent');
+ assert.notEqual(s.locomotiveMount.parent,s.train,'engine not rigidly offset from wagon');
  s.railMotion.tick(1000);s.moveTrain(s.railMotion.snapshot(),0);
  assert.equal(s.railMotion.snapshot().station,1);
  assert(Math.abs(s.train.position.x-R.stations[1].x)<1e-8);
@@ -82,7 +86,8 @@ test('HD train aligns to measured local bounds and preserves +Z-forward transpor
  assert.match(asset,/node\.position\.x-=midX\*fit/);
  assert.match(asset,/node\.position\.z-=midZ\*fit/);
  assert.match(asset,/node\.position\.y\+=\.12-mins\[1\]\*fit/);
+ assert.match(asset,/B\.Matrix\.Invert\(node\.getWorldMatrix\(\)\)/,'model calibration must remain local to its imported root');
  assert.match(source,/geometryQuality:'high'/,'production hero mesh remains selected');
 });
 
-test('locomotive occupies forward mounting point with boarding wagon preserved',()=>{assert.match(source,/locomotiveMount\.position\.set\(0,0,4\.5\)/);assert.doesNotMatch(source,/trainProxyMeshes\.filter\(/);});
+test('locomotive occupies forward mounting point with boarding wagon preserved',()=>{assert.match(source,/const locomotiveLead=4\.5/);assert.doesNotMatch(source,/trainProxyMeshes\.filter\(/);});
