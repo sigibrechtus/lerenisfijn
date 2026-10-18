@@ -266,3 +266,6 @@
  .flight-mode .mini-mission{max-width:calc(100vw - 165px)}
  .flight-mode .mini-actions{bottom:calc(92px + env(safe-area-inset-bottom))}
 }
+
+/* Keep flight sharp without changing village or other minigame atmosphere. */
+.flight-mode .vignette{display:none!important}
