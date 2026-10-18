@@ -269,3 +269,60 @@
 
 /* Keep flight sharp without changing village or other minigame atmosphere. */
 .flight-mode .vignette{display:none!important}
+
+/* Flight cockpit HUD: top corners only, unobstructed central answer-gate corridor. */
+.flight-mode .mini-panel{
+ position:fixed;inset:var(--hud-top,60px) 0 0 0;
+ width:100%;height:calc(100dvh - var(--hud-top,60px));max-height:none;
+ display:block;margin:0;padding:0;background:none!important;
+ border:0;box-shadow:none;overflow:visible;pointer-events:none;
+}
+.flight-mode .mini-mission{
+ position:absolute;top:2px;left:50%;transform:translateX(-50%);
+ width:min(470px,45vw);max-width:45vw;max-height:72px;overflow:hidden;
+ box-sizing:border-box;padding:5px 9px!important;margin:0;
+ background:#15263ce8;border:1px solid #d6ac776e;border-radius:9px;pointer-events:none;
+}
+.flight-mode .mini-mission h2,.flight-mode .mini-mission #mini-feedback,
+.flight-mode .mini-mission #mini-question-label{display:none}
+.flight-mode .mini-mission #mini-question{
+ display:block;margin:2px 0!important;font-size:clamp(13px,1.65vw,20px)!important;
+ line-height:1.2;text-align:center;max-height:2.4em;overflow:hidden;
+}
+.flight-mode .mini-mission .mini-meta{justify-content:center;font-size:10px}
+.flight-mode .race-info-group{
+ position:absolute;right:max(7px,env(safe-area-inset-right));top:2px;
+ width:clamp(90px,12vw,145px);max-width:145px;pointer-events:auto;
+}
+.flight-mode .race-telemetry:not([hidden]){width:100%;max-width:100%;box-sizing:border-box;padding:5px 8px}
+.flight-mode .race-telemetry progress,.flight-mode #mini-speed-label{display:none}
+.flight-mode .mini-tools{
+ position:absolute;left:max(7px,env(safe-area-inset-left));top:2px;
+ width:clamp(90px,13vw,150px);max-width:150px;max-height:55dvh;
+ padding:3px 7px;margin:0;background:#16243bdb;pointer-events:auto;
+}
+.flight-mode .mini-tools[open]{width:min(250px,34vw);max-width:min(250px,34vw);overflow-y:auto}
+.flight-mode .mini-tools:not([open]) .mini-choices{display:none}
+.flight-mode .mini-driving:not([hidden]){
+ position:fixed;bottom:calc(6px + env(safe-area-inset-bottom));left:0;right:0;
+ z-index:25;pointer-events:none;
+}
+.flight-mode .mini-actions{
+ position:fixed;left:50%;right:auto;transform:translateX(-50%);
+ bottom:calc(5px + env(safe-area-inset-bottom));display:flex;
+ padding:0!important;margin:0;pointer-events:auto;
+}
+.flight-mode .mini-actions button{min-height:30px;font-size:10px;opacity:.84}
+@media(max-width:680px){
+ .flight-mode .mini-mission{top:1px;max-width:calc(100vw - 204px);width:calc(100vw - 204px)}
+ .flight-mode .mini-mission #mini-question{font-size:13px!important}
+ .flight-mode .race-info-group{width:92px;right:4px}
+ .flight-mode .mini-tools{left:4px;width:90px;max-width:90px}
+ .flight-mode .mini-tools[open]{width:min(195px,35vw);max-width:min(195px,35vw)}
+ .flight-mode .mini-actions{bottom:calc(92px + env(safe-area-inset-bottom))}
+}
+@media(max-height:480px){
+ .flight-mode .mini-mission{max-height:54px}
+ .flight-mode .mini-mission .mini-meta{display:none}
+ .flight-mode .mini-tools{max-height:35dvh}
+}
