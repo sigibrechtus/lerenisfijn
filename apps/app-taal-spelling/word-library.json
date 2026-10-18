@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "plantynThemes": [
     {
       "grade": 1,
@@ -415,6 +415,37 @@
         "graag"
       ],
       "provenance": "Eigen voorbeeldwoorden; geen officiële uitgeverswoordenlijst."
+    },
+    {
+      "id": "l2-oefenblad-themadictee-2",
+      "grade": 2,
+      "theme": "Oefenblad themadictee 2 · aai, ooi, oei, eeuw, ieuw, ng",
+      "kind": "woordenschat",
+      "title": "Spelling · Oefenblad themadictee 2",
+      "focus": "Woorden van het meegegeven oefenblad",
+      "words": [
+        "slang",
+        "het hooi",
+        "trui",
+        "schreeuw",
+        "zing",
+        "roei",
+        "speel",
+        "nieuw",
+        "het ding",
+        "dwaas",
+        "kraai",
+        "gooi",
+        "staf",
+        "leeuw",
+        "slak",
+        "breng",
+        "kieuw",
+        "vlieg",
+        "spuit",
+        "kleur"
+      ],
+      "provenance": "Letterlijke transcriptie van het door de gebruiker aangeleverde spellingoefenblad, inclusief de aangeduide het-lidwoorden en woorden zonder lidwoord; geen officiële uitgeverslijst."
     },
     {
       "id": "l3-school",
