@@ -6,7 +6,7 @@ const HW_URL = 'https://inputtools.google.com/request?ime=handwriting&app=mobile
 const HW_TIMEOUT_MS = 8000;
 
 const DEFAULTS = {
-  rate: 0.9,
+  rate: 0.7,
   separate: true,
   twice: false,
   lookTime: 3,
