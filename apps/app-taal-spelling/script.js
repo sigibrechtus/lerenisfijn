@@ -24,7 +24,7 @@ const DEFAULTS = {
 };
 
 const LIMITS = {
-  rate:     { min: 0.5, max: 1.5, step: 0.1, fmt: (v) => v.toFixed(1) },
+  rate:     { min: 0.25, max: 1.5, step: 0.05, fmt: (v) => v.toFixed(2) },
   lookTime: { min: 1,   max: 10,  step: 1,   fmt: (v) => `${v} s` },
   strict:   { min: 1,   max: 3,   step: 1,   fmt: (v) => ['', 'Mild', 'Normaal', 'Streng'][v] },
 };
@@ -108,7 +108,7 @@ function say(text, generation) {
     if (voice) u.voice = voice;
     u.lang = voice ? voice.lang : 'nl-BE';
     // Short Dutch words can sound clipped at higher synthesis rates.
-    u.rate = Math.min(0.9, Math.max(0.65, settings.rate));
+    u.rate = Math.min(LIMITS.rate.max, Math.max(LIMITS.rate.min, settings.rate));
     u.pitch = 1;
     u.onend = resolve;
     u.onerror = (event) => {
@@ -621,7 +621,7 @@ document.querySelectorAll('.stepper').forEach((st) => {
     const key = st.dataset.key;
     const L = LIMITS[key];
     let v = settings[key] + Number(btn.dataset.step) * L.step;
-    v = Math.min(L.max, Math.max(L.min, Math.round(v * 10) / 10));
+    v = Math.min(L.max, Math.max(L.min, Math.round(v * 100) / 100));
     settings[key] = v;
     saveSettings();
     renderSettings();
