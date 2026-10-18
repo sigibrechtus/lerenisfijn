@@ -93,6 +93,7 @@ const SPEECH_END_DELAY_MS = 300;
 const SPEECH_BETWEEN_PARTS_MS = 650;
 
 function stopSpeech() {
+  window.lerenEffects?.endSpeech?.();
   speechGeneration++;
   if (hasSpeech) speechSynthesis.cancel();
 }
@@ -124,6 +125,7 @@ async function speakItem(item, withArticle) {
   if (!hasSpeech) return;
   stopSpeech();
   const generation = speechGeneration;
+  window.lerenEffects?.beginSpeech?.();
   const current = () => generation === speechGeneration;
   // Allow a previous cancel() to settle before starting a new utterance.
   await wait(SPEECH_START_DELAY_MS);
@@ -146,6 +148,7 @@ async function speakItem(item, withArticle) {
     await wait(700);
     if (current()) await sayOnce();
   }
+  if (current()) window.lerenEffects?.endSpeech?.();
 }
 
 /* ================= Tekenvlak ================= */
