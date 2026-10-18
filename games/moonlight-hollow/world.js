@@ -119,7 +119,12 @@ if(typeof productionLibrary?.placeProduction==='function'){
   // Keep the separate passenger wagon visible: the GLB is the engine in front.
  }).catch(e=>console.warn('Moon Express GLB fallback:',e));
 }
-const railMotion=R.create();railMotion.park(0);const rideCamera=new B.UniversalCamera('train-first-person',new B.Vector3(0,1.82,-1.7),scene);rideCamera.minZ=.08;rideCamera.maxZ=500;rideCamera.fov=.9;rideCamera.parent=train;rideCamera.inputs.clear();pipeline.addCamera(rideCamera);
+const railMotion=R.create();railMotion.park(0);
+// Position the locomotive before the deferred HD import resolves, so the GLB
+// never renders even one frame at the Babylon scene origin (village square).
+const initialEnginePose=R.track.pose(railMotion.snapshot().distance+railMotion.snapshot().direction*locomotiveLead);
+locomotiveMount.position.set(initialEnginePose.x,typeof terrainHeight==='function'?terrainHeight(initialEnginePose.x,initialEnginePose.z):0,initialEnginePose.z);
+locomotiveMount.rotation.y=initialEnginePose.heading+(railMotion.snapshot().direction<0?Math.PI:0);const rideCamera=new B.UniversalCamera('train-first-person',new B.Vector3(0,1.82,-1.7),scene);rideCamera.minZ=.08;rideCamera.maxZ=500;rideCamera.fov=.9;rideCamera.parent=train;rideCamera.inputs.clear();pipeline.addCamera(rideCamera);
 // Friendly castle and observatory.
 let moonMachine;district('lights',()=>{obstacles.push({x:0,z:49,w:14,d:6.5});
 box('castle',[0,4,49],[11,8,6],stone);for(const x of [-6,6]){cyl('castle-tower',[x,5,49],10,3,stone);cyl('spire',[x,11,49],4,4,roof,null,0);}box('castle-door',[0,1.9,45.9],[2.5,3.8,.15],wood);for(const x of [-4.8,-1.8,1.8,4.8]){box('castle-buttress',[x,2.7,45.7],[.65,5.4,.7],stone);box('buttress-cap',[x,5.6,45.7],[.85,.25,.85],gold);}for(let x=-5;x<=5;x+=1.25)box('battlement',[x,8.45,49],[.75,.9,6.2],stone);for(const y of [.3,7.75])box('castle-cornice',[0,y,45.85],[11.4,.3,.45],stone);const arch=Array.from({length:21},(_,i)=>new B.Vector3(Math.cos(i*Math.PI/20)*1.55,2.1+Math.sin(i*Math.PI/20)*1.7,45.7));mesh('CreateTube','castle-door-arch',{path:arch,radius:.19,tessellation:10},[0,0,0],gold);for(const x of [-3.5,3.5])for(const y of [3,6])box('castle-window',[x,y,45.9],[1,1.4,.15],warm);moonMachine=mesh('CreateTorus','moon-machine',{diameter:4,thickness:.16,tessellation:40},[0,9,48],gold);moonMachine.rotation.x=Math.PI/2;
