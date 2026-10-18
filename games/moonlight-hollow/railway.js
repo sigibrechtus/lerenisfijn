@@ -14,7 +14,7 @@ function attraction(id,dx,dz,heading,name){
 const stations=[
  {id:'centre',x:12,z:0,heading:Math.PI/4,name:{nl:'Dorpsstation',fr:'Gare du village'}},
  {id:'clock',x:S.clock.x+14,z:S.clock.z,heading:Math.PI/4,name:{nl:'Maantoren',fr:'Tour de la Lune'}},
- attraction('broom',9,0,Math.PI/2,{nl:'Bezemvlucht',fr:'Vol du balai'}),
+ attraction('broom',9,0,0,{nl:'Bezemvlucht',fr:'Vol du balai'}),
  {id:'lights',x:S.lights.x,z:S.lights.z+15,heading:-Math.PI/2,name:{nl:'Spooklichtkasteel',fr:'Château des lumières'}},
  attraction('railway',-9,0,-Math.PI/2,{nl:'Stationsraadsel',fr:'Mystère des gares'}),
  attraction('mansion',-9,0,Math.PI,{nl:'Maanlandhuis',fr:'Manoir lunaire'}),
