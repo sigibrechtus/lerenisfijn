@@ -107,7 +107,15 @@ function create(B,scene,opts={}){
   for(const [key,p] of pairs){const size=sizeFor(p.type,next,remaining);remaining-=pairBytes(size);plan.push({key,p,size});}
   for(const [mat]of bindings)if(!live(mat))bindings.delete(mat);
   peak=bytes;
-  for(const {key,p,size}of plan){
+  for(const {key,p,size:plannedSize}of plan){
+   let size=plannedSize;
+   // Upgrades must fit BOTH the eventual resident budget and the temporary
+   // old+new texture overlap. Downscales may temporarily exceed the smaller
+   // target budget while replacing larger resident textures.
+   if(rank[next]>rank[quality]&&size>p.resolution){
+    while(size>p.resolution&&bytes+pairBytes(size)>budgetFor(next))size/=2;
+    if(size<=p.resolution)size=p.resolution;
+   }
    if(size===p.resolution){for(const t of [p.albedo,p.normal,p.orm])t.anisotropicFilteringLevel=next==='low'?2:8;continue;}
    peak=max(peak,bytes+pairBytes(size));
    const fresh=upload(p.type,p.repeat,size,next);
