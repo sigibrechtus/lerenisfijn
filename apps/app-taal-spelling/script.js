@@ -88,6 +88,9 @@ if (hasSpeech) {
 }
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const SPEECH_START_DELAY_MS = 350;
+const SPEECH_END_DELAY_MS = 300;
+const SPEECH_BETWEEN_PARTS_MS = 650;
 
 function stopSpeech() {
   speechGeneration++;
@@ -98,7 +101,9 @@ function say(text, generation) {
   return new Promise((resolve) => {
     if (!hasSpeech || generation !== speechGeneration) return resolve();
     pickVoice();
-    const u = new SpeechSynthesisUtterance(text);
+    // Leading and trailing punctuation give Safari's speech engine room to
+    // start and finish without swallowing the first or last phoneme.
+    const u = new SpeechSynthesisUtterance(`… ${text} …`);
     if (voice) u.voice = voice;
     u.lang = voice ? voice.lang : 'nl-BE';
     // Short Dutch words can sound clipped at higher synthesis rates.
@@ -120,17 +125,21 @@ async function speakItem(item, withArticle) {
   stopSpeech();
   const generation = speechGeneration;
   const current = () => generation === speechGeneration;
+  // Allow a previous cancel() to settle before starting a new utterance.
+  await wait(SPEECH_START_DELAY_MS);
+  if (!current()) return;
   const sayOnce = async () => {
     if (!current()) return;
     if (withArticle && item.article && settings.separate) {
       await say(item.article, generation);
       if (!current()) return;
-      await wait(450);
+      await wait(SPEECH_BETWEEN_PARTS_MS);
       if (!current()) return;
       await say(item.word, generation);
     } else {
       await say(withArticle && item.article ? item.full : item.word, generation);
     }
+    if (current()) await wait(SPEECH_END_DELAY_MS);
   };
   await sayOnce();
   if (settings.twice && current()) {
