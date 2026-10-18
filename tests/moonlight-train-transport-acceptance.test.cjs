@@ -13,7 +13,7 @@ function section(from,to){
  return source.slice(a,b);
 }
 const parking=section("const train=new B.TransformNode('moon-express',scene);","const trainMat=material('train'");
-const importAndCamera=section("const locomotiveMount=new B.TransformNode('moon-express-locomotive-front',scene);",'// Friendly castle and observatory.');
+const importAndCamera=section('const locomotiveMount=new B.TransformNode','// Friendly castle and observatory.');
 const move=section('function moveTrain(state,rollDistance=0){','function finishRide(');
 async function exercise(importer){
  const hidden=[],loaded=[],cameras=[],warnings=[];
