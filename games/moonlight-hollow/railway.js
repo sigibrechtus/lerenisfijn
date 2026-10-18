@@ -1,13 +1,28 @@
 /* Closed, arc-length parameterized railway. Passengers inherit one carriage transform. */
 (function(root){'use strict';
 const L=root.MoonLandscape||(typeof require==='function'?require('./landscape.js'):null),S=L.sites;
-// Keep historical IDs 0 (village) and 1 (clock) valid in saved profiles.
+const D=root.MoonDestinations||(typeof require==='function'?require('./destinations.js'):null);
+const gates=D?.sites||{};
+// Route around the perimeter so every optional minigame has its own platform
+// outside its entrance arch. Retain the historic village/clock station indices.
+function attraction(id,dx,dz,heading,name){
+ const gate=gates[id]?.entry;
+ if(!gate)throw Error('Moon Express requires entrance gate for '+id);
+ return{id:'attraction-'+id,attraction:id,gate:{x:gate.x,z:gate.z},
+  x:gate.x+dx,z:gate.z+dz,heading,name};
+}
 const stations=[
  {id:'centre',x:12,z:0,heading:Math.PI/4,name:{nl:'Dorpsstation',fr:'Gare du village'}},
- {id:'clock',x:S.clock.x+14,z:S.clock.z,heading:0,name:{nl:'Maantoren',fr:'Tour de la Lune'}},
+ {id:'clock',x:S.clock.x+14,z:S.clock.z,heading:Math.PI/4,name:{nl:'Maantoren',fr:'Tour de la Lune'}},
+ attraction('broom',9,0,Math.PI/2,{nl:'Bezemvlucht',fr:'Vol du balai'}),
  {id:'lights',x:S.lights.x,z:S.lights.z+15,heading:-Math.PI/2,name:{nl:'Spooklichtkasteel',fr:'Château des lumières'}},
+ attraction('railway',-9,0,-Math.PI/2,{nl:'Stationsraadsel',fr:'Mystère des gares'}),
+ attraction('mansion',-9,0,Math.PI,{nl:'Maanlandhuis',fr:'Manoir lunaire'}),
  {id:'library',x:S.library.x-14,z:S.library.z,heading:Math.PI,name:{nl:'Fluisterbibliotheek',fr:'Bibliothèque des murmures'}},
  {id:'bridge',x:S.bridge.x-14,z:S.bridge.z,heading:Math.PI,name:{nl:'Pompoenpad',fr:'Sentier des citrouilles'}},
+ attraction('garden',-9,0,Math.PI,{nl:'Spookjesmoestuin',fr:'Jardin des fantômes'}),
+ attraction('rally',9,0,Math.PI/2,{nl:'Pompoenenrally',fr:'Rallye des citrouilles'}),
+ attraction('potions',9,0,Math.PI/2,{nl:'Toverdrank',fr:'Potion magique'}),
  {id:'garden',x:S.garden.x+14,z:S.garden.z,heading:-Math.PI/4,name:{nl:'Tovertuin',fr:'Jardin magique'}}
 ];
 const samples=[],distances=[];let length=0;
