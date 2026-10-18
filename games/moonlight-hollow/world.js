@@ -100,6 +100,8 @@ pumpkin(0,1.05, .45,train);
 // Keep the locomotive independent of the wagon's rotation: each follows its own
 // point on the same arc-length railway, including on bends and when reversing.
 const locomotiveMount=new B.TransformNode('moon-express-locomotive-front',scene);const locomotiveLead=4.5;
+// Never show the imported engine at the village origin while loading.
+locomotiveMount.setEnabled(false);
 let productionTrain=null;
 // Production GLBs are optional. Stale/offline clients may load an older asset-library.js
 // without placeProduction; in that case preserve the fully playable procedural train.
@@ -116,6 +118,9 @@ if(typeof productionLibrary?.placeProduction==='function'){
  })).then(art=>{
   if(!art||scene.isDisposed()||train.isDisposed()||locomotiveMount.isDisposed())return;
   productionTrain=art;
+  // Only reveal the engine after it has been attached to the rail-following mount.
+  moveTrain(railMotion.snapshot());
+  locomotiveMount.setEnabled(true);
   // Keep the separate passenger wagon visible: the GLB is the engine in front.
  }).catch(e=>console.warn('Moon Express GLB fallback:',e));
 }
