@@ -141,7 +141,9 @@ async function placeProduction(scene,id,parent,opts={}){
  // transport transform, fit its width and length uniformly, then seat it on the rails.
  if(id==='moon-express-locomotive'&&B.Matrix?.Invert&&B.Vector3?.TransformCoordinates){
   parent.computeWorldMatrix(true);node.computeWorldMatrix(true);
-  const inverse=B.Matrix.Invert(parent.getWorldMatrix());
+  // Measure imported bounds in the locomotive's own coordinates, never in the
+   // carriage/world transform; otherwise calibration can offset it into the square.
+   const inverse=B.Matrix.Invert(node.getWorldMatrix());
   const mins=[Infinity,Infinity,Infinity],maxs=[-Infinity,-Infinity,-Infinity];
   for(const part of node.getChildMeshes()){
    if(!part.getBoundingInfo)continue;
