@@ -227,3 +227,42 @@
  .flight-mode #mini-question{font-size:14px}
  .flight-mode .mini-driving{bottom:0}
 }
+
+/* Broom Flight: race-style edge controls without overlapping answer gates. */
+.flight-mode .mini-driving:not([hidden]){
+ position:fixed;left:0;right:0;bottom:calc(6px + env(safe-area-inset-bottom));
+ width:100%;height:clamp(88px,17dvh,124px);margin:0;padding:0 clamp(10px,3vw,32px);
+ transform:none;display:flex;align-items:end;justify-content:space-between;
+ pointer-events:none;background:none;border:0;z-index:22;overflow:visible;
+}
+.flight-mode .mini-driving #mini-left,
+.flight-mode .mini-driving #mini-right,
+.flight-mode .mini-driving #mini-forward,
+.flight-mode .mini-driving #mini-back{display:none!important}
+.flight-mode .flight-stick:not([hidden]){
+ display:flex;position:relative;flex-direction:column;align-items:center;justify-content:center;
+ flex:0 0 clamp(82px,15vw,124px);height:clamp(82px,15vw,116px);
+ border:2px solid #bb8b56;border-radius:15px;background:#261b32df;
+ touch-action:none;user-select:none;-webkit-user-select:none;pointer-events:auto;
+}
+.flight-mode .flight-stick .rally-rc-track{width:clamp(54px,10vw,74px);height:clamp(54px,10vw,74px);pointer-events:none}
+.flight-mode .flight-stick-label{font-size:10px;color:#f4d6ab;pointer-events:none}
+.flight-mode .mini-driving #mini-up,.flight-mode .mini-driving #mini-down{
+ display:block;position:relative;grid-column:auto;grid-row:auto;
+ flex:0 0 clamp(58px,10vw,92px);min-height:52px;margin:0 3px 8px;
+ padding:7px 6px;border:2px solid #bb8b56;border-radius:12px;
+ background:#261b32eb;color:#fff1d8;pointer-events:auto;touch-action:none;
+}
+.flight-mode .mini-driving #mini-up{margin-left:auto}
+.flight-mode .mini-mission{max-width:min(500px,60vw)}
+.flight-mode .race-telemetry #mini-camera{display:block;min-height:34px;pointer-events:auto}
+.flight-mode .mini-driving,.flight-mode .mini-driving *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.flight-mode #mini-how{display:none}
+.flight-mode .mini-actions{bottom:calc(132px + env(safe-area-inset-bottom))}
+@media(max-width:600px),(max-height:520px){
+ .flight-mode .mini-driving:not([hidden]){height:88px;padding:0 8px;gap:5px}
+ .flight-mode .flight-stick:not([hidden]){flex-basis:82px;height:80px}
+ .flight-mode .mini-driving #mini-up,.flight-mode .mini-driving #mini-down{flex-basis:62px;font-size:11px;min-height:48px}
+ .flight-mode .mini-mission{max-width:calc(100vw - 165px)}
+ .flight-mode .mini-actions{bottom:calc(92px + env(safe-area-inset-bottom))}
+}
