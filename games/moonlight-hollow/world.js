@@ -82,7 +82,7 @@ for(const [i,station]of R.stations.entries()){
  box('station-canopy',[-4.3,3.15,0],[3.8,.2,6.5],roof,stationRoot);label(station.name.nl+' / '+station.name.fr,[-4.5,2.5,0],4,stationRoot);
  for(let step=0;step<3;step++)box('boarding-step',[-2.2+step*.4,.09+step*.16,0],[.45,.18,1.2],wood,stationRoot);
  cyl('station-bell-mount',[-4,.56,2],.63,.1,wood,stationRoot);const bell=cyl('station-call-bell',[-4,1.1,2],.45,.45,gold,stationRoot);bell.isPickable=true;bell.metadata={station:i,use:()=>callTrain(i)};
- const platform=R.platform(i),site=station.id==='centre'?{x:0,z:0}:sites[station.id],n=Math.ceil(Math.hypot(platform.x-site.x,platform.z-site.z)/2.5);
+ const platform=R.platform(i),site=station.gate||(station.id==='centre'?{x:0,z:0}:sites[station.id]),n=Math.max(1,Math.ceil(Math.hypot(platform.x-site.x,platform.z-site.z)/2.5));
  for(let j=0;j<=n;j++)cyl('station-path',[site.x+(platform.x-site.x)*j/n,.03,site.z+(platform.z-site.z)*j/n],.06,3.9,path);
 }
 const train=new B.TransformNode('moon-express',scene);train.position=new B.Vector3(R.stations[0].x,0,R.stations[0].z);train.rotation.y=R.track.pose(R.stations[0].distance).heading;
