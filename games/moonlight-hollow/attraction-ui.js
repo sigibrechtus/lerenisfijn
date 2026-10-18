@@ -53,7 +53,7 @@ function attach(options){
   target.replaceChildren(...entries);
   $('mini-leaderboard-title').textContent=cloudStatus==='cloud'?say('🏆 Ranglijst · account','🏆 Classement · compte'):say('🏆 Ranglijst · dit toestel','🏆 Classement · cet appareil');
  }
- function resetMovement(){axis={x:0,z:0,y:0};padPointers.clear();if(typeof flightPointers!=='undefined'){flightPointers.clear();const knob=$('mini-flight-stick')?.querySelector('.rally-rc-stick');if(knob)knob.style.transform='';}runtime?.input(0,0,0);for(const b of $('mini-driving').querySelectorAll('button'))b.classList.remove('held');if(typeof rcPointers!=='undefined'){rcPointers.clear();rcKeys.clear();}}
+ function resetMovement(){axis={x:0,z:0,y:0};padPointers.clear();if(typeof flightPointers!=='undefined'){flightPointers.clear();const knob=$('mini-flight-stick')?.querySelector?.('.rally-rc-stick');if(knob)knob.style.transform='';}runtime?.input(0,0,0);for(const b of $('mini-driving').querySelectorAll('button'))b.classList.remove('held');if(typeof rcPointers!=='undefined'){rcPointers.clear();rcKeys.clear();}}
  function updateInput(){if(active==='broom'&&typeof flightInput==='function'){flightInput();return;}const input={x:0,z:0,y:0};for(const value of padPointers.values())input[value.axis]+=value.value;axis={x:Math.max(-1,Math.min(1,input.x)),z:Math.max(-1,Math.min(1,input.z)),y:Math.max(-1,Math.min(1,input.y))};runtime?.input(axis.x,axis.z,axis.y);}
  function localize(){
   const mode=world.viewMode();$('view-label').textContent=say('Camera tijdens verkennen','Caméra pendant l’exploration');$('view').value=mode;
@@ -136,10 +136,10 @@ function attach(options){
  const flightStick=$('mini-flight-stick'),flightPointers=new Map();
  function flightInput(){if(active!=='broom')return;let x=0,z=0;for(const v of flightPointers.values()){x=v.x;z=v.z;}const input={x,z,y:0};for(const v of padPointers.values())input[v.axis]+=v.value;axis={x:Math.max(-1,Math.min(1,input.x)),z:Math.max(-1,Math.min(1,input.z)),y:Math.max(-1,Math.min(1,input.y))};runtime?.input(axis.x,axis.z,axis.y);}
  if(flightStick){
-  const move=e=>{if(!flightPointers.has(e.pointerId))return;const rect=flightStick.getBoundingClientRect(),reach=Math.max(20,Math.min(rect.width,rect.height)*.36),x=Math.max(-1,Math.min(1,(e.clientX-rect.left-rect.width/2)/reach)),z=Math.max(-1,Math.min(1,-(e.clientY-rect.top-rect.height/2)/reach));flightPointers.set(e.pointerId,{x,z});const knob=flightStick.querySelector('.rally-rc-stick');if(knob)knob.style.transform='translate('+Math.round(x*reach*.45)+'px,'+Math.round(-z*reach*.45)+'px)';flightInput();};
+  const move=e=>{if(!flightPointers.has(e.pointerId))return;const rect=flightStick.getBoundingClientRect(),reach=Math.max(20,Math.min(rect.width,rect.height)*.36),x=Math.max(-1,Math.min(1,(e.clientX-rect.left-rect.width/2)/reach)),z=Math.max(-1,Math.min(1,-(e.clientY-rect.top-rect.height/2)/reach));flightPointers.set(e.pointerId,{x,z});const knob=flightStick.querySelector?.('.rally-rc-stick');if(knob)knob.style.transform='translate('+Math.round(x*reach*.45)+'px,'+Math.round(-z*reach*.45)+'px)';flightInput();};
   flightStick.onpointerdown=e=>{if(active!=='broom'||blocked()||e.button!==0)return;e.preventDefault();flightPointers.set(e.pointerId,{x:0,z:0});flightStick.setPointerCapture?.(e.pointerId);move(e);};
   flightStick.onpointermove=move;
-  const release=e=>{if(!flightPointers.delete(e.pointerId))return;const knob=flightStick.querySelector('.rally-rc-stick');if(knob)knob.style.transform='';flightInput();};for(const type of ['pointerup','pointercancel','lostpointercapture'])flightStick.addEventListener(type,release);
+  const release=e=>{if(!flightPointers.delete(e.pointerId))return;const knob=flightStick.querySelector?.('.rally-rc-stick');if(knob)knob.style.transform='';flightInput();};for(const type of ['pointerup','pointercancel','lostpointercapture'])flightStick.addEventListener(type,release);
  }
  const rcPointers=new Map(),rcKeys=new Map();
  function rcInput(){if(active!=='rally')return;const values={steer:0,throttle:0};for(const item of [...rcKeys.values(),...rcPointers.values()])values[item.axis]=item.value;updateInput();axis.x=values.steer;axis.z=values.throttle;runtime?.input(axis.x,axis.z,axis.y);}
