@@ -42,3 +42,10 @@ Date: 2026-10-18. Status: **audit started; asset production and live rendering Q
 
 ## Known limitations
 This tracker is based on source inspection. No new production GLB or texture was generated in this audit, and no desktop/iPhone live rendering or end-to-end benchmark was executed. Existing production registry stages must not be advanced based on this document.
+
+## Implemented PBR texture-transition hardening (18 October 2026)
+
+- `pbr-materials.js`: quality upgrades now check temporary old/new triplet overlap against the target texture budget; when a higher-resolution triplet cannot fit, that surface retains its existing lower-resolution maps rather than allocating beyond the budget.
+- `tests/moonlight-pbr.test.cjs`: added a 24 MiB, two-material regression that asserts bounded peak and resident allocation, live Babylon texture bindings and exactly-once disposal.
+- Scope: memory-accounting and quality-transition safety, **not** a new 3D asset, a new texture family, a screenshot acceptance, or verified GPU memory measurement.
+- Remaining work: inspect potential target-budget overshoot during quality *downgrades*, actual GPU driver overhead, full 18-family production pipeline, browser acceptance and mobile thermal performance. These require separate checks.
