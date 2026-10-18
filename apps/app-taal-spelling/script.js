@@ -70,89 +70,72 @@ function shuffle(arr) {
 /* ================= Spraak ================= */
 const hasSpeech = 'speechSynthesis' in window;
 let voice = null;
-let speechPrimed = false; // Flag to ensure the "warm-up" happens only once.
+let speechGeneration = 0;
 
 function pickVoice() {
+  if (!hasSpeech) return;
   const voices = speechSynthesis.getVoices();
-  if (!voices.length) return;
-  const lang = (v) => v.lang.replace('_', '-').toLowerCase();
-  voice =
-    voices.find((v) => lang(v) === 'nl-be') ||
-    voices.find((v) => lang(v).startsWith('nl')) ||
-    null;
+  const lang = (v) => v.lang.replace(/_/g, '-').toLowerCase();
+  voice = voices.find((v) => lang(v) === 'nl-be' && v.localService)
+    || voices.find((v) => lang(v) === 'nl-be')
+    || voices.find((v) => lang(v).startsWith('nl-') && v.localService)
+    || voices.find((v) => lang(v).startsWith('nl'))
+    || null;
 }
-
 if (hasSpeech) {
   pickVoice();
-  // This event is crucial for browsers that load voices asynchronously.
-  speechSynthesis.onvoiceschanged = pickVoice;
+  speechSynthesis.addEventListener?.('voiceschanged', pickVoice);
 }
 
-function say(text) {
-  return new Promise((resolve) => {
-    if (!hasSpeech) return resolve();
-
-    // ** THE FIX FOR EDGE STARTS HERE **
-    // This is a workaround for browsers that may not initialize the speech engine
-    // until an explicit action, or that suspend the audio context.
-    if (!speechPrimed) {
-      speechSynthesis.resume(); // Ensure the audio context is not suspended.
-      const u = new SpeechSynthesisUtterance(''); // Speak an empty string to "wake up" the engine.
-      speechSynthesis.speak(u);
-      speechPrimed = true;
-    }
-    // ** THE FIX ENDS HERE **
-
-    // Re-check for voices, as the list might have populated since the initial load.
-    if (!voice) {
-      pickVoice();
-    }
-
-    const u = new SpeechSynthesisUtterance(text);
-    if (voice) {
-      u.voice = voice;
-    }
-    u.lang = voice ? voice.lang : 'nl-NL';
-    u.rate = settings.rate;
-    u.onend = u.onerror = (e) => {
-      if (e.type === 'error') console.error('SpeechSynthesis Error:', e.error);
-      resolve();
-    };
-    
-    // Cancel any previous speech and speak the new utterance.
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
-  });
-}
-
-const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function stopSpeech() {
+  speechGeneration++;
   if (hasSpeech) speechSynthesis.cancel();
+}
+
+function say(text, generation) {
+  return new Promise((resolve) => {
+    if (!hasSpeech || generation !== speechGeneration) return resolve();
+    pickVoice();
+    const u = new SpeechSynthesisUtterance(text);
+    if (voice) u.voice = voice;
+    u.lang = voice ? voice.lang : 'nl-BE';
+    // Short Dutch words can sound clipped at higher synthesis rates.
+    u.rate = Math.min(0.9, Math.max(0.65, settings.rate));
+    u.pitch = 1;
+    u.onend = resolve;
+    u.onerror = (event) => {
+      if (event.error !== 'canceled' && event.error !== 'interrupted')
+        console.warn('Spraakweergave mislukt:', event.error);
+      resolve();
+    };
+    speechSynthesis.speak(u);
+    speechSynthesis.resume();
+  });
 }
 
 async function speakItem(item, withArticle) {
   if (!hasSpeech) return;
   stopSpeech();
-  
+  const generation = speechGeneration;
+  const current = () => generation === speechGeneration;
   const sayOnce = async () => {
-    if (withArticle && item.article) {
-      if (settings.separate) {
-        await say(item.article);
-        await wait(600);
-        await say(item.word);
-      } else {
-        await say(item.full);
-      }
+    if (!current()) return;
+    if (withArticle && item.article && settings.separate) {
+      await say(item.article, generation);
+      if (!current()) return;
+      await wait(450);
+      if (!current()) return;
+      await say(item.word, generation);
     } else {
-      await say(item.word);
+      await say(withArticle && item.article ? item.full : item.word, generation);
     }
   };
-
   await sayOnce();
-  if (settings.twice) {
-    await wait(900);
-    await sayOnce();
+  if (settings.twice && current()) {
+    await wait(700);
+    if (current()) await sayOnce();
   }
 }
 
