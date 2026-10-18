@@ -1,93 +1,32 @@
 'use strict';
-// Focused transport acceptance: exercise the exact production import, parking,
-// motion, and ride-camera blocks extracted from the shipped world.js.
-// This is a transform/logic regression; no GPU or visual quality is asserted.
 const test=require('node:test');
 const assert=require('node:assert/strict');
-const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
-const R=require('../games/moonlight-hollow/railway.js');
+const fs=require('node:fs'),path=require('node:path');
 const source=fs.readFileSync(path.join(__dirname,'../games/moonlight-hollow/world.js'),'utf8');
-function section(from,to){
- const a=source.indexOf(from),b=source.indexOf(to,a);
- assert(a>=0&&b>a,'production code section found: '+from);
- return source.slice(a,b);
-}
-const parking=section("const train=new B.TransformNode('moon-express',scene);","const trainMat=material('train'");
-const importAndCamera=section('const locomotiveMount=new B.TransformNode','// Friendly castle and observatory.');
-const move=section('function moveTrain(state,rollDistance=0){','function finishRide(');
-async function exercise(importer){
- const hidden=[],loaded=[],cameras=[],warnings=[];
- class Vector3{constructor(x,y,z){this.x=x;this.y=y;this.z=z;}set(x,y,z){this.x=x;this.y=y;this.z=z;}}
- class TransformNode{
-  constructor(name){this.name=name;this.position=new Vector3(0,0,0);this.rotation={y:0};this.meshes=[{isDisposed:()=>false,setEnabled:v=>hidden.push(v)}];}
-  getChildMeshes(){return this.meshes;}
-  isDisposed(){return false;}
-  computeWorldMatrix(){this.worldUpdated=true;}
- }
- const B={Vector3,TransformNode,UniversalCamera:class {
-  constructor(name,at,scene){this.name=name;this.position=at;this.scene=scene;this.inputs={clear(){}};}
- }};
- const scene={isDisposed:()=>false},pipeline={addCamera:camera=>cameras.push(camera)};
- const library=importer&&{placeProduction:(scene,id,parent,opts)=>{loaded.push({scene,id,parent,opts});return importer(scene,id,parent,opts);}};
- const scope={B,scene,R,root:{MoonAssetLibrary:library},api:{prefs:()=>({quality:'high'})},mobileSafari:false,pipeline,console:{warn:x=>warnings.push(x)},Promise};
- vm.runInNewContext(parking+'\nconst wheels=[];\n'+importAndCamera+'\n'+move+'\nthis.acceptance={train,locomotiveMount,railMotion,rideCamera,moveTrain,wheels};',scope,{filename:'world-train-acceptance.js'});
- await new Promise(resolve=>setImmediate(resolve));
- return{...scope.acceptance,hidden,loaded,cameras,warnings,scene};
-}
-test('hero GLB mounts ahead of the wagon, village parking and ride camera follow one transform',async()=>{
- const model={kind:'hero'};
- const s=await exercise((_scene,_id,parent)=>{model.parent=parent;return model;});
- assert.equal(s.loaded.length,1);
- assert.equal(s.loaded[0].id,'moon-express-locomotive');
- assert.equal(s.loaded[0].parent,s.locomotiveMount);
- assert.equal(s.loaded[0].opts.geometryQuality,'high');
- assert.equal(s.loaded[0].opts.textureQuality,'high');
- assert.equal(s.loaded[0].opts.scale,.85);
- assert.deepEqual(s.hidden,[],'boarding wagon must remain visible');
- assert.equal(model.parent,s.locomotiveMount,'GLB is mounted on independent track transform');
- assert.equal(s.railMotion.snapshot().station,0,'village station is initial location');
- assert.equal(s.train.position.x,R.stations[0].x);
- assert.equal(s.train.position.z,R.stations[0].z);
- assert.equal(s.rideCamera.parent,s.train);
- assert.equal(s.cameras[0],s.rideCamera);
- assert.equal(s.rideCamera.position.y,1.82);
- assert.equal(s.rideCamera.position.z,-1.7);
- assert.equal(s.rideCamera.minZ,.08);
- assert.equal(s.rideCamera.maxZ,500);
- assert.equal(s.railMotion.call(1),true,'empty train can be summoned to next station');
- const moving=s.railMotion.tick(s.railMotion.snapshot().duration/2);
- s.moveTrain(moving,0);
- assert.equal(s.train.position.x,moving.x);
- assert.equal(s.train.position.z,moving.z);
- assert.equal(s.train.rotation.y,moving.heading);
- assert.equal(s.rideCamera.parent,s.train,'camera follows the wagon during travel');
- const front=R.track.pose(moving.distance+moving.direction*4.5);
- assert(Math.hypot(s.locomotiveMount.position.x-front.x,s.locomotiveMount.position.z-front.z)<1e-8,'engine on the actual rail curve');
- assert(Math.abs(s.locomotiveMount.rotation.y-front.heading)<1e-8,'engine uses its own track tangent');
- assert.notEqual(s.locomotiveMount.parent,s.train,'engine not rigidly offset from wagon');
- s.railMotion.tick(1000);s.moveTrain(s.railMotion.snapshot(),0);
- assert.equal(s.railMotion.snapshot().station,1);
- assert(Math.abs(s.train.position.x-R.stations[1].x)<1e-8);
- assert(Math.abs(s.train.position.z-R.stations[1].z)<1e-8);
+const R=require('../games/moonlight-hollow/railway.js');
+test('only one locomotive exists, and its geometry belongs to railway mount',()=>{
+ assert.equal((source.match(/new B.TransformNode\('moon-express-locomotive-front',scene\)/g)||[]).length,1);
+ assert.match(source,/const locomotiveLead=4\.5/);
+ assert.match(source,/const boiler=cyl\('express-hd-boiler',[\s\S]*locomotiveMount\)/);
+ assert.match(source,/box\('express-cab-roof',[\s\S]*locomotiveMount\)/);
+ assert.match(source,/box\('express-coupler',[\s\S]*locomotiveMount\)/);
+ assert.doesNotMatch(source,/placeProduction\(scene,'moon-express-locomotive'/,'no detached HD GLB import may spawn at village origin');
+ assert.doesNotMatch(source,/new B\.TransformNode\('moon-production-moon-express-locomotive'/);
 });
-test('GLB import failure keeps the procedural transport and camera functional',async()=>{
- const s=await exercise(()=>Promise.reject(Error('WebGL GLB unavailable')));
- assert.deepEqual(s.hidden,[]);
- assert.equal(s.warnings.length,1);
- assert.equal(s.railMotion.snapshot().station,0);
- assert.equal(s.rideCamera.parent,s.train);
- assert.equal(s.railMotion.call(1),true);
+test('locomotive and wagon follow separate points on the same railway',()=>{
+ assert.match(source,/const locomotivePose=R\.track\.pose\(state\.distance\+state\.direction\*locomotiveLead\)/);
+ assert.match(source,/locomotiveMount\.position\.set\(locomotivePose\.x/);
+ assert.match(source,/train\.position\.set\(state\.x/);
+ assert.match(source,/rideCamera\.parent=train/);
+ const d=R.stations[0].distance;
+ const wagon=R.track.pose(d),loco=R.track.pose(d+4.5);
+ assert(Math.hypot(loco.x-wagon.x,loco.z-wagon.z)>3);
+ assert.equal(typeof R.track.pose(d+20).heading,'number');
 });
-
-test('HD train aligns to measured local bounds and preserves +Z-forward transport',()=>{
- const asset=fs.readFileSync(path.join(__dirname,'../games/moonlight-hollow/asset-library.js'),'utf8');
- assert.match(asset,/id==='moon-express-locomotive'&&B\.Matrix\?\.Invert/);
- assert.match(asset,/2\.25\/width,4\.45\/length,3\.05\/height/);
- assert.match(asset,/node\.position\.x-=midX\*fit/);
- assert.match(asset,/node\.position\.z-=midZ\*fit/);
- assert.match(asset,/node\.position\.y\+=\.12-mins\[1\]\*fit/);
- assert.match(asset,/B\.Matrix\.Invert\(node\.getWorldMatrix\(\)\)/,'model calibration must remain local to its imported root');
- assert.match(source,/geometryQuality:'high'/,'production hero mesh remains selected');
+test('single locomotive is positioned before first render and railway retains passenger access',()=>{
+ assert.match(source,/const initialEnginePose=R\.track\.pose\(railMotion\.snapshot\(\)\.distance\+railMotion\.snapshot\(\)\.direction\*locomotiveLead\)/);
+ assert.match(source,/locomotiveMount\.position\.set\(initialEnginePose\.x/);
+ assert.match(source,/box\('carriage-floor'[\s\S]*wood,train\)/);
+ assert.match(source,/box\('passenger-seat'[\s\S]*trainMat,train\)/);
+ assert.match(source,/function boardTrain\(/);
 });
-
-test('locomotive occupies forward mounting point with boarding wagon preserved',()=>{assert.match(source,/const locomotiveLead=4\.5/);assert.doesNotMatch(source,/trainProxyMeshes\.filter\(/);});
