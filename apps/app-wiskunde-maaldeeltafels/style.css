@@ -395,3 +395,15 @@ button { font-family: inherit; }
 /* Deelteken iets groter zodat het goed zichtbaar is */
 #opSign { min-width: .6em; text-align: center; }
 .exercise.is-div #opSign { color: #ea580c; }
+
+/* Timed challenge, also suitable for narrow mobile screens */
+.timer-choice { display:flex; align-items:center; gap:9px; font-weight:700; cursor:pointer; }
+.timer-choice input { width:22px; height:22px; accent-color:var(--blue); }
+.duration-controls { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px; font-weight:700; }
+.duration-controls[hidden], .timer-panel[hidden], .timer-result[hidden] { display:none !important; }
+.duration-controls input { width:82px; min-height:42px; padding:6px; border:2px solid var(--blue); border-radius:10px; font-size:1.15rem; text-align:center; }
+.timer-panel { display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap; margin-bottom:15px; }
+.timer-display { font-size:2rem; font-weight:800; font-variant-numeric:tabular-nums; color:var(--blue-d); }
+.timer-action { border:0; border-radius:12px; padding:10px 20px; min-height:44px; background:var(--green); color:white; font-size:1rem; font-weight:bold; cursor:pointer; }
+.timer-action.secondary { background:var(--red); }
+.timer-result { margin:0 0 14px; padding:14px; border-radius:14px; background:var(--green-l); color:var(--green-d); font-weight:700; }
