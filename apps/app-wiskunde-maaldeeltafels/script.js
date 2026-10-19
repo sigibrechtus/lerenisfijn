@@ -116,7 +116,7 @@
     els.timerStart.hidden = timerRunning;
     els.timerStop.hidden = !timerRunning;
     els.timerStart.textContent = timerEnded ? 'Opnieuw starten' : 'Start';
-    els.timerDisplay.textContent = timerRunning
+    if (!timerEnded) els.timerDisplay.textContent = timerRunning
       ? timerText(timerDeadline - Date.now()) : timerText(durationMinutes * 60000);
     if (timedMode && !timerRunning) setGameEnabled(false);
   }
