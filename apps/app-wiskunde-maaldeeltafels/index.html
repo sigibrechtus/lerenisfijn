@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Maal- en deeltafels – Leren is fijn</title>
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
   <link rel="stylesheet" href="../../app-theme.css?v=15">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script defer src="../../supabase-client.js"></script>
 <script defer src="../../app-effects.js?v=4"></script>
-<script defer src="script.js?v=20"></script>
+<script defer src="script.js?v=21"></script>
 </head>
 <body>
   <header class="topbar app-header-layout">
@@ -44,6 +44,16 @@
       </section>
 
       <section class="settings-block">
+        <h2>Oefentijd</h2>
+        <label class="timer-choice"><input id="timedMode" type="checkbox"> Oefenen met timer</label>
+        <div id="durationControls" class="duration-controls" hidden>
+          <label for="durationMinutes">Aantal minuten</label>
+          <input id="durationMinutes" type="number" min="1" max="60" step="1" value="5" inputmode="numeric">
+        </div>
+        <p class="settings-hint">Kies zelf hoelang je wilt oefenen. De gewone oefenmodus blijft beschikbaar.</p>
+      </section>
+
+      <section class="settings-block">
         <h2>Schrijven met</h2>
         <div class="mode-grid" role="group" aria-label="Schrijven met">
           <button type="button" class="mode-btn mode-pen" data-mode="pen" aria-pressed="true">&#9998; Potlood</button>
@@ -56,6 +66,12 @@
 
     <!-- Spel (rechts) -->
     <section class="game">
+      <div id="timerPanel" class="timer-panel" hidden>
+        <span id="timerDisplay" class="timer-display" role="timer" aria-label="Resterende tijd">05:00</span>
+        <button type="button" id="timerStart" class="timer-action">Start</button>
+        <button type="button" id="timerStop" class="timer-action secondary" hidden>Stop</button>
+      </div>
+      <div id="timerResult" class="timer-result" role="status" hidden></div>
       <div id="exercise" class="exercise">
         <span id="factorA" class="num num-a">?</span>
         <span id="opSign" class="op">&times;</span>
