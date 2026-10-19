@@ -7,6 +7,7 @@
   const STORAGE_KEY = 'lerenisfijn-maaltafels-tafels';
   const INPUT_KEY = 'lerenisfijn-maaltafels-schrijfwijze';
   const TYPE_KEY = 'lerenisfijn-maaltafels-soort';
+  const TIMER_KEY = 'lerenisfijn-maaltafels-timer';
   const DEFAULT_TABLES = [2, 5, 10];
   const DEFAULT_INPUT = 'pen';                 // pen, hand of keyboard
   const DEFAULT_TYPE = 'mul';                  // 'mul' = maal, 'div' = deel, 'mix' = beide
@@ -35,7 +36,15 @@
     checkBtn: $('checkBtn'),
     feedback: $('feedback'),
     hint: $('hint'),
-    score: $('score')
+    score: $('score'),
+    timedMode: $('timedMode'),
+    durationControls: $('durationControls'),
+    durationMinutes: $('durationMinutes'),
+    timerPanel: $('timerPanel'),
+    timerDisplay: $('timerDisplay'),
+    timerStart: $('timerStart'),
+    timerStop: $('timerStop'),
+    timerResult: $('timerResult')
   };
 
   // Controle: ontbreekt er een element in index.html?
@@ -62,6 +71,15 @@
   let locked = false;
   let questionId = null;
   let questionStartedAt = 0;
+  let timedMode = false;
+  let durationMinutes = 5;
+  let timerRunning = false;
+  let timerEnded = false;
+  let timerDeadline = 0;
+  let timerInterval = null;
+  let correctTimed = 0;
+  let wrongTimed = 0;
+  let answerTimeout = null;
 
   const ctx = els.pad.getContext('2d');
   let strokes = [];            // [[{x,y}, ...], ...] in CSS-pixels
@@ -69,6 +87,103 @@
   let activePointerId = null;
   let activePointerType = null;
   let penSeen = false;         // echte actieve pen gedetecteerd?
+
+  /* =========================================================
+     Vrije oefening of tijdsuitdaging
+     ========================================================= */
+  try {
+    const saved = JSON.parse(localStorage.getItem(TIMER_KEY) || '{}');
+    timedMode = saved.enabled === true;
+    if (Number.isInteger(saved.minutes) && saved.minutes >= 1 && saved.minutes <= 60) durationMinutes = saved.minutes;
+  } catch (e) { /* opslag kan geblokkeerd zijn */ }
+
+  function saveTimerSettings() {
+    try { localStorage.setItem(TIMER_KEY, JSON.stringify({ enabled: timedMode, minutes: durationMinutes })); }
+    catch (e) { /* negeren */ }
+  }
+
+  function timerText(ms) {
+    const seconds = Math.max(0, Math.ceil(ms / 1000));
+    return String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
+  }
+
+  function renderTimer() {
+    els.timerPanel.hidden = !timedMode;
+    els.durationControls.hidden = !timedMode;
+    els.timedMode.checked = timedMode;
+    els.durationMinutes.value = durationMinutes;
+    els.durationMinutes.disabled = timerRunning;
+    els.timerStart.hidden = timerRunning;
+    els.timerStop.hidden = !timerRunning;
+    els.timerStart.textContent = timerEnded ? 'Opnieuw starten' : 'Start';
+    els.timerDisplay.textContent = timerRunning
+      ? timerText(timerDeadline - Date.now()) : timerText(durationMinutes * 60000);
+    if (timedMode && !timerRunning) setGameEnabled(false);
+  }
+
+  function finishTimer(stopped = false) {
+    if (!timerRunning) return;
+    timerRunning = false;
+    timerEnded = true;
+    clearInterval(timerInterval);
+    timerInterval = null;
+    clearTimeout(answerTimeout);
+    answerTimeout = null;
+    locked = false;
+    setGameEnabled(false);
+    els.timerDisplay.textContent = timerText(stopped ? timerDeadline - Date.now() : 0);
+    els.timerResult.hidden = false;
+    els.timerResult.textContent = (stopped ? 'Oefening gestopt. ' : 'Tijd is om! ')
+      + correctTimed + ' juist, ' + wrongTimed + ' fout. Goed geoefend!';
+    setFeedback('', '');
+    renderTimer();
+  }
+
+  function tickTimer() {
+    if (!timerRunning) return;
+    if (Date.now() >= timerDeadline) finishTimer();
+    else els.timerDisplay.textContent = timerText(timerDeadline - Date.now());
+  }
+
+  function startTimer() {
+    if (!timedMode || timerRunning || !selectedTables.length) {
+      if (!selectedTables.length) setFeedback('Kies eerst minstens één tafel.', 'info');
+      return;
+    }
+    clearTimeout(answerTimeout);
+    timerEnded = false;
+    timerRunning = true;
+    correctTimed = 0;
+    wrongTimed = 0;
+    score = 0;
+    els.score.textContent = '0';
+    els.timerResult.hidden = true;
+    timerDeadline = Date.now() + durationMinutes * 60000;
+    locked = false;
+    newExercise();
+    timerInterval = setInterval(tickTimer, 200);
+    renderTimer();
+  }
+
+  els.timedMode.addEventListener('change', () => {
+    if (timerRunning) finishTimer(true);
+    timedMode = els.timedMode.checked;
+    timerEnded = false;
+    els.timerResult.hidden = true;
+    saveTimerSettings();
+    locked = false;
+    newExercise();
+    renderTimer();
+  });
+  els.durationMinutes.addEventListener('change', () => {
+    const n = Number(els.durationMinutes.value);
+    durationMinutes = Number.isFinite(n) ? Math.max(1, Math.min(60, Math.round(n))) : 5;
+    timerEnded = false;
+    saveTimerSettings();
+    renderTimer();
+  });
+  els.timerStart.addEventListener('click', startTimer);
+  els.timerStop.addEventListener('click', () => finishTimer(true));
 
   /* =========================================================
      Soort oefening (maal / deel / beide)
@@ -93,7 +208,7 @@
 
   function setType(type) {
     if (type !== 'mul' && type !== 'div' && type !== 'mix') return;
-    if (locked) return;
+    if (locked || (timedMode && !timerRunning && timerEnded)) return;
     exerciseType = type;
     saveType();
     updateTypeButtons();
@@ -260,7 +375,7 @@
       return;
     }
 
-    setGameEnabled(true);
+    setGameEnabled(!timedMode || timerRunning);
     let ex;
     let guard = 0;
     do {
@@ -317,7 +432,8 @@
   }
 
   function check() {
-    if (locked || !current) return;
+    if (locked || !current || (timedMode && !timerRunning)) return;
+    if (timerRunning && Date.now() >= timerDeadline) { finishTimer(); return; }
 
     let read, value;
     if (inputMode === 'keyboard') {
@@ -345,6 +461,7 @@
       if (questionId && window.lerenProgress) window.lerenProgress.recordQuestion({ exercise_key: "app-wiskunde-maaldeeltafels", mode: exerciseType, question_id: questionId, attempt_count: attempts + 1, first_try_correct: attempts === 0, assisted: false, duration_ms: Math.max(0, Date.now() - questionStartedAt) });
       locked = true;
       score++;
+      if (timerRunning) correctTimed++;
       els.score.textContent = score;
       els.answerSlot.textContent = current.answer;
       els.answerSlot.classList.add('correct');
@@ -352,18 +469,23 @@
       hideHint();
       animate('pop');
       window.lerenEffects?.correct(els.feedback);
-      setTimeout(() => {
+      answerTimeout = setTimeout(() => {
+        answerTimeout = null;
+        if (timedMode && !timerRunning) return;
         locked = false;
         newExercise();
       }, 1400);
     } else {
       attempts++;
+      if (timerRunning) wrongTimed++;
       locked = true;
       setFeedback(`Ik lees: ${read}. Dat is niet juist. Probeer opnieuw!`, 'bad');
       animate('shake');
       window.lerenEffects?.incorrect(els.feedback);
       if (attempts >= 2) showHint();
-      setTimeout(() => {
+      answerTimeout = setTimeout(() => {
+        answerTimeout = null;
+        if (timedMode && !timerRunning) return;
         if (inputMode !== 'keyboard') clearPad();
         locked = false;
         if (inputMode === 'keyboard') { els.keyboardAnswer.focus(); els.keyboardAnswer.select(); }
@@ -457,7 +579,7 @@
 
   els.pad.addEventListener('pointerdown', e => {
     e.preventDefault();
-    if (locked || !current) return;
+    if (locked || !current || (timedMode && !timerRunning)) return;
 
     if (e.pointerType === 'pen') {
       if (!penSeen) {
@@ -520,6 +642,8 @@
     activePointerType = null;
     redraw();
   }
+
+  renderTimer();
 
   if ('ResizeObserver' in window) {
     new ResizeObserver(resizeCanvas).observe(els.canvasWrap);
