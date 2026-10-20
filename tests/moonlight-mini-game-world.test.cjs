@@ -29,7 +29,7 @@ for(const id of ['broom']){
    for(let n=0;n<100;n++){const v=runtime.snapshot().vehicle,dx=x-v.localX,dy=targetY-v.y;if(Math.abs(dx)<.35&&Math.abs(dy)<.25)break;runtime.input(Math.abs(dx)<.35?0:Math.sign(dx),0,Math.abs(dy)<.25?0:Math.sign(dy));runtime.tick(.05);}
    runtime.input(0,1,0);for(let n=0;n<180&&runtime.snapshot().progress===(stage-1)/s.rounds;n++)runtime.tick(.05);
   }else for(let n=0;n<300&&runtime.snapshot().progress===(stage-1)/s.rounds;n++){const v=runtime.snapshot().vehicle,target=Math.atan2(x-v.localX,gateZ-v.localZ),localHeading=v.heading-s.course.heading,turn=Math.atan2(Math.sin(target-localHeading),Math.cos(target-localHeading));runtime.input(Math.max(-1,Math.min(1,turn*3)),1,0);runtime.tick(.05);}
-  for(let n=0;n<40&&runtime.snapshot().busy;n++)runtime.tick(.1);assert.equal(runtime.snapshot().progress,stage/s.rounds);assert(runtime.snapshot().vehicle.localZ>=-6&&runtime.snapshot().vehicle.localZ<0,'correct gate retains progress instead of resetting');assert.equal(runtime.snapshot().completed,false);const next=runtime.snapshot().vehicle.z;runtime.input(0,0,0);runtime.tick(.1);assert(runtime.snapshot().vehicle.z>next,'flight continues forward after releasing the joystick');
+  for(let n=0;n<40&&runtime.snapshot().busy;n++)runtime.tick(.1);assert.equal(runtime.snapshot().progress,stage/s.rounds);assert(runtime.snapshot().speed>s.speedLimit,'correct gate accelerates beyond previous round speed limit');assert(runtime.snapshot().vehicle.localZ>=-6&&runtime.snapshot().vehicle.localZ<0,'correct gate retains progress instead of resetting');assert.equal(runtime.snapshot().completed,false);const next=runtime.snapshot().vehicle.z;runtime.input(0,0,0);runtime.tick(.1);assert(runtime.snapshot().vehicle.z>next,'flight continues forward after releasing the joystick');
  }
  runtime.dispose();
 }
@@ -49,6 +49,19 @@ runtime.start('broom',{level:1,seed:21});
  assert.equal(retry.vehicle.localZ,0,'broom returns to checkpoint before gate');
  const parked=retry.vehicle.z;runtime.input(0,0,0);runtime.tick(.1);
  assert.equal(runtime.snapshot().vehicle.z,parked,'broom stays at checkpoint until accelerated');
+}
+runtime.dispose();
+// Missing every answer ring is also a failed passage; recover before the gates without advancing.
+runtime.start('broom',{level:1,seed:29});
+{
+ for(let n=0;n<45;n++){runtime.input(1,0,-1);runtime.tick(.05);}
+ runtime.input(0,1,0,1);
+ for(let n=0;n<250&&runtime.snapshot().flightStatus!=='checkpoint';n++)runtime.tick(.05);
+ const missed=runtime.snapshot();
+ assert.equal(missed.flightStatus,'checkpoint','missing all gates returns to checkpoint');
+ assert.equal(missed.progress,0);
+ assert.equal(missed.speed,0);
+ assert.equal(missed.vehicle.localZ,0);
 }
 runtime.dispose();
 runtime.start('rally',{seed:2});runtime.input(0,1);for(let n=0;n<50;n++)runtime.tick(.1);assert(runtime.snapshot().speed>0);const parked=runtime.snapshot().vehicle;paused=true;runtime.tick(.1);assert.equal(runtime.snapshot().speed,0);runtime.action(runtime.snapshot().task.solution[0]);for(let n=0;n<20;n++)runtime.tick(.1);assert.equal(runtime.snapshot().vehicle.z,parked.z);assert.equal(runtime.snapshot().progress,0);paused=false;runtime.input(0,-1);for(let n=0;n<10;n++)runtime.tick(.1);assert(runtime.snapshot().vehicle.z<parked.z);runtime.dispose();scene.dispose();engine.dispose();
