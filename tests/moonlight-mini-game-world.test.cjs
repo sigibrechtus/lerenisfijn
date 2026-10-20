@@ -7,6 +7,23 @@ const engine=new B.NullEngine({renderWidth:1280,renderHeight:720}),scene=new B.S
 const runtime=W.create({B,scene,paused:()=>paused,quality:'low',reducedMotion:true,frame:()=>({x:0,y:.2,width:.7,height:.8}),onUpdate:s=>{assert(s.name&&s.question);updates++;},onComplete:()=>complete++});
 for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
  runtime.start(id,{level:3,lang:'fr',seed:8});const arena=runtime.scene;assert.equal(arena.activeCamera.layerMask,W.LAYER);assert.equal(arena.activeCamera.viewport.width,id==='broom'?1:.7);assert(arena.meshes.length>10);assert(arena.meshes.every(m=>m.layerMask===W.LAYER));
+ if(id==='broom'){
+  assert.equal(arena.fogMode,B.Scene.FOGMODE_NONE,'flight uses a fog-free isolated scene');
+  assert(!arena.meshes.some(m=>m.name==='mini-clear-backdrop'),'no opaque wall beyond flight gate');
+  const floors=arena.meshes.filter(m=>m.name==='mini-floor').map(m=>{m.computeWorldMatrix(true);return m.getAbsolutePosition().z;}).sort((a,b)=>a-b);
+  assert.equal(floors.length,6,'all six flying sections are instantiated');
+  for(let i=1;i<floors.length;i++)assert(Math.abs(floors[i]-floors[i-1]-24)<.01,'adjacent flight sections connect without a gap');
+  const broom=arena.meshes.find(m=>m.name==='mini-broom'),brush=arena.meshes.find(m=>m.name==='mini-broom-brush');
+  assert(broom&&brush,'broom geometry exists for third-person camera');
+  assert.equal(broom.isVisible,false,'first-person camera cannot see its own broom');
+  assert.equal(brush.isVisible,false,'close broom brush cannot cover first-person lower viewport');
+  runtime.action('camera');
+  assert.equal(broom.isVisible,true,'third-person camera restores broom');
+  assert.equal(brush.isVisible,true,'third-person camera restores brush');
+  runtime.action('camera');
+  assert.equal(brush.isVisible,false,'switching back hides brush again');
+ }
+
  assert.equal(runtime.snapshot().rounds,6);for(let round=0;round<runtime.snapshot().rounds;round++){
   const s=runtime.snapshot();if(id==='potions'){for(let i=0;i<2;i++)for(let n=0;n<s.task.solution[i];n++)perform(runtime,'add:'+i);perform(runtime,'check');}
   else if(id==='broom'||id==='rally'){perform(runtime,s.task.solution[0]);for(let n=0;n<100&&runtime.snapshot().progress===round/s.rounds;n++)runtime.tick(.1);}
