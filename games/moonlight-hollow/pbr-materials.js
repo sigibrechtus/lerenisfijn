@@ -42,7 +42,7 @@ function create(B,scene,opts={}){
  // Allocate across all live UV variants. Greedy per-material allocation can spend
  // the entire 128 MiB iOS bank on the first eight 1024px triplets.
  const priorities={stone:5,wood:5,pumpkin:5,roof:4,earth:3,plaster:2,cloth:2,metal:1};
- const reserveFor=tier=>Math.min(16*1048576,budgetFor(tier)/16);
+ const reserveFor=tier=>fourKEnabled?Math.min(64*1048576,budgetFor(tier)/4):Math.min(16*1048576,budgetFor(tier)/16);
  function cappedSize(type,tier){
   let n=expected(type,tier);
   while(n>limit&&n>128)n/=2;
