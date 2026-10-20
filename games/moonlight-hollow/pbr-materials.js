@@ -27,7 +27,8 @@ function create(B,scene,opts={}){
  let quality=['low','balanced','high'].includes(opts.quality)?opts.quality:'balanced',bytes=0,peak=0,disposed=false;
  if(rank[quality]>rank[maxQuality])quality=maxQuality;
  const caps=scene.getEngine?.().getCaps?.()||{},hardware=caps.maxTextureSize||2048;
- const limit=Math.min(hardware,opts.enable4K===true?4096:2048);
+ const limit=Math.min(hardware,4096),fourKTypes=new Set(Array.isArray(opts.fourKTypes)?opts.fourKTypes:['wood','stone','roof','pumpkin']);
+ let fourKEnabled=opts.enable4K===true&&limit>=4096;
  // Seven independent 2K PBR triplets require 448 MiB including mipmaps.
  // The world supplies a lower explicit budget for iOS devices.
  const budgetFor=q=>(Number.isFinite(opts.budgetMiB)?max(4,opts.budgetMiB):(q==='low'?48:q==='high'?640:128))*1048576;
@@ -36,7 +37,7 @@ function create(B,scene,opts={}){
  function expected(type,tier){
   if(tier==='low')return 512;
   if(tier==='balanced')return 1024;
-  return opts.enable4K===true&&['wood','stone','roof','pumpkin'].includes(type)?4096:2048;
+  return fourKEnabled&&fourKTypes.has(type)?4096:2048;
  }
  function sizeFor(type,tier,available){
   let n=expected(type,tier);
@@ -77,7 +78,7 @@ function create(B,scene,opts={}){
   return mat;
  }
  function bind(mat,p){
-  mat.albedoTexture=p.albedo;mat.bumpTexture=p.normal;mat.metallicTexture=p.orm;
+  mat.albedoTexture=p.albedo;mat.bumpTexture=p.normal;mat.metallicTexture=p.orm;mat.ambientTexture=p.orm;
   mat.useRoughnessFromMetallicTextureAlpha=false;
   mat.useRoughnessFromMetallicTextureGreen=true;
   mat.useMetallnessFromMetallicTextureBlue=true;
@@ -100,9 +101,9 @@ function create(B,scene,opts={}){
   mats.set(key,mat);return mat;
  }
  function live(mat){return !(typeof mat.isDisposed==='function'&&mat.isDisposed())&&!mat._isDisposed&&(!scene.materials||scene.materials.includes(mat));}
- function setQuality(value){
+ function setQuality(value,force=false){
   if(disposed)throw Error('Moonlight PBR bank disposed');
-  let next=['low','balanced','high'].includes(value)?value:'balanced';if(rank[next]>rank[maxQuality])next=maxQuality;if(next===quality)return false;
+  let next=['low','balanced','high'].includes(value)?value:'balanced';if(rank[next]>rank[maxQuality])next=maxQuality;if(next===quality&&!force)return false;
   let remaining=budgetFor(next);const plan=[];
   for(const [key,p] of pairs){const size=sizeFor(p.type,next,remaining);remaining-=pairBytes(size);plan.push({key,p,size});}
   for(const [mat]of bindings)if(!live(mat))bindings.delete(mat);
@@ -112,7 +113,7 @@ function create(B,scene,opts={}){
    // Upgrades must fit BOTH the eventual resident budget and the temporary
    // old+new texture overlap. Downscales may temporarily exceed the smaller
    // target budget while replacing larger resident textures.
-   if(rank[next]>rank[quality]&&size>p.resolution){
+   if(size>p.resolution){
     while(size>p.resolution&&bytes+pairBytes(size)>budgetFor(next))size/=2;
     if(size<=p.resolution)size=p.resolution;
    }
@@ -125,6 +126,18 @@ function create(B,scene,opts={}){
   }
   quality=next;return true;
  }
+ function set4KEnabled(enabled){
+  if(disposed)throw Error('Moonlight PBR bank disposed');
+  const next=enabled===true&&limit>=4096;
+  if(next===fourKEnabled)return false;
+  const previous=fourKEnabled;fourKEnabled=next;
+  try{setQuality(quality,true);}catch(error){fourKEnabled=previous;throw error;}
+  return true;
+ }
+ function previewResolution(type,tier='high'){
+  if(!types.includes(type))throw new RangeError('Unknown PBR surface '+type);
+  return sizeFor(type,tier,budgetFor(tier)-bytes);
+ }
  function dispose(){
   if(disposed)return;disposed=true;
   for(const m of owned)if(live(m))m.dispose(false,false);
@@ -132,7 +145,7 @@ function create(B,scene,opts={}){
   pairs.clear();bindings.clear();mats.clear();owned.clear();bytes=0;
  }
  scene.onDisposeObservable?.addOnce?.(dispose);
- return{pbr:true,prepare,apply,material,quality:setQuality,dispose,get stats(){return{quality,pairs:pairs.size,textures:pairs.size*3,estimatedBytes:bytes,lastPeakBytes:peak,budgetMiB:budgetFor(quality)/1048576,surfaces:[...pairs.values()].map(p=>({type:p.type,repeat:p.repeat,resolution:p.resolution,orm:true})),disposed};}};
+ return{pbr:true,prepare,apply,material,quality:setQuality,set4KEnabled,previewResolution,dispose,get stats(){return{quality,fourKEnabled,pairs:pairs.size,textures:pairs.size*3,estimatedBytes:bytes,lastPeakBytes:peak,budgetMiB:budgetFor(quality)/1048576,surfaces:[...pairs.values()].map(p=>({type:p.type,repeat:p.repeat,resolution:p.resolution,orm:true})),disposed};}};
 }
 const api={generate,create};
 root.MoonPBRMaterials=api;if(typeof module!=='undefined')module.exports=api;
