@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastAudited": "2026-10-18",
+  "lastAudited": "2026-10-20",
   "repository": "sigibrechtus/lerenisfijn",
   "scope": "Moonlight Hollow programmatic scene mesh-name literals in JS; repeated instances captured once per file",
   "sources": [
@@ -27,7 +27,7 @@
     "runtime": "Babylon.js glTF2 with fallback, independent picking, collision, animation and low LOD"
   },
   "counts": {
-    "sourceMeshIdentifiers": 323,
+    "sourceMeshIdentifiers": 325,
     "assetFamilies": 18,
     "publishedProductionAssets": 1,
     "familiesPendingFullQA": 18
@@ -690,9 +690,10 @@
         "mini-game-world.js:moon-column",
         "mini-game-world.js:floor",
         "mini-game-world.js:moon",
-        "interiors.js:floor"
+        "interiors.js:floor",
+        "mini-game-world.js:flight-road-strip"
       ],
-      "sourceCount": 16,
+      "sourceCount": 17,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -848,9 +849,10 @@
         "mini-game-world.js:gate-sign-support",
         "mini-game-world.js:road-edge",
         "destinations.js:finish-post",
-        "destinations.js:finish-banner"
+        "destinations.js:finish-banner",
+        "mini-game-world.js:flight-support"
       ],
-      "sourceCount": 10,
+      "sourceCount": 11,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -4567,6 +4569,28 @@
       "source": "procedural-js",
       "productionStatus": "runtime-procedural-rail-mount",
       "meshRequirement": "scene-owned-railway-hierarchy",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "mini-game-world.js:flight-road-strip",
+      "file": "mini-game-world.js",
+      "meshName": "flight-road-strip",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "pending_asset_family",
+      "meshRequirement": "member_of_20k_triangulated_source_asset",
+      "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "mini-game-world.js:flight-support",
+      "file": "mini-game-world.js",
+      "meshName": "flight-support",
+      "family": "racing-structures",
+      "role": "architecture",
+      "source": "procedural-js",
+      "productionStatus": "pending_asset_family",
+      "meshRequirement": "member_of_20k_triangulated_source_asset",
       "inGameStatus": "existing-procedural"
     }
   ],
