@@ -27,6 +27,12 @@ test('Sharp mode respects phone native pixels and caps all framebuffers at 4K',(
  }
 });
 
+test('Sharp separates screen resolution from device-safe material detail',()=>{
+ assert.equal(G.textureTier('sharp',false),'high');
+ assert.equal(G.textureTier('sharp',true),'balanced');
+ assert.equal(G.textureTier('low',false),'low');
+});
+
 test('Sharp selector remains wired to scene quality and optional mini-game geometry',()=>{
  const read=file=>fs.readFileSync(path.join(base,file),'utf8');
  const html=read('index.html'),world=read('world.js'),app=read('adventure.js'),mini=read('attraction-ui.js'),sw=read('sw.js');
@@ -34,9 +40,9 @@ test('Sharp selector remains wired to scene quality and optional mini-game geome
  assert.match(html,/id="quality-help"/);
  assert.match(app,/'close',applyGraphicsSettings/);
  assert.match(world,/\['auto','high','low','sharp'\]/);
- assert.match(world,/tier==='sharp'\?\(mobileSafari\?'low':'balanced'\):tier/);
- assert.match(mini,/\['low','sharp'\]/);
- assert.match(mini,/value==='sharp'\?'low'/);
+ assert.match(world,/G\.textureTier\(tier,mobileSafari\)/);
+ assert.match(mini,/prefs\(\)\.quality==='sharp'/);
+ assert.match(mini,/value==='auto'\?'balanced':value/);
  for(const asset of ['graphics.js','world.js','adventure.js','attraction-ui.js']){
   const script=html.match(new RegExp(asset.replace('.','\\.')+'\\?v=\\d+'));
   assert(script,'missing script version for '+asset);

@@ -5,8 +5,12 @@ test('new script dependencies exist and are included in the offline release',()=
   const html=fs.readFileSync(path.join(base,'index.html'),'utf8'),sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
   const scripts=[...html.matchAll(/<script defer src="([^"]+)"/g)].map(m=>m[1]);
   const cachedScripts=[...scripts,...[...fs.readFileSync(path.join(base,'legacy.html'),'utf8').matchAll(/<script[^>]*src="([^"]+)"/g)].map(m=>m[1])];
-  for(const name of cachedScripts){assert(fs.existsSync(path.join(base,name.split('?')[0])),name);assert(sw.includes("'./"+name+"'"),name+' must be cached');}
-  for(const dependency of ['controls.js?v=8','graphics.js?v=9','railway.js?v=14','atmosphere.js?v=13','landscape.js?v=14','puzzle-actions.js?v=15'])assert(scripts.indexOf(dependency)<scripts.findIndex(name=>name.split('?')[0]==='world.js'));
+  for(const name of cachedScripts){if(/^(?:https?:)?\/\//.test(name)||name.startsWith('../'))continue;assert(fs.existsSync(path.join(base,name.split('?')[0])),name);assert(sw.includes("'./"+name+"'")||sw.includes('"./'+name+'"'),name+' must be cached');}
+  const worldIndex=scripts.findIndex(name=>name.split('?')[0]==='world.js');
+  for(const dependency of ['controls.js','graphics.js','railway.js','atmosphere.js','landscape.js','puzzle-actions.js']){
+    const i=scripts.findIndex(name=>name.split('?')[0]===dependency);
+    assert(i>=0&&i<worldIndex,dependency+' must load before world.js');
+  }
 });
 test('graphics budgets keep phones sharp and bound framebuffer cost on large screens',()=>{
   const phone=G.profile('balanced',390,844,3);assert.equal(phone.ratio,1.5);assert.equal(phone.scaling,2/3);assert.equal(phone.glow,true);
