@@ -57,6 +57,36 @@ test('4K PBR is opt-in for a surface family and can switch without a rebuild',()
  fallback.dispose();
 });
 
+test('iPhone 128 MiB PBR bank never fails on many distinct UV variants or HD/Sharp transitions',()=>{
+ const d=doubles(),bank=P.create(d.B,d.scene,{quality:'balanced',maxQuality:'balanced',budgetMiB:128});
+ const surfaces=[['wood',1],['stone',3],['plaster',2],['roof',3],['earth',20],['metal',1],['cloth',2],['stone',2],['pumpkin',1],['cloth',1],['pumpkin',2],['stone',1],['wood',2],['earth',3],['plaster',1]];
+ const bound=surfaces.map(([type,repeat])=>bank.material(type,'#ffffff',repeat));
+ assert.equal(bank.stats.pairs,surfaces.length,'all UV variants must retain a usable map');
+ assert(bank.stats.surfaces.some(p=>p.resolution===1024),'important textures remain 1K');
+ assert(bank.stats.surfaces.some(p=>p.resolution<1024),'secondary textures are downscaled');
+ for(const next of ['low','high','balanced','low','balanced']){
+  bank.quality(next);
+  assert(bank.stats.estimatedBytes<=128*1048576,'steady-state GPU estimate must stay bounded');
+  assert(bank.stats.lastPeakBytes<=128*1048576,'temporary old/new texture overlap stays bounded');
+  assert(bound.every(m=>m.albedoTexture&&!m.albedoTexture.dead),'all bound materials stay usable');
+  assert(bound.every(m=>m.bumpTexture&&!m.bumpTexture.dead),'all normal maps stay usable');
+  assert(bound.every(m=>m.metallicTexture&&!m.metallicTexture.dead),'all ORM maps stay usable');
+ }
+ bank.dispose();
+ assert(d.tex.every(t=>t.dead===1),'each uploaded texture must be disposed exactly once');
+});
+
+test('PBR budget planner preserves material detail instead of assigning all maps the smallest size',()=>{
+ const d=doubles(),bank=P.create(d.B,d.scene,{quality:'balanced',maxQuality:'balanced',budgetMiB:128});
+ for(const type of ['stone','wood','pumpkin','earth','metal','cloth','plaster','roof'])bank.material(type);
+ for(const type of ['stone','wood','pumpkin','earth'])bank.material(type,'#ffffff',2);
+ const {surfaces}=bank.stats;
+ assert.equal(surfaces.length,12);
+ assert(surfaces.some(p=>p.resolution===1024),'balanced tier retains some 1K maps');
+ assert(bank.stats.estimatedBytes<=120*1048576,'keep an 8MiB overlap reserve on a 128MiB mobile budget');
+ bank.dispose();
+});
+
 test('PBR bank rejects a StandardMaterial rather than silently dropping ORM',()=>{
  const d=doubles(),bank=P.create(d.B,d.scene,{quality:'low'});assert.throws(()=>bank.apply({diffuseColor:'#ffffff'},{}),/PBRMaterial/);assert.equal(bank.stats.textures,0);bank.dispose();
 });
