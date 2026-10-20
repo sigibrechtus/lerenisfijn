@@ -105,6 +105,20 @@ function decorate({B,scene,origin=120,layer,course,mesh,material,quality='balanc
    part('CreateCylinder','moonrise-bridge-finial',{diameter:1.05,height:1.65,tessellation:6},x,c.rise+2.6,z,mats.copper);
   }
  }
+ // Night ambience comes from a few punctual, shadow-free lantern pools,
+ // not fog, bloom or a postprocessing blur that could conceal quiz gates.
+ if(B.PointLight){
+  const lightCount=simple?2:4;
+  for(let i=0;i<lightCount;i++){
+   const z=16+i*(112/Math.max(1,lightCount-1)),c=course.center(z,1);
+   const x=c.x+(i%2?1:-1)*15.7;
+   const lampLight=own(new B.PointLight('moonrise-village-lantern-'+i,new B.Vector3(x,origin+c.rise+3.9,z),scene));
+   lampLight.diffuse=new B.Color3(1,.66,.32);
+   lampLight.intensity=simple?.38:.52;
+   lampLight.range=20;
+   lampLight.includeOnlyWithLayerMask=layer;
+  }
+ }
  // Existing, source-attributed GLBs improve a subset of near-camera props.
  // Async imports are fenced against rebuild/dispose; a failure never blocks
  // gameplay and the procedural village remains visible.
