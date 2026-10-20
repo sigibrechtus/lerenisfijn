@@ -8,7 +8,8 @@
     "mini-game-world.js",
     "interiors.js",
     "creatures.js",
-    "destinations.js"
+    "destinations.js",
+    "moonrise-village.js"
   ],
   "requirements": {
     "referenceAnglesDegrees": [
@@ -27,7 +28,7 @@
     "runtime": "Babylon.js glTF2 with fallback, independent picking, collision, animation and low LOD"
   },
   "counts": {
-    "sourceMeshIdentifiers": 325,
+    "sourceMeshIdentifiers": 346,
     "assetFamilies": 18,
     "publishedProductionAssets": 1,
     "familiesPendingFullQA": 18
@@ -691,9 +692,30 @@
         "mini-game-world.js:floor",
         "mini-game-world.js:moon",
         "interiors.js:floor",
-        "mini-game-world.js:flight-road-strip"
+        "mini-game-world.js:flight-road-strip",
+        "moonrise-village.js:moonrise-house-foundation",
+        "moonrise-village.js:moonrise-house-wall",
+        "moonrise-village.js:moonrise-gabled-roof",
+        "moonrise-village.js:moonrise-timber-post",
+        "moonrise-village.js:moonrise-window-frame",
+        "moonrise-village.js:moonrise-window-glow",
+        "moonrise-village.js:moonrise-window-cross",
+        "moonrise-village.js:moonrise-entry-door",
+        "moonrise-village.js:moonrise-door-knob",
+        "moonrise-village.js:moonrise-chimney",
+        "moonrise-village.js:moonrise-crooked-trunk",
+        "moonrise-village.js:moonrise-tree-canopy",
+        "moonrise-village.js:moonrise-lantern-pole",
+        "moonrise-village.js:moonrise-lantern-light",
+        "moonrise-village.js:moonrise-lantern-crown",
+        "moonrise-village.js:moonrise-carved-pumpkin",
+        "moonrise-village.js:moonrise-pumpkin-stem",
+        "moonrise-village.js:moonrise-fence-post",
+        "moonrise-village.js:moonrise-fence-rail",
+        "moonrise-village.js:moonrise-bridge-plinth",
+        "moonrise-village.js:moonrise-bridge-finial"
       ],
-      "sourceCount": 17,
+      "sourceCount": 38,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -4592,6 +4614,237 @@
       "productionStatus": "pending_asset_family",
       "meshRequirement": "member_of_20k_triangulated_source_asset",
       "inGameStatus": "existing-procedural"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-house-foundation",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-house-foundation",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-house-wall",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-house-wall",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-gabled-roof",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-gabled-roof",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-timber-post",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-timber-post",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-window-frame",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-window-frame",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-window-glow",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-window-glow",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-window-cross",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-window-cross",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-entry-door",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-entry-door",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-door-knob",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-door-knob",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-chimney",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-chimney",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-crooked-trunk",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-crooked-trunk",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-tree-canopy",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-tree-canopy",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-lantern-pole",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-lantern-pole",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-lantern-light",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-lantern-light",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-lantern-crown",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-lantern-crown",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-carved-pumpkin",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-carved-pumpkin",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-pumpkin-stem",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-pumpkin-stem",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-fence-post",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-fence-post",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-fence-rail",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-fence-rail",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-bridge-plinth",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-bridge-plinth",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-bridge-finial",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-bridge-finial",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
     }
   ],
   "lastPublishedTrainBuild": "2026-10-13"
