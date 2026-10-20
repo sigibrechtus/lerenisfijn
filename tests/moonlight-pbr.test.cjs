@@ -24,7 +24,7 @@ function doubles(){
 test('PBR maps are on the matching Babylon material slots and shared by surface + repeat',()=>{
  const d=doubles(),bank=P.create(d.B,d.scene,{quality:'low',budgetMiB:24});
  const a=bank.material('wood','#715640',2),b=bank.material('wood','#75402a',2);
- assert.equal(a.albedoTexture,b.albedoTexture);assert.equal(a.metallicTexture,b.metallicTexture);
+ assert.equal(a.albedoTexture,b.albedoTexture);assert.equal(a.metallicTexture,b.metallicTexture);assert.equal(a.ambientTexture,a.metallicTexture);
  assert.equal(a.bumpTexture,b.bumpTexture);assert.equal(d.tex.length,3);
  assert.equal(a.metallicTexture.gammaSpace,false);assert.equal(a.bumpTexture.gammaSpace,false);
  assert.equal(a.albedoTexture.gammaSpace,true);assert.equal(a.albedoTexture.uScale,2);
@@ -42,6 +42,21 @@ test('PBR maps are on the matching Babylon material slots and shared by surface 
  bank.dispose();bank.dispose();assert.equal(bank.stats.disposed,true);
  assert(d.tex.every(t=>t.dead===1),'textures released exactly once');
 });
+test('4K PBR is opt-in for a surface family and can switch without a rebuild',()=>{
+ const d=doubles(),bank=P.create(d.B,d.scene,{quality:'low',budgetMiB:640,enable4K:false,fourKTypes:['stone']});
+ assert.equal(bank.previewResolution('stone','high'),2048);
+ assert.equal(bank.set4KEnabled(true),true);
+ assert.equal(bank.stats.fourKEnabled,true);
+ assert.equal(bank.previewResolution('stone','high'),4096);
+ assert.equal(bank.previewResolution('wood','high'),2048);
+ assert.equal(bank.set4KEnabled(false),true);
+ assert.equal(bank.previewResolution('stone','high'),2048);
+ bank.dispose();
+ const mobile=doubles(),fallback=P.create(mobile.B,mobile.scene,{quality:'low',enable4K:true,maxQuality:'balanced',budgetMiB:128});
+ assert.equal(fallback.previewResolution('stone','balanced'),1024);
+ fallback.dispose();
+});
+
 test('PBR bank rejects a StandardMaterial rather than silently dropping ORM',()=>{
  const d=doubles(),bank=P.create(d.B,d.scene,{quality:'low'});assert.throws(()=>bank.apply({diffuseColor:'#ffffff'},{}),/PBRMaterial/);assert.equal(bank.stats.textures,0);bank.dispose();
 });
