@@ -28,7 +28,7 @@
     "runtime": "Babylon.js glTF2 with fallback, independent picking, collision, animation and low LOD"
   },
   "counts": {
-    "sourceMeshIdentifiers": 346,
+    "sourceMeshIdentifiers": 347,
     "assetFamilies": 18,
     "publishedProductionAssets": 1,
     "familiesPendingFullQA": 18
@@ -713,9 +713,10 @@
         "moonrise-village.js:moonrise-fence-post",
         "moonrise-village.js:moonrise-fence-rail",
         "moonrise-village.js:moonrise-bridge-plinth",
-        "moonrise-village.js:moonrise-bridge-finial"
+        "moonrise-village.js:moonrise-bridge-finial",
+        "moonrise-village.js:moonrise-river"
       ],
-      "sourceCount": 38,
+      "sourceCount": 39,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -4839,6 +4840,17 @@
       "key": "moonrise-village.js:moonrise-bridge-finial",
       "file": "moonrise-village.js",
       "meshName": "moonrise-bridge-finial",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "moonrise-village.js:moonrise-river",
+      "file": "moonrise-village.js",
+      "meshName": "moonrise-river",
       "family": "environments",
       "role": "environment",
       "source": "procedural-js",
