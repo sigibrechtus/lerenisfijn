@@ -40,6 +40,20 @@ for(const level of [1,2,3]){
  for(let z=-4;z<=Course.LENGTH+4;z+=.5){const c=Course.center(z,level);assert(Number.isFinite(c.x)&&Number.isFinite(c.rise)&&Number.isFinite(c.heading));if(last){assert(Math.abs(c.x-last.x)<.45,'turn is continuous');assert(Math.abs(c.rise-last.rise)<.25,'slope is gentle');}last=c;}
  for(let stage=0;stage<6;stage++){const g=[0,1,2].map(i=>Course.gate(stage,i,level));assert(g.every(a=>a.diameter>=3.7),'rings remain children-friendly');assert(g.every(a=>a.z>=stage*24+17&&a.z<=stage*24+21),'gate depth leaves recovery distance');assert(g.every(a=>Math.abs(a.x)<11&&a.y>=1.5&&a.y<7),'each gate lies in reachable flight envelope');if(level>1)assert(new Set(g.map(a=>a.z)).size>1,'harder difficulty staggers gate depths');}
 }
+// Guided camera-safe passages also work with the staggered, rising gates
+// at both harder settings; the task/scene are rebuilt without losing momentum.
+for(const level of [2,3]){
+ runtime.start('broom',{level,seed:12,lang:'nl'});
+ for(let stage=1;stage<=3;stage++){
+  const current=runtime.snapshot(),correct=current.task.solution[0],gate=current.gates.find((g,i)=>current.task.items[i].id===correct);
+  assert(gate&&gate.diameter>=3.7);
+  runtime.action(correct);
+  for(let n=0;n<250&&runtime.snapshot().progress===(stage-1)/current.rounds;n++)runtime.tick(.1);
+  assert.equal(runtime.snapshot().progress,stage/current.rounds,'guided flight traverses staggered gate at difficulty '+level);
+  assert(runtime.snapshot().speed>0,'momentum continues at difficulty '+level);
+ }
+ runtime.dispose();
+}
 // Three physical stages prove course progression independently of guided-answer buttons.
 for(const id of ['broom']){
  runtime.start(id,{level:1,seed:4});const arena=runtime.scene;for(let stage=1;stage<=3;stage++){
