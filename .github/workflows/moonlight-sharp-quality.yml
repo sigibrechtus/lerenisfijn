@@ -1,0 +1,45 @@
+name: Moonlight Sharp 4K quality regression
+on:
+  pull_request:
+    paths:
+      - 'games/moonlight-hollow/**'
+      - 'tests/moonlight-sharp-quality.test.cjs'
+      - 'tests/moonlight-pbr.test.cjs'
+      - 'tests/moonlight-graphics.test.cjs'
+      - 'tests/moonlight-materials.test.cjs'
+      - 'tests/moonlight-mini-game-world.test.cjs'
+      - 'tests/moonlight-asset-startup.test.cjs'
+      - 'tests/moonlight-touch-scenes.cjs'
+      - '.github/workflows/moonlight-sharp-quality.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'games/moonlight-hollow/**'
+      - 'tests/moonlight-sharp-quality.test.cjs'
+      - 'tests/moonlight-pbr.test.cjs'
+      - '.github/workflows/moonlight-sharp-quality.yml'
+permissions:
+  contents: read
+jobs:
+  sharp-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Babylon canvas adapter for engine-level checks
+        run: npm install --no-save --no-package-lock @napi-rs/canvas
+      - name: JavaScript syntax
+        run: |
+          node --check games/moonlight-hollow/graphics.js
+          node --check games/moonlight-hollow/pbr-materials.js
+          node --check games/moonlight-hollow/world.js
+          node --check games/moonlight-hollow/mini-game-world.js
+          node --check games/moonlight-hollow/attraction-ui.js
+      - name: Rendering profile and PBR integration regressions
+        run: |
+          node --test tests/moonlight-sharp-quality.test.cjs tests/moonlight-pbr.test.cjs tests/moonlight-graphics.test.cjs tests/moonlight-materials.test.cjs
+          node tests/moonlight-mini-game-world.test.cjs
+          node tests/moonlight-asset-startup.test.cjs
