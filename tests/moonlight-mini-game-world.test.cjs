@@ -33,6 +33,29 @@ for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
  assert.equal(runtime.snapshot().completed,true);if(['broom','rally'].includes(id)){const done=runtime.snapshot(),markers=arena.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(markers.length,done.rounds);assert(markers.every(m=>m.metadata.completed));assert.equal(done.vehicle.z,done.rounds*24);assert.equal(arena.activeCamera.metadata.firstPerson,true);}runtime.dispose();assert.equal(scene.activeCamera,main);assert.equal(scene.meshes.length,baseline.meshes);assert.equal(scene.materials.length,baseline.materials);assert.equal(scene.textures.length,baseline.textures);assert.equal(scene.cameras.length,baseline.cameras);assert.equal(scene.lights.length,baseline.lights);assert.equal(scene.transformNodes.length,baseline.nodes);
 }
 assert.equal(complete,5);assert(updates>30);
+// Moonrise village art belongs to difficulty one only, uses real 3D assets and
+// keeps quiz gates free of scenery across all six sections.
+runtime.start('broom',{level:1,lang:'nl',seed:33});
+{
+ const moonScene=runtime.scene,art=moonScene.metadata?.moonrise;
+ assert(art,'Moonrise environment must load in playable level one');
+ assert.equal(art.houses,12,'village homes have architectural geometry');
+ assert.equal(art.trees,16,'Moonrise includes tree silhouettes');
+ assert.equal(art.lanterns,14,'Moonrise includes illuminated street lanterns');
+ assert(art.props>=18,'Moonrise adds pumpkin decorations');
+ const homes=moonScene.meshes.filter(m=>m.name==='mini-moonrise-house-wall'),roofs=moonScene.meshes.filter(m=>m.name==='mini-moonrise-gabled-roof');
+ assert.equal(homes.length,12);assert.equal(roofs.length,homes.length);
+ assert(moonScene.meshes.some(m=>m.name==='mini-moonrise-window-glow'),'houses have individually glowing 3D windows');
+ assert(moonScene.meshes.some(m=>m.name==='mini-moonrise-bridge-plinth'),'stone bridge details decorate the route');
+ assert(moonScene.meshes.every(m=>m.layerMask===W.LAYER),'all Moonrise pieces honor the flight scene layer');
+ assert(homes.every(m=>{const c=Course.center(m.position.z,1);return Math.abs(m.position.x-c.x)>16;}),'houses stay outside the answer gate corridor');
+ assert(moonScene.meshes.length<1150,'iPhone scene mesh count stays bounded');
+ assert.equal(art.glbRequested,0,'low-quality profile does not import heavier GLBs');
+ const before=moonScene.meshes.length;
+ runtime.action('camera');assert.equal(moonScene.meshes.length,before,'camera switching cannot duplicate scenery');
+}
+runtime.dispose();assert.equal(scene.meshes.length,baseline.meshes,'Moonrise materials and meshes dispose with the scene');
+runtime.start('broom',{level:2,seed:34});assert.equal(runtime.scene.metadata?.moonrise,undefined,'other difficulty environments remain unchanged');runtime.dispose();
 // Course contracts: three difficulties retain large reachable gates, deterministic
 // longitudinal progress, moderate winding, and individually staggered challenge gates.
 for(const level of [1,2,3]){
