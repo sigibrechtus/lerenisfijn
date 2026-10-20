@@ -24,13 +24,33 @@ for(const id of ['broom']){
   const checkpoints=arena.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(checkpoints.length,s.rounds);assert.equal(checkpoints.filter(m=>m.metadata.completed).length,stage-1);
   const labels=arena.meshes.filter(m=>m.metadata?.miniLabel?.gate);assert.equal(labels.length,3);assert(labels.every(m=>m.position.z===gateZ));
   if(id==='broom'){
-   const ring=arena.meshes.filter(m=>m.name==='mini-answer-ring')[i],targetY=ring.position.y-120;const dx=x-runtime.snapshot().vehicle.localX;runtime.input(Math.sign(dx),0,0);for(let n=0;n<Math.round(Math.abs(dx)/.6);n++)runtime.tick(.1);
-   const initialY=runtime.snapshot().vehicle.y;runtime.input(0,0,Math.sign(targetY-initialY));for(let n=0;n<Math.round(Math.abs(targetY-initialY)/.6);n++)runtime.tick(.1);runtime.input(0,1,0);for(let n=0;n<60&&runtime.snapshot().progress===(stage-1)/s.rounds;n++)runtime.tick(.1);
+   const ring=arena.meshes.filter(m=>m.name==='mini-answer-ring')[i],targetY=ring.position.y-120;
+   // Flight now has real momentum: steer towards the target rather than assuming 6m/s lateral motion.
+   for(let n=0;n<100;n++){const v=runtime.snapshot().vehicle,dx=x-v.localX,dy=targetY-v.y;if(Math.abs(dx)<.35&&Math.abs(dy)<.25)break;runtime.input(Math.abs(dx)<.35?0:Math.sign(dx),0,Math.abs(dy)<.25?0:Math.sign(dy));runtime.tick(.05);}
+   runtime.input(0,1,0);for(let n=0;n<180&&runtime.snapshot().progress===(stage-1)/s.rounds;n++)runtime.tick(.05);
   }else for(let n=0;n<300&&runtime.snapshot().progress===(stage-1)/s.rounds;n++){const v=runtime.snapshot().vehicle,target=Math.atan2(x-v.localX,gateZ-v.localZ),localHeading=v.heading-s.course.heading,turn=Math.atan2(Math.sin(target-localHeading),Math.cos(target-localHeading));runtime.input(Math.max(-1,Math.min(1,turn*3)),1,0);runtime.tick(.05);}
   for(let n=0;n<40&&runtime.snapshot().busy;n++)runtime.tick(.1);assert.equal(runtime.snapshot().progress,stage/s.rounds);assert(runtime.snapshot().vehicle.localZ>=-6&&runtime.snapshot().vehicle.localZ<0,'correct gate retains progress instead of resetting');assert.equal(runtime.snapshot().completed,false);const next=runtime.snapshot().vehicle.z;runtime.input(0,0,0);runtime.tick(.1);assert(runtime.snapshot().vehicle.z>next,'flight continues forward after releasing the joystick');
  }
  runtime.dispose();
 }
+// Physically crossing an incorrect answer gate must return to the SAME question
+// and checkpoint, with zero speed, rather than advancing or restarting the adventure.
+runtime.start('broom',{level:1,seed:21});
+{
+ const start=runtime.snapshot(),wrong=start.task.items.findIndex(item=>item.id!==start.task.solution[0]),x=(wrong-1)*7,targetY=2+wrong*1.5;
+ for(let n=0;n<100;n++){const v=runtime.snapshot().vehicle,dx=x-v.localX,dy=targetY-v.y;if(Math.abs(dx)<.35&&Math.abs(dy)<.25)break;runtime.input(Math.abs(dx)<.35?0:Math.sign(dx),0,Math.abs(dy)<.25?0:Math.sign(dy));runtime.tick(.05);}
+ runtime.input(0,1,0,1);
+ for(let n=0;n<250&&runtime.snapshot().flightStatus!=='checkpoint';n++)runtime.tick(.05);
+ const retry=runtime.snapshot();
+ assert.equal(retry.flightStatus,'checkpoint','wrong gate triggers checkpoint');
+ assert.equal(retry.progress,0,'wrong answer does not advance');
+ assert.equal(retry.round,1,'retry same question');
+ assert.equal(retry.speed,0,'wrong answer resets forward momentum');
+ assert.equal(retry.vehicle.localZ,0,'broom returns to checkpoint before gate');
+ const parked=retry.vehicle.z;runtime.input(0,0,0);runtime.tick(.1);
+ assert.equal(runtime.snapshot().vehicle.z,parked,'broom stays at checkpoint until accelerated');
+}
+runtime.dispose();
 runtime.start('rally',{seed:2});runtime.input(0,1);for(let n=0;n<50;n++)runtime.tick(.1);assert(runtime.snapshot().speed>0);const parked=runtime.snapshot().vehicle;paused=true;runtime.tick(.1);assert.equal(runtime.snapshot().speed,0);runtime.action(runtime.snapshot().task.solution[0]);for(let n=0;n<20;n++)runtime.tick(.1);assert.equal(runtime.snapshot().vehicle.z,parked.z);assert.equal(runtime.snapshot().progress,0);paused=false;runtime.input(0,-1);for(let n=0;n<10;n++)runtime.tick(.1);assert(runtime.snapshot().vehicle.z<parked.z);runtime.dispose();scene.dispose();engine.dispose();
 // Project every active sign corner into the camera's safe viewport at three screen sizes.
 const F=require('../games/moonlight-hollow/camera.js');let projectedSigns=0;
