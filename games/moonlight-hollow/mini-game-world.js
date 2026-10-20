@@ -1,10 +1,11 @@
 /* Isolated Babylon arenas. All resources and input listeners belong to this runtime. */
 (function(root){'use strict';
 const Race=root.MoonPumpkinRace||(typeof require==='function'?require('./pumpkin-race.js'):null),Broom=root.MoonBroomCourse||(typeof require==='function'?require('./broom-course.js'):null);
+const Moonrise=root.MoonriseVillage||(typeof require==='function'?require('./moonrise-village.js'):null);
 const Games=root.MoonMiniGames||(typeof require==='function'?require('./mini-games.js'):null),Framing=root.MoonCamera||(typeof require==='function'?require('./camera.js'):null),Effects=root.MoonMiniGameEffects||(typeof require==='function'?require('./mini-game-effects.js'):null),LAYER=0x20000000;
 function create({B,scene,quality='balanced',sharp4K=false,reducedMotion=false,onUpdate=()=>{},onTelemetry=()=>{},onComplete=()=>{},effect=()=>{},frame,paused=()=>false,materials=null}={}){
  const hostScene=scene,hostMaterials=materials;let raceScaling=null,raceView='third',headLook={yaw:0,pitch:0},lookPointer=null;
- let game=null,camera=null,previousCamera=null,resources=[],meshes=[],observer=null,keys={},axis={x:0,z:0,y:0,boost:0},vehicle=null,goal=null,speed=6,lastRound=0,finished=false,active=false,elapsed=0,heading=0,velocity=0,pending=null,telemetryTime=0,steering=0,trailTime=0;
+ let moonriseGeneration=0,game=null,camera=null,previousCamera=null,resources=[],meshes=[],observer=null,keys={},axis={x:0,z:0,y:0,boost:0},vehicle=null,goal=null,speed=6,lastRound=0,finished=false,active=false,elapsed=0,heading=0,velocity=0,pending=null,telemetryTime=0,steering=0,trailTime=0;
  const stageThemes={nl:['Maanpoort','Sterrenbrug','Fluisterbos','Pompoenhof','Kristaltuin','Lichtfeest'],fr:['Porte lunaire','Pont des étoiles','Bois des murmures','Cour des citrouilles','Jardin de cristal','Fête des lumières']},stageColors=['#7fc8ed','#f0c87c','#a5d98d','#eeab7e','#afa0e2','#e8ddac'];
  let broomView='first',broomFogMode=null,flightStatus='ready',keyboardLayout='qwerty',arenaFrame=null,meshFrame=null,frameBase=0,stageFrames=[],foreignLights=[],race=null,raceSigns=[],raceRows=[],raceCountdown=0,raceGo=0,raceSteeringWheel=null,raceGasPedal=null,raceBrakePedal=null,raceInput={steer:0,gas:0,brake:0};
  let privateMaterials=null,materialBank=materials,sharpMaterials=sharp4K;let creatures=null;
@@ -39,7 +40,7 @@ function create({B,scene,quality='balanced',sharp4K=false,reducedMotion=false,on
   const height=gate?(game?.snapshot().id==='broom'?3.35:4.4):width*.55,m=mesh('CreatePlane','label',{width,height},[x,y,z],mat,actionId);
   m.metadata={...m.metadata,miniLabel:{text,glyphs,width,height,gate}};return m;
  }
- function clearArena(){choreography.clear();pending=null;for(const item of resources.reverse())item.dispose();resources=[];meshes=[];vehicle=null;goal=null;raceSteeringWheel=null;raceGasPedal=null;raceBrakePedal=null;raceInput={steer:0,gas:0,brake:0};heading=0;velocity=0;arenaFrame=null;meshFrame=null;stageFrames=[];}
+ function clearArena(){moonriseGeneration++;choreography.clear();pending=null;for(const item of resources.reverse())item.dispose();resources=[];meshes=[];vehicle=null;goal=null;raceSteeringWheel=null;raceGasPedal=null;raceBrakePedal=null;raceInput={steer:0,gas:0,brake:0};heading=0;velocity=0;arenaFrame=null;meshFrame=null;stageFrames=[];}
  // Every sign is mounted; a low eye camera views compact upright workstations.
  function mounted(value,x,y,z,action,width=3,base=0,mat=null){
   const sign=label(value,x,y,z,action,width);if(sign){const bottom=y-sign.metadata.miniLabel.height/2;if(bottom>base+.02)mesh('CreateCylinder','sign-post',{height:bottom-base,diameter:.08,tessellation:6},[x,(bottom+base)/2,z+.06],mat||material('post','#846045'));}return sign;
@@ -201,6 +202,19 @@ function create({B,scene,quality='balanced',sharp4K=false,reducedMotion=false,on
     }
    }for(let section=0;section<s.rounds;section++){meshFrame=stageFrames[section];frameBase=section*24;if(!fly){for(const x of [-10.7,10.7])mesh('CreateBox','road-edge',{width:.16,height:.05,depth:26},[x,-.05,frameBase+11],pale);for(let z=-2;z<26;z+=4)mesh('CreateBox','lane-mark',{width:.16,height:.05,depth:1.5},[0,-.05,frameBase+z],pale);}for(const x of [-13,13])for(let z=0;z<26;z+=8)mesh('CreateSphere','roadside-pumpkin',{diameter:1,segments:10},[x,.4,frameBase+z],accent);}
    meshFrame=arenaFrame;frameBase=stage;
+   // Level-one environment art is a tracked layer, not a replacement for the
+   // authority of the centreline, educational rings or checkpoint collision.
+   if(fly&&s.level===1&&Moonrise?.decorate){
+    const generation=moonriseGeneration;
+    meshFrame=null;frameBase=0;
+    const village=Moonrise.decorate({
+     B,scene,origin,layer:LAYER,course:Broom,mesh,material,quality,
+     reducedMotion,assetLibrary:root.MoonAssetLibrary,own:owned,
+     isCurrent:()=>active&&moonriseGeneration===generation&&scene.isDisposed?.()!==true
+    });
+    scene.metadata={...scene.metadata,moonrise:{...village,quality}};
+    meshFrame=arenaFrame;frameBase=stage;
+   }
   }else if(t.id==='mansion'){
    mesh('CreateBox','manor',{width:11,height:5.3,depth:1},[0,2.55,9],wood);mesh('CreateBox','door',{width:1.5,height:3.6,depth:.25},[0,1.7,8.35],orange);
    mesh('CreateBox','key-cabinet',{width:9.4,height:4.5,depth:.25},[0,2.15,7.45],ground);
