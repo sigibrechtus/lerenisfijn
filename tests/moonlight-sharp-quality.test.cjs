@@ -41,7 +41,7 @@ test('Sharp selector remains wired to scene quality and optional mini-game geome
  assert.match(app,/'close',applyGraphicsSettings/);
  assert.match(world,/\['auto','high','low','sharp'\]/);
  assert.match(world,/G\.textureTier\(tier,mobileSafari\)/);
- assert.match(mini,/\['low','sharp'\]/);
+ assert.match(mini,/prefs\(\)\.quality==='sharp'/);
  assert.match(mini,/value==='auto'\?'balanced':value/);
  for(const asset of ['graphics.js','world.js','adventure.js','attraction-ui.js']){
   const script=html.match(new RegExp(asset.replace('.','\\.')+'\\?v=\\d+'));
