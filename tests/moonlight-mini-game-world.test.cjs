@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),B=require('../games/moonlight-hollow/vendor/babylon.js');
 const {createCanvas}=require('@napi-rs/canvas');global.document={hidden:false,createElement:()=>createCanvas(512,128),addEventListener(){},removeEventListener(){}};
 // Continuous kart circuits have dedicated physical and projection coverage in pumpkin-race-world.test.cjs.
-const G=require('../games/moonlight-hollow/mini-games.js'),W=require('../games/moonlight-hollow/mini-game-world.js');
+const G=require('../games/moonlight-hollow/mini-games.js'),W=require('../games/moonlight-hollow/mini-game-world.js'),Course=require('../games/moonlight-hollow/broom-course.js');
 function perform(r,id){r.action(id);for(let i=0;i<400&&(r.snapshot().busy||r.snapshot().assisted);i++)r.tick(.1);assert(!r.snapshot().busy,'operation finished');}
 const engine=new B.NullEngine({renderWidth:1280,renderHeight:720}),scene=new B.Scene(engine),main=new B.UniversalCamera('main',B.Vector3.Zero(),scene);scene.activeCamera=main;const baseline={meshes:scene.meshes.length,materials:scene.materials.length,textures:scene.textures.length,cameras:scene.cameras.length,lights:scene.lights.length,nodes:scene.transformNodes.length};let updates=0,complete=0,paused=false;
 const runtime=W.create({B,scene,paused:()=>paused,quality:'low',reducedMotion:true,frame:()=>({x:0,y:.2,width:.7,height:.8}),onUpdate:s=>{assert(s.name&&s.question);updates++;},onComplete:()=>complete++});
@@ -12,7 +12,7 @@ for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
   assert(!arena.meshes.some(m=>m.name==='mini-clear-backdrop'),'no opaque wall beyond flight gate');
   const floors=arena.meshes.filter(m=>m.name==='mini-floor');assert.equal(floors.length,1,'one seamless flight runway replaces overlapping floor sections');floors[0].computeWorldMatrix(true);
   const box=floors[0].getBoundingInfo().boundingBox;assert(box.maximumWorld.z-box.minimumWorld.z>=6*24+25,'runway spans all gate positions without an end wall');
-  const rails=arena.meshes.filter(m=>m.name==='mini-road-edge');assert.equal(rails.length,2,'two uninterrupted side rails');
+  const rails=arena.meshes.filter(m=>m.name==='mini-road-edge');assert(rails.length>=60,'continuous curved side rail pieces');const strips=arena.meshes.filter(m=>m.name==='mini-flight-road-strip');assert(strips.length>=36,'curved elevated runway is actually rendered');const heights=strips.map(m=>m.position.y),offsets=strips.map(m=>m.position.x);assert(Math.max(...heights)-Math.min(...heights)>.1,'runway elevation changes');assert(Math.max(...offsets)-Math.min(...offsets)>.15,'runway visibly bends');
   const broom=arena.meshes.find(m=>m.name==='mini-broom'),brush=arena.meshes.find(m=>m.name==='mini-broom-brush');
   assert(broom&&brush,'broom geometry exists for third-person camera');
   assert.equal(broom.isVisible,false,'first-person camera cannot see its own broom');
@@ -33,15 +33,22 @@ for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
  assert.equal(runtime.snapshot().completed,true);if(['broom','rally'].includes(id)){const done=runtime.snapshot(),markers=arena.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(markers.length,done.rounds);assert(markers.every(m=>m.metadata.completed));assert.equal(done.vehicle.z,done.rounds*24);assert.equal(arena.activeCamera.metadata.firstPerson,true);}runtime.dispose();assert.equal(scene.activeCamera,main);assert.equal(scene.meshes.length,baseline.meshes);assert.equal(scene.materials.length,baseline.materials);assert.equal(scene.textures.length,baseline.textures);assert.equal(scene.cameras.length,baseline.cameras);assert.equal(scene.lights.length,baseline.lights);assert.equal(scene.transformNodes.length,baseline.nodes);
 }
 assert.equal(complete,5);assert(updates>30);
+// Course contracts: three difficulties retain large reachable gates, deterministic
+// longitudinal progress, moderate winding, and individually staggered challenge gates.
+for(const level of [1,2,3]){
+ let last=null;
+ for(let z=-4;z<=Course.LENGTH+4;z+=.5){const c=Course.center(z,level);assert(Number.isFinite(c.x)&&Number.isFinite(c.rise)&&Number.isFinite(c.heading));if(last){assert(Math.abs(c.x-last.x)<.45,'turn is continuous');assert(Math.abs(c.rise-last.rise)<.25,'slope is gentle');}last=c;}
+ for(let stage=0;stage<6;stage++){const g=[0,1,2].map(i=>Course.gate(stage,i,level));assert(g.every(a=>a.diameter>=3.7),'rings remain children-friendly');assert(g.every(a=>a.z>=stage*24+17&&a.z<=stage*24+21),'gate depth leaves recovery distance');assert(g.every(a=>Math.abs(a.x)<11&&a.y>=1.5&&a.y<7),'each gate lies in reachable flight envelope');if(level>1)assert(new Set(g.map(a=>a.z)).size>1,'harder difficulty staggers gate depths');}
+}
 // Three physical stages prove course progression independently of guided-answer buttons.
 for(const id of ['broom']){
  runtime.start(id,{level:1,seed:4});const arena=runtime.scene;for(let stage=1;stage<=3;stage++){
-  const s=runtime.snapshot(),i=s.task.items.findIndex(t=>t.id===s.task.solution[0]),x=(i-1)*7,gateZ=19;
+  const s=runtime.snapshot(),i=s.task.items.findIndex(t=>t.id===s.task.solution[0]),x=s.gates[i].x,gateZ=s.gates[1].z;
   assert.equal(s.round,stage);assert.equal(s.gateZ,s.course.gate.z);if(stage===1)assert.equal(s.vehicle.localZ,0);else{assert(s.vehicle.localZ>=-6&&s.vehicle.localZ<0,'next stage begins just beyond previous gate');assert.equal(s.course.heading,0,'continuous broom corridor preserves heading');}
   const checkpoints=arena.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(checkpoints.length,s.rounds);assert.equal(checkpoints.filter(m=>m.metadata.completed).length,stage-1);
-  const labels=arena.meshes.filter(m=>m.metadata?.miniLabel?.gate);assert.equal(labels.length,3);assert(labels.every(m=>m.position.z===gateZ));
+  const labels=arena.meshes.filter(m=>m.metadata?.miniLabel?.gate);assert.equal(labels.length,3);labels.forEach((sign,j)=>assert(Math.abs(sign.position.z-(s.gates[j].z-(stage-1)*Course.SECTION))<.01,'answer label must travel with its own gate'));
   if(id==='broom'){
-   const ring=arena.meshes.filter(m=>m.name==='mini-answer-ring')[i],targetY=ring.position.y-120;
+   const ring=arena.meshes.filter(m=>m.name==='mini-answer-ring')[i],targetY=s.gates[i].y;assert(Math.abs(ring.position.y-120-targetY)<.01,'physical ring and collision target use same height');
    // Flight now has real momentum: steer towards the target rather than assuming 6m/s lateral motion.
    for(let n=0;n<100;n++){const v=runtime.snapshot().vehicle,dx=x-v.localX,dy=targetY-v.y;if(Math.abs(dx)<.35&&Math.abs(dy)<.25)break;runtime.input(Math.abs(dx)<.35?0:Math.sign(dx),0,Math.abs(dy)<.25?0:Math.sign(dy));runtime.tick(.05);}
    runtime.input(0,1,0);for(let n=0;n<180&&runtime.snapshot().progress===(stage-1)/s.rounds;n++)runtime.tick(.05);
@@ -54,7 +61,7 @@ for(const id of ['broom']){
 // and checkpoint, with zero speed, rather than advancing or restarting the adventure.
 runtime.start('broom',{level:1,seed:21});
 {
- const start=runtime.snapshot(),wrong=start.task.items.findIndex(item=>item.id!==start.task.solution[0]),x=(wrong-1)*7,targetY=2+wrong*1.5;
+ const start=runtime.snapshot(),wrong=start.task.items.findIndex(item=>item.id!==start.task.solution[0]),x=start.gates[wrong].x,targetY=start.gates[wrong].y;
  for(let n=0;n<100;n++){const v=runtime.snapshot().vehicle,dx=x-v.localX,dy=targetY-v.y;if(Math.abs(dx)<.35&&Math.abs(dy)<.25)break;runtime.input(Math.abs(dx)<.35?0:Math.sign(dx),0,Math.abs(dy)<.25?0:Math.sign(dy));runtime.tick(.05);}
  runtime.input(0,1,0,1);
  for(let n=0;n<250&&runtime.snapshot().flightStatus!=='checkpoint';n++)runtime.tick(.05);
