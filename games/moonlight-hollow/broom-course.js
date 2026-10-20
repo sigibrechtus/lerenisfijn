@@ -10,7 +10,7 @@
   const bend=[0,.95,2.8,4.1][tier],h=[0,.2,.55,1.05][tier];
   const x=bend*(.70*Math.sin(d/27)+.30*Math.sin(d/13));
   const dx=bend*(.70*Math.cos(d/27)/27+.30*Math.cos(d/13)/13);
-  const rise=.35+h*(.73*Math.sin(d/25)+.27*Math.sin(d/11));
+  const rise=.28+h*(.5+.45*Math.sin(d/25)+.05*Math.sin(d/11));
   return {x,rise,heading:Math.atan2(dx,1)};
  }
  function gate(stage,lane,level=1){
