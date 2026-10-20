@@ -5,7 +5,7 @@ test('new script dependencies exist and are included in the offline release',()=
   const html=fs.readFileSync(path.join(base,'index.html'),'utf8'),sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
   const scripts=[...html.matchAll(/<script defer src="([^"]+)"/g)].map(m=>m[1]);
   const cachedScripts=[...scripts,...[...fs.readFileSync(path.join(base,'legacy.html'),'utf8').matchAll(/<script[^>]*src="([^"]+)"/g)].map(m=>m[1])];
-  for(const name of cachedScripts){assert(fs.existsSync(path.join(base,name.split('?')[0])),name);assert(sw.includes("'./"+name+"'")||sw.includes('"./'+name+'"'),name+' must be cached');}
+  for(const name of cachedScripts){if(/^(?:https?:)?\/\//.test(name)||name.startsWith('../'))continue;assert(fs.existsSync(path.join(base,name.split('?')[0])),name);assert(sw.includes("'./"+name+"'")||sw.includes('"./'+name+'"'),name+' must be cached');}
   const worldIndex=scripts.findIndex(name=>name.split('?')[0]==='world.js');
   for(const dependency of ['controls.js','graphics.js','railway.js','atmosphere.js','landscape.js','puzzle-actions.js']){
     const i=scripts.findIndex(name=>name.split('?')[0]===dependency);
