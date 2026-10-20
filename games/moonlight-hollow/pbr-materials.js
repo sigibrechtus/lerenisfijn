@@ -39,12 +39,57 @@ function create(B,scene,opts={}){
   if(tier==='balanced')return 1024;
   return fourKEnabled&&fourKTypes.has(type)?4096:2048;
  }
- function sizeFor(type,tier,available){
+ // Allocate across all live UV variants. Greedy per-material allocation can spend
+ // the entire 128 MiB iOS bank on the first eight 1024px triplets.
+ const priorities={stone:5,wood:5,pumpkin:5,roof:4,earth:3,plaster:2,cloth:2,metal:1};
+ const reserveFor=tier=>fourKEnabled?Math.min(64*1048576,budgetFor(tier)/4):Math.min(16*1048576,budgetFor(tier)/16);
+ function cappedSize(type,tier){
   let n=expected(type,tier);
   while(n>limit&&n>128)n/=2;
-  while(pairBytes(n)>available&&n>128)n/=2;
-  if(pairBytes(n)>available)throw new RangeError('Moonlight PBR memory budget exhausted');
   return n;
+ }
+ function planSizes(tier,extra=null){
+  const entries=[...pairs.entries()].map(([key,p])=>({key,type:p.type,repeat:p.repeat,size:cappedSize(p.type,tier)}));
+  if(extra)entries.push({...extra,size:cappedSize(extra.type,tier)});
+  const target=budgetFor(tier)-reserveFor(tier);
+  let total=entries.reduce((sum,e)=>sum+pairBytes(e.size),0);
+  // Prefer degrading secondary maps while retaining sharp near-camera materials.
+  while(total>target){
+   const candidates=entries.filter(e=>e.size>128).sort((a,b)=>
+    (priorities[a.type]||0)-(priorities[b.type]||0) ||
+    b.size-a.size || a.key.localeCompare(b.key));
+   if(!candidates.length)throw new RangeError('Moonlight PBR memory budget exhausted');
+   const victim=candidates[0],old=victim.size;
+   victim.size=old/2;total-=pairBytes(old)-pairBytes(victim.size);
+  }
+  return entries;
+ }
+ function replacePair(key,old,size,tier){
+  if(size===old.resolution){
+   for(const t of [old.albedo,old.normal,old.orm])t.anisotropicFilteringLevel=tier==='low'?2:8;
+   return;
+  }
+  // Keep the current textures valid if any new upload fails.
+  const fresh=upload(old.type,old.repeat,size,tier);
+  peak=max(peak,bytes+fresh.bytes);
+  for(const [mat,b]of bindings)if(b.type===old.type&&b.repeat===old.repeat)bind(mat,fresh);
+  pairs.set(key,fresh);bytes+=fresh.bytes-old.bytes;
+  old.albedo.dispose();old.normal.dispose();old.orm.dispose();
+ }
+ function resizeExisting(plan,tier,upgrades){
+  for(const e of plan){
+   const p=pairs.get(e.key);
+   if(p&&e.size<p.resolution)replacePair(e.key,p,e.size,tier);
+  }
+  if(!upgrades)return;
+  for(const e of plan){
+   const p=pairs.get(e.key);if(!p)continue;
+   let size=e.size;
+   // Peak GPU residency contains the old maps and the new maps until the swap.
+   while(size>p.resolution&&bytes+pairBytes(size)>budgetFor(tier))size/=2;
+   if(size<p.resolution)size=p.resolution;
+   replacePair(e.key,p,size,tier);
+  }
  }
  function upload(type,repeat,size,tier){
   const pixels=generate(type,size),tex=[],key=type+':'+repeat;
@@ -64,8 +109,13 @@ function create(B,scene,opts={}){
   if(disposed)throw Error('Moonlight PBR bank disposed');
   if(!types.includes(type))throw new RangeError('Unknown PBR surface '+type);
   const key=type+':'+repeat;if(pairs.has(key))return pairs.get(key);
-  const p=upload(type,repeat,sizeFor(type,quality,budgetFor(quality)-bytes),quality);
-  pairs.set(key,p);bytes+=p.bytes;peak=max(peak,bytes);return p;
+  const plan=planSizes(quality,{key,type,repeat});
+  // Reclaim lower-priority maps before introducing another UV variant.
+  resizeExisting(plan,quality,false);
+  const n=plan.find(e=>e.key===key).size;
+  const p=upload(type,repeat,n,quality);
+  pairs.set(key,p);bytes+=p.bytes;peak=max(peak,bytes);
+  return p;
  }
  function prepare(mat){
   if(!mat||!('albedoColor' in mat))throw new TypeError('PBR surfaces require Babylon PBRMaterial');
@@ -103,28 +153,14 @@ function create(B,scene,opts={}){
  function live(mat){return !(typeof mat.isDisposed==='function'&&mat.isDisposed())&&!mat._isDisposed&&(!scene.materials||scene.materials.includes(mat));}
  function setQuality(value,force=false){
   if(disposed)throw Error('Moonlight PBR bank disposed');
-  let next=['low','balanced','high'].includes(value)?value:'balanced';if(rank[next]>rank[maxQuality])next=maxQuality;if(next===quality&&!force)return false;
-  let remaining=budgetFor(next);const plan=[];
-  for(const [key,p] of pairs){const size=sizeFor(p.type,next,remaining);remaining-=pairBytes(size);plan.push({key,p,size});}
-  for(const [mat]of bindings)if(!live(mat))bindings.delete(mat);
+  let next=['low','balanced','high'].includes(value)?value:'balanced';
+  if(rank[next]>rank[maxQuality])next=maxQuality;
+  if(next===quality&&!force)return false;
+  const plan=planSizes(next);
   peak=bytes;
-  for(const {key,p,size:plannedSize}of plan){
-   let size=plannedSize;
-   // Upgrades must fit BOTH the eventual resident budget and the temporary
-   // old+new texture overlap. Downscales may temporarily exceed the smaller
-   // target budget while replacing larger resident textures.
-   if(size>p.resolution){
-    while(size>p.resolution&&bytes+pairBytes(size)>budgetFor(next))size/=2;
-    if(size<=p.resolution)size=p.resolution;
-   }
-   if(size===p.resolution){for(const t of [p.albedo,p.normal,p.orm])t.anisotropicFilteringLevel=next==='low'?2:8;continue;}
-   peak=max(peak,bytes+pairBytes(size));
-   const fresh=upload(p.type,p.repeat,size,next);
-   for(const [mat,b]of bindings)if(b.type===p.type&&b.repeat===p.repeat)bind(mat,fresh);
-   pairs.set(key,fresh);bytes+=fresh.bytes-p.bytes;
-   p.albedo.dispose();p.normal.dispose();p.orm.dispose();
-  }
-  quality=next;return true;
+  resizeExisting(plan,next,true);
+  quality=next;
+  return true;
  }
  function set4KEnabled(enabled){
   if(disposed)throw Error('Moonlight PBR bank disposed');
@@ -136,7 +172,7 @@ function create(B,scene,opts={}){
  }
  function previewResolution(type,tier='high'){
   if(!types.includes(type))throw new RangeError('Unknown PBR surface '+type);
-  return sizeFor(type,tier,budgetFor(tier)-bytes);
+  return planSizes(tier,{key:'preview:'+type,type,repeat:1}).find(e=>e.key==='preview:'+type).size;
  }
  function dispose(){
   if(disposed)return;disposed=true;
