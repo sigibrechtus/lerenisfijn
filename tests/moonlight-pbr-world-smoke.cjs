@@ -45,7 +45,7 @@ if(simulateIphone){
   assert(materials.stats.estimatedBytes<=128*1048576);
   assert(materials.stats.lastPeakBytes<=128*1048576);
  }
- assert(world.scene.materials.filter(m=>m.metadata?.moonSurface).every(m=>m.albedoTexture&&!m.albedoTexture.isDisposed()),'live surface maps after quality changes');
+ assert(world.scene.materials.filter(m=>m.metadata?.moonSurface).every(m=>m.albedoTexture&&!m.albedoTexture.isDisposed?.()),'live surface maps after quality changes');
 }
 console.log(JSON.stringify({simulatedIphone:simulateIphone,pbrMaterials:pbrMaterials.length,pbrMeshes:meshes.length,creatureMaps:creatures.length,materialBank:world.materials.stats}));
 world.stop();
