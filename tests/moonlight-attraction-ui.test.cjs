@@ -150,3 +150,14 @@ test('finish offers replay, played-track selection and outcome-based continuatio
  complete(.5);h.$('mini-race-next').onclick();assert.equal(h.runtimeCalls.at(-1).config.circuit,1,'continue returns to current unlocked track after an old replay');
  h.controller.leave();assert.equal(h.$('mini-race-finish').hidden,true);
 });
+
+test('flight overlay cannot shrink the viewport or blur the canvas and flight controls anchor to panel bottom',()=>{
+ const css=fs.readFileSync(path.join(__dirname,'../games/moonlight-hollow/attractions.css'),'utf8');
+ const root=(css.match(/body\.mini-game-mode\.flight-mode #mini-panel\.glass\{([^}]+)\}/)||[])[1];
+ assert(root,'flight fullscreen specificity override exists');
+ for(const rule of ['max-height:none!important','overflow-y:visible!important','backdrop-filter:none!important','-webkit-backdrop-filter:none!important','background:transparent!important'])assert(root.includes(rule),'missing flight overlay safeguard: '+rule);
+ const controls=(css.match(/body\.mini-game-mode\.flight-mode #mini-panel > #mini-driving:not\(\[hidden\]\)\{([^}]+)\}/)||[])[1];
+ assert(controls,'flight controls have their own positioned root');
+ assert(controls.includes('position:absolute!important'),'controls anchor relative to full-height panel');
+ assert(controls.includes('inset:auto 0 calc('),'flight control strip is bottom-aligned');
+});
