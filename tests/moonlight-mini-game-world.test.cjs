@@ -47,6 +47,13 @@ runtime.start('broom',{level:1,lang:'nl',seed:33});
  assert.equal(homes.length,12);assert.equal(roofs.length,homes.length);
  assert(moonScene.meshes.some(m=>m.name==='mini-moonrise-window-glow'),'houses have individually glowing 3D windows');
  assert(moonScene.meshes.some(m=>m.name==='mini-moonrise-bridge-plinth'),'stone bridge details decorate the route');
+ assert.equal(moonScene.meshes.filter(m=>m.name==='mini-moonrise-river').length,2,'two moonlit streams pass beneath the runway');
+ assert(moonScene.lights.filter(l=>l.name.startsWith('moonrise-village-lantern-')).length===2,'mobile profile uses only two real ambient lantern lights');
+ const kenney=require('../games/moonlight-hollow/assets/model-library.json');
+ for(const id of ['pumpkin-carved','lantern-candle','pine-crooked','rocks','lightpost-single','tower-square','tower-hexagon-top','character-ghost']){
+  assert(kenney.assets.some(a=>a.id===id&&a.license==='CC0-1.0'),'shipped and licensed GLB available: '+id);
+ }
+
  assert(moonScene.meshes.every(m=>m.layerMask===W.LAYER),'all Moonrise pieces honor the flight scene layer');
  assert(homes.every(m=>{const c=Course.center(m.position.z,1);return Math.abs(m.position.x-c.x)>16;}),'houses stay outside the answer gate corridor');
  assert(moonScene.meshes.length<1150,'iPhone scene mesh count stays bounded');
