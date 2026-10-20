@@ -21,6 +21,7 @@ function decorate({B,scene,origin=120,layer,course,mesh,material,quality='balanc
   terrain:material('moonrise-moss','#45575d'),
   stream:material('moonrise-stream','#436884')
  };
+ mats.window.emissiveColor=new B.Color3(1,.66,.29);
  // Each village home is a stable family of small architecture pieces,
  // never a billboard. Only the first 2 m above the runway stay empty.
  function part(type,name,dimensions,x,y,z,mat){
@@ -97,6 +98,12 @@ function decorate({B,scene,origin=120,layer,course,mesh,material,quality='balanc
    part('CreateBox','moonrise-fence-rail',{width:.13,height:.13,depth:8.7},x,y+.8,z+4.4,mats.dark);
   }
  }
+ // Two shallow moonlit streams flow BELOW the raised track, leaving the
+ // runway fully traversable and its gate sightline unobstructed.
+ for(const z of [44,96]){
+  const c=course.center(z,1),water=part('CreateBox','moonrise-river',{width:65,height:.045,depth:3.6},c.x,-.31,z,mats.stream);
+  water.metadata={...water.metadata,underBridge:true};
+ }
  // Gothic bridge ornaments remain outside the 21m-wide live flight corridor.
  for(const z of [44,96]){
   const c=course.center(z,1);
@@ -128,7 +135,9 @@ function decorate({B,scene,origin=120,layer,course,mesh,material,quality='balanc
    ['pumpkin-carved',-18,15,1.5,1.5],['lantern-candle',17,27,1.35,1.3],
    ['pine-crooked',-27,37,6.8,5.6],['rocks',23,54,2,3.2],
    ['pumpkin-tall-carved',-20,76,1.7,1.6],['lightpost-single',19,88,5,2.4],
-   ['gravestone-decorative',-20,105,2.7,2.3],['pine-crooked',26,125,6,5.2]
+   ['gravestone-decorative',-20,105,2.7,2.3],['pine-crooked',26,125,6,5.2],
+   ['tower-square',-30,64,9.5,6.7],['tower-hexagon-top',29,110,8,6],
+   ['character-ghost',-17,133,2.2,1.8]
   ];
   for(const [id,x,z,height,width]of recipes){
    stats.glbRequested++;
