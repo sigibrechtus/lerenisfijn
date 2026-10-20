@@ -10,9 +10,9 @@ for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
  if(id==='broom'){
   assert.equal(arena.fogMode,B.Scene.FOGMODE_NONE,'flight uses a fog-free isolated scene');
   assert(!arena.meshes.some(m=>m.name==='mini-clear-backdrop'),'no opaque wall beyond flight gate');
-  const floors=arena.meshes.filter(m=>m.name==='mini-floor').map(m=>{m.computeWorldMatrix(true);return m.getAbsolutePosition().z;}).sort((a,b)=>a-b);
-  assert.equal(floors.length,6,'all six flying sections are instantiated');
-  for(let i=1;i<floors.length;i++)assert(Math.abs(floors[i]-floors[i-1]-24)<.01,'adjacent flight sections connect without a gap');
+  const floors=arena.meshes.filter(m=>m.name==='mini-floor');assert.equal(floors.length,1,'one seamless flight runway replaces overlapping floor sections');floors[0].computeWorldMatrix(true);
+  const box=floors[0].getBoundingInfo().boundingBox;assert(box.maximumWorld.z-box.minimumWorld.z>=6*24+25,'runway spans all gate positions without an end wall');
+  const rails=arena.meshes.filter(m=>m.name==='mini-road-edge');assert.equal(rails.length,2,'two uninterrupted side rails');
   const broom=arena.meshes.find(m=>m.name==='mini-broom'),brush=arena.meshes.find(m=>m.name==='mini-broom-brush');
   assert(broom&&brush,'broom geometry exists for third-person camera');
   assert.equal(broom.isVisible,false,'first-person camera cannot see its own broom');
