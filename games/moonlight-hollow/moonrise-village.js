@@ -30,6 +30,7 @@ function decorate({B,scene,origin=120,layer,course,mesh,material,quality='balanc
  function house(x,z,index,scale=1){
   const shift=course.center(z,1),s=scale,front=x<shift.x?1:-1;
   const base=shift.rise-.05,ww=5.5*s,dd=4.9*s,hh=4.6*s;
+  part('CreateBox','moonrise-house-foundation',{width:ww+.4*s,height:Math.max(.24,base+.35),depth:dd+.4*s},x,Math.max(.24,base+.35)/2-.2,z,mats.stone);
   const wall=part('CreateBox','moonrise-house-wall',{width:ww,height:hh,depth:dd},x,base+hh/2,z,mats.wall);
   wall.metadata.building=index;
   part('CreateCylinder','moonrise-gabled-roof',{diameter:ww*1.24,height:dd+.55*s,tessellation:3},x,base+hh+.75*s,z,mats.roof).rotation.x=Math.PI/2;
