@@ -7,7 +7,7 @@ const {createCanvas}=require('@napi-rs/canvas');
 global.OffscreenCanvas=class{constructor(w,h){return createCanvas(w,h);}};
 global.window=global;global.devicePixelRatio=1;global.matchMedia=()=>({matches:false});
 const simulateIphone=process.env.MOONLIGHT_SIMULATE_IPHONE==='1';
-if(simulateIphone)global.navigator={userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 Mobile Safari/604.1'};
+if(simulateIphone)Object.defineProperty(global,'navigator',{configurable:true,value:{userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 Mobile Safari/604.1'}});
 global.addEventListener=()=>{};global.removeEventListener=()=>{};
 global.document={hidden:false,createElement:()=>createCanvas(512,512),addEventListener(){},removeEventListener(){}};
 const B=global.BABYLON=require('../games/moonlight-hollow/vendor/babylon.js');
