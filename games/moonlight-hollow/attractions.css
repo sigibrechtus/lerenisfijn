@@ -521,3 +521,10 @@ body.mini-game-mode.flight-mode #mini-panel .race-telemetry{
   max-width:91px!important;
  }
 }
+
+/* Flight quiz: retain the complete sentence on one visual line. Small screens can pan it instead of clipping text. */
+body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
+ display:block!important;white-space:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;
+ text-overflow:clip!important;max-width:100%;font-size:clamp(12px,2.2vw,22px)!important;
+ overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;
+}
