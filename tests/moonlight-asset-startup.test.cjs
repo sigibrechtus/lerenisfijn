@@ -44,3 +44,18 @@ test('boarding and moving never hide the production locomotive; ride camera is i
  assert.match(src,/function moveTrain\(state,rollDistance=0\)\{train\.position\.set\(state\.x,typeof terrainHeight==='function'\?terrainHeight\(state\.x,state\.z\):0,state\.z\)/,'moving train follows the same terrain elevation as the rails');
 });
 
+
+test('Broom panorama imagery, scene module and cache versions ship together',()=>{
+ const html=fs.readFileSync(path.join(base,'index.html'),'utf8');
+ const sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
+ for(const name of ['broom-course.js?v=3','broom-atmosphere.js?v=1','mini-game-world.js?v=79']){
+  assert(html.includes(name),'HTML missing '+name);assert(sw.includes(name),'service worker missing '+name);
+ }
+ const module=fs.readFileSync(path.join(base,'broom-atmosphere.js'),'utf8');
+ for(const name of ['sky-moonlit.svg','forest-horizon.svg','castle-horizon.svg']){
+  const file=path.join(base,'assets/broom',name);const content=fs.readFileSync(file,'utf8');
+  assert(content.startsWith('<svg')&&content.length<7000,'lightweight original SVG image required: '+name);
+  assert(module.includes('assets/broom/'+name),'texture must be mapped into Babylon scene');
+  assert(sw.includes('./assets/broom/'+name),'precache must include background '+name);
+ }
+});
