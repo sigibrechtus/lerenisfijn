@@ -5,6 +5,7 @@ on:
       - 'games/moonlight-hollow/**'
       - 'tests/pumpkin-race*.test.cjs'
       - 'tests/moonlight-mini-game-world.test.cjs'
+      - 'tests/moonlight-broom-head-look.test.cjs'
       - 'tests/moonlight-attraction-ui.test.cjs'
       - '.github/workflows/pumpkin-race-tests.yml'
   push:
@@ -36,6 +37,8 @@ jobs:
         run: node tests/moonlight-pbr-world-smoke.cjs
       - name: Broom Flight full-screen arena and camera regression
         run: node tests/moonlight-mini-game-world.test.cjs
+      - name: Broom touch head-look and recenter
+        run: node --test tests/moonlight-broom-head-look.test.cjs
       - name: Race physics and questions
         run: node tests/pumpkin-race.test.cjs
       - name: Replay menus and profile isolation
