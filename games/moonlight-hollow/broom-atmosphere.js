@@ -6,8 +6,8 @@
 function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='balanced',reducedMotion=false}={}){
  if(!B||!scene||!course||!mesh||!material||!own)throw Error('Broom atmosphere requires tracked scene factories');
  const mobile=quality==='low',rich=quality==='high';
- const stats={skyImages:0,horizonImages:0,trees:0,lanterns:0,landmarks:0,sparks:0};
- const decorations=[],sparks=[],animated=[];
+ const stats={skyImages:0,horizonImages:0,trees:0,lanterns:0,landmarks:0,ghosts:0,windStreaks:0,sparks:0};
+ const decorations=[],sparks=[],wind=[],animated=[];
  const colors={
   bark:material('broom-twisted-bark','#50445b'),
   needles:material('broom-shadow-leaves','#293f49'),
@@ -86,6 +86,20 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
    if(i%3===0)pumpkin(c.x+side*15,z+3,i);
   }
  }
+ // Low-cost animated spirits hover beyond the last educational gates.
+ for(let i=0;i<(mobile?2:4);i++){
+  const z=course.LENGTH+18+i*14,c=course.center(z,1),side=i%2?1:-1,x=c.x+side*19,y=c.rise+4.2;
+  const ghost=part('CreateSphere','broom-floating-ghost',{diameter:1.35,segments:mobile?8:12},x,y,z,colors.blue);
+  ghost.scaling.set(.75,1.3,.6);animated.push({mesh:ghost,y:ghost.position.y,offset:i*1.8,type:'ghost'});
+  for(const eye of [-.22,.22])part('CreateSphere','broom-ghost-eye',{diameter:.12,segments:6},x+eye,y+.14,z-.48,colors.bark);
+  stats.ghosts++;
+ }
+ // Reuse a tiny geometry pool for parallax streaks; keep it away from gate labels.
+ for(let i=0;i<(mobile?5:rich?13:9);i++){
+  const streak=part('CreateBox','broom-wind-streak',{width:.045,height:.035,depth:1.9},0,4,course.LENGTH+10,colors.blue);
+  streak.setEnabled(false);wind.push(streak);
+ }
+ stats.windStreaks=wind.length;
  // A ruined Gothic watchtower identifies the finish from a distance.
  const towerX=course.center(portalZ-15,1).x+26,towerZ=portalZ-15;
  const towerBase=course.center(towerZ,1).rise;
@@ -110,13 +124,18 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
  }
  stats.sparks=sparks.length;
  let clock=0,celebration=0;
- function update(dt,viewer){
+ function update(dt,viewer,speed=0){
   if(!Number.isFinite(dt)||dt<=0)return;
   clock+=Math.min(.1,dt);if(celebration>0)celebration=Math.max(0,celebration-dt);
   if(reducedMotion)return;
+  const windActive=!!viewer&&viewer.z>=course.LENGTH&&viewer.z<end&&speed>5;
+  for(let i=0;i<wind.length;i++){
+   const w=wind[i];w.setEnabled(windActive);
+   if(windActive){const side=i%2?-1:1;w.position.set(viewer.x+side*(2.7+(i%4)*1.1),viewer.y+.7+(i%3)*.65,viewer.z+5+(i*2.2+clock*speed*1.5)%18);}
+  }
   for(const item of animated){
    const wave=Math.sin(clock*1.7+item.offset);
-   item.mesh.position.y=item.y+(item.type==='light'?.1:.08)*wave;
+   item.mesh.position.y=item.y+(item.type==='ghost'?.32:item.type==='light'?.1:.08)*wave;
    if(item.type==='rune')item.mesh.scaling.setAll(1+.22*wave);
   }
   const near=viewer&&Math.abs(viewer.z-portalZ)<105;
