@@ -37,7 +37,38 @@ for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
   else{for(const choice of s.task.solution)perform(runtime,choice);if(id==='garden'||id==='railway')perform(runtime,'check');}
   assert.equal(runtime.snapshot().progress,(round+1)/s.rounds);if(round===0){assert.equal(runtime.snapshot().completed,false);assert(complete>=0&&complete<=Object.keys(G.catalog).filter(id=>id!=='rally').indexOf(id),'completion callback must not run early');}
  }
- if(id==='broom'){const beforeOutrun=complete;runtime.input(0,1,0,1);for(let n=0;n<600&&complete===beforeOutrun;n++)runtime.tick(.1);runtime.input(0,0,0,0);assert.equal(complete,beforeOutrun+1,'completion callback fires exactly once after the free outrun');}
+ if(id==='broom'){
+  const beforeOutrun=complete,entry=runtime.snapshot(),entryZ=entry.vehicle.z;
+  assert.equal(entry.flightStatus,'outrun','last quiz gate enters free flight, not the finish animation');
+  // Reproduce the mobile reverse input that previously allowed -3 m/s (11 km/h).
+  runtime.input(0,-1,0,0);
+  let lastZ=entryZ;
+  for(let n=0;n<12;n++){
+   runtime.tick(.1);const v=runtime.snapshot().vehicle;
+   assert(v.z>=lastZ-1e-5,'brake/reverse may not send the finished broom backwards');
+   assert(v.speed>0,'autonomous scenic cruise maintains forward speed');
+   assert(Math.abs(v.heading-Course.center(v.z,3).heading)<.03,'camera heading follows the actual track');
+   lastZ=v.z;
+  }
+  assert(lastZ>entryZ+5,'outro makes forward progress without pressing accelerate');
+  // A lateral correction remains controllable and then smoothly recenters.
+  runtime.input(1,-1,0,0);
+  for(let n=0;n<6;n++)runtime.tick(.1);
+  const steered=runtime.snapshot().vehicle,offsetBefore=Math.abs(steered.localX-Course.center(steered.z,3).x);
+  assert(offsetBefore>1,'manual outrun steering is not disabled');
+  runtime.input(0,-1,0,0);
+  for(let n=0;n<30;n++)runtime.tick(.1);
+  const centered=runtime.snapshot().vehicle,offsetAfter=Math.abs(centered.localX-Course.center(centered.z,3).x);
+  assert(offsetAfter<offsetBefore*.75,'winning gate drift eases toward the runway centre');
+  assert(centered.z>steered.z,'forward travel continues while steering recenters');
+  runtime.action('camera');assert.equal(runtime.snapshot().view,'third');
+  const beforeViewChange=runtime.snapshot().vehicle.z;
+  runtime.tick(.1);assert(runtime.snapshot().vehicle.z>beforeViewChange,'external camera cannot reverse flight');
+  runtime.action('camera');assert.equal(runtime.snapshot().view,'first');
+  runtime.input(0,0,0,0);
+  for(let n=0;n<600&&complete===beforeOutrun;n++)runtime.tick(.1);
+  assert.equal(complete,beforeOutrun+1,'completion callback fires exactly once after free outrun');
+ }
  assert.equal(runtime.snapshot().completed,true);if(['broom','rally'].includes(id)){const done=runtime.snapshot(),markers=arena.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(markers.length,done.rounds);assert(markers.every(m=>m.metadata.completed));if(id==='broom')assert(done.vehicle.z>=Course.LENGTH-Course.SECTION+38,'last gate completed before free outrun');else assert.equal(done.vehicle.z,done.rounds*24);assert.equal(arena.activeCamera.metadata.firstPerson,true);}runtime.dispose();assert.equal(scene.activeCamera,main);assert.equal(scene.meshes.length,baseline.meshes);assert.equal(scene.materials.length,baseline.materials);assert.equal(scene.textures.length,baseline.textures);assert.equal(scene.cameras.length,baseline.cameras);assert.equal(scene.lights.length,baseline.lights);assert.equal(scene.transformNodes.length,baseline.nodes);
 }
 assert.equal(complete,5);assert(updates>30);
