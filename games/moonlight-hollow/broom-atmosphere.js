@@ -3,6 +3,16 @@
  * Physics, gates and scoring stay authoritative in broom-course.js.
  */
 (function(root){'use strict';
+// Exportable, deterministic panorama geometry for head-look coverage regression.
+function panoramaLayout(count=10,radius=96){
+ if(!Number.isInteger(count)||count<6||!Number.isFinite(radius)||radius<=0)return [];
+ const span=2*radius*Math.sin(Math.PI/count)*1.44;
+ return Array.from({length:count},(_,i)=>{
+  const angle=i*2*Math.PI/count;
+  return{angle,x:radius*Math.cos(angle),z:radius*Math.sin(angle),width:span,
+   kind:i%4===1?'castle':'forest'};
+ });
+}
 function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='balanced',reducedMotion=false}={}){
  if(!B||!scene||!course||!mesh||!material||!own)throw Error('Broom atmosphere requires tracked scene factories');
  const mobile=quality==='low',rich=quality==='high';
@@ -26,6 +36,9 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
   decorations.push(m);return m;
  }
  const end=course.LENGTH+course.OUTRUN,portalZ=end-7;
+ const panoramaRing=[];
+ const RING_RADIUS=96; // Inside the 220-unit Broom Flight camera far plane.
+
  // Keep the sky inside the isolated flight camera's 220-unit far plane.
  const SKY_DIAMETER=300;
  let sky=null;
@@ -51,6 +64,19 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
    forest:imageMaterial('forest','assets/broom/forest-horizon.svg',true),
    castle:imageMaterial('castle','assets/broom/castle-horizon.svg',true)
   };
+  // Camera-centred 360-degree scenery belt: balanced art in every direction,
+  // including behind the broom and while looking vertically away from the track.
+  // All panels share the original two textures; no extra texture allocations.
+  const ringCount=mobile?8:rich?12:10;
+  for(const {angle,x,z,width,kind} of panoramaLayout(ringCount,RING_RADIUS)){
+   const panel=part('CreatePlane','broom-horizon-ring',{
+    width,height:kind==='castle'?33:29
+   },x,kind==='castle'?15:13,z,horizons[kind]);
+   panel.billboardMode=B.Mesh.BILLBOARDMODE_Y;
+   panel.metadata={...panel.metadata,panoramaRing:true,panoramaSide:Math.sin(angle)>=0?1:-1,
+    panoramaUpright:true,panoramaAngle:angle,panoramaZone:'360-horizon'};
+   panoramaRing.push({mesh:panel,angle});stats.horizonImages++;
+  }
   // Distant layers flank rather than cross the centreline/finish portal.
   for(const [i,kind] of ['forest','castle'].entries()){
    const z=i?end+42:course.LENGTH+12,span=i?94:104;
@@ -152,6 +178,12 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
   clock+=Math.min(.1,dt);if(celebration>0)celebration=Math.max(0,celebration-dt);
   // Camera-facing infinite background: follow the flyer without pushing it beyond farZ.
   if(sky&&viewer)sky.position.copyFrom(viewer);
+  // Translate only horizontally: the forest/castle silhouette remains grounded
+  // at the same world altitude even while the broom climbs or descends.
+  if(viewer)for(const item of panoramaRing){
+   item.mesh.position.x=viewer.x+RING_RADIUS*Math.cos(item.angle);
+   item.mesh.position.z=viewer.z+RING_RADIUS*Math.sin(item.angle);
+  }
   if(reducedMotion)return;
   const windActive=!!viewer&&viewer.z>=course.LENGTH&&viewer.z<end&&speed>5;
   for(let i=0;i<wind.length;i++){
@@ -177,5 +209,5 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
  function celebrate(){celebration=1.5;for(const p of sparks)p.setEnabled(!reducedMotion);}
  return{update,celebrate,stats,portalZ};
 }
-const api={decorate};root.MoonBroomAtmosphere=api;if(typeof module!=='undefined')module.exports=api;
+const api={decorate,panoramaLayout};root.MoonBroomAtmosphere=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

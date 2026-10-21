@@ -29,7 +29,7 @@
     "runtime": "Babylon.js glTF2 with fallback, independent picking, collision, animation and low LOD"
   },
   "counts": {
-    "sourceMeshIdentifiers": 365,
+    "sourceMeshIdentifiers": 366,
     "assetFamilies": 18,
     "publishedProductionAssets": 1,
     "familiesPendingFullQA": 18
@@ -717,7 +717,7 @@
         "moonrise-village.js:moonrise-bridge-finial",
         "moonrise-village.js:moonrise-river"
       ],
-      "sourceCount": 57,
+      "sourceCount": 58,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -5050,6 +5050,17 @@
       "key": "broom-atmosphere.js:broom-wind-streak",
       "file": "broom-atmosphere.js",
       "meshName": "broom-wind-streak",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-horizon-ring",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-horizon-ring",
       "family": "environments",
       "role": "environment",
       "source": "procedural-js",
