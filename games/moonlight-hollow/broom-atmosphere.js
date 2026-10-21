@@ -33,7 +33,9 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
   const m=own(new B.StandardMaterial('mini-broom-backdrop-'+name,scene));
   m.disableLighting=true;m.backFaceCulling=false;m.fogEnabled=false;m.disableDepthWrite=true;
   m.emissiveColor=new B.Color3(1,1,1);m.diffuseColor=new B.Color3(0,0,0);
-  const t=own(new B.Texture(url,scene,false,false,B.Texture.BILINEAR_SAMPLINGMODE));
+  // Babylon's plane UVs require Y-flip for top-up SVG silhouettes.
+  // Sky sphere keeps its own unflipped mapping.
+  const t=own(new B.Texture(url,scene,false,alpha,B.Texture.BILINEAR_SAMPLINGMODE));
   t.hasAlpha=alpha;m.emissiveTexture=t;m.diffuseTexture=t;
   if(alpha){m.useAlphaFromDiffuseTexture=true;m.transparencyMode=B.Material.MATERIAL_ALPHABLEND;}
   return m;
@@ -41,18 +43,36 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
  // NullEngine cannot decode browser images. Geometry still receives full lifecycle testing.
  const imageCapable=!(B.NullEngine&&scene.getEngine() instanceof B.NullEngine);
  if(imageCapable){
-  const skyMat=imageMaterial('moonlit','assets/broom/sky-moonlit.svg');
+  const skyMat=imageMaterial('moonlit','assets/broom/sky-moonlit.svg?v=2');
   sky=own(B.MeshBuilder.CreateSphere('mini-broom-moonlit-sky',{diameter:SKY_DIAMETER,segments:16,sideOrientation:B.Mesh.BACKSIDE},scene));
   sky.position.set(0,origin+3,0);sky.layerMask=layer;
   sky.isPickable=false;sky.material=skyMat;stats.skyImages++;
-  const horizon=[['forest','assets/broom/forest-horizon.svg'],['castle','assets/broom/castle-horizon.svg']];
-  for(const [i,item] of horizon.entries()){
-   const mat=imageMaterial(item[0],item[1],true);
-   const depth=i?end+42:course.LENGTH+12;
+  const horizons={
+   forest:imageMaterial('forest','assets/broom/forest-horizon.svg',true),
+   castle:imageMaterial('castle','assets/broom/castle-horizon.svg',true)
+  };
+  // Distant layers flank rather than cross the centreline/finish portal.
+  for(const [i,kind] of ['forest','castle'].entries()){
+   const z=i?end+42:course.LENGTH+12,span=i?94:104;
    for(const side of [-1,1]){
-    const x=(side<0?-1:1)*(i?56:61);
-    const panel=part('CreatePlane','broom-horizon-panel',{width:i?96:110,height:i?26:20},x,i?14:10,depth,mat);
+    const panel=part('CreatePlane','broom-horizon-panel',{width:span,height:i?26:20},
+     side*(i?76:79),i?14:10,z,horizons[kind]);
     panel.billboardMode=B.Mesh.BILLBOARDMODE_Y;
+    panel.metadata={...panel.metadata,panoramaSide:side,panoramaUpright:true,panoramaZone:'distant'};
+    stats.horizonImages++;
+   }
+  }
+  // Layered scenery on BOTH sides adds parallax across the route and outrun.
+  // Fixed yaw preserves upright verticals; the planes stay outside the flight rails.
+  const sideLayers=mobile?2:rich?4:3;
+  for(let n=0;n<sideLayers;n++){
+   const z=course.LENGTH*.35+n*(end-course.LENGTH*.35-35)/sideLayers;
+   const c=course.center(z,1),kind=n%3===2?'castle':'forest';
+   for(const side of [-1,1]){
+    const panel=part('CreatePlane','broom-horizon-panel',{width:66,height:kind==='castle'?23:19},
+     c.x+side*(51+(n%2)*5),c.rise+(kind==='castle'?13:10),z+12,horizons[kind]);
+    panel.rotation.y=side>0?-.55:.55;
+    panel.metadata={...panel.metadata,panoramaSide:side,panoramaUpright:true,panoramaZone:n};
     stats.horizonImages++;
    }
   }
