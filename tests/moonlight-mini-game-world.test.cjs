@@ -11,7 +11,7 @@ for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
   assert.equal(arena.fogMode,B.Scene.FOGMODE_NONE,'flight uses a fog-free isolated scene');
   assert(!arena.meshes.some(m=>m.name==='mini-clear-backdrop'),'no opaque wall beyond flight gate');
   const floors=arena.meshes.filter(m=>m.name==='mini-floor');assert.equal(floors.length,1,'one seamless flight runway replaces overlapping floor sections');floors[0].computeWorldMatrix(true);
-  const box=floors[0].getBoundingInfo().boundingBox;assert(box.maximumWorld.z-box.minimumWorld.z>=6*24+25,'runway spans all gate positions without an end wall');
+  const box=floors[0].getBoundingInfo().boundingBox;assert(box.maximumWorld.z-box.minimumWorld.z>=Course.LENGTH+Course.OUTRUN+20,'runway spans all gate positions without an end wall');
   const rails=arena.meshes.filter(m=>m.name==='mini-road-edge');assert(rails.length>=60,'continuous curved side rail pieces');const strips=arena.meshes.filter(m=>m.name==='mini-flight-road-strip');assert(strips.length>=36,'curved elevated runway is actually rendered');const heights=strips.map(m=>m.position.y),offsets=strips.map(m=>m.position.x);assert(Math.max(...heights)-Math.min(...heights)>.1,'runway elevation changes');assert(Math.max(...offsets)-Math.min(...offsets)>.15,'runway visibly bends');
   const broom=arena.meshes.find(m=>m.name==='mini-broom'),brush=arena.meshes.find(m=>m.name==='mini-broom-brush');
   assert(broom&&brush,'broom geometry exists for third-person camera');
@@ -30,7 +30,7 @@ for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
   else{for(const choice of s.task.solution)perform(runtime,choice);if(id==='garden'||id==='railway')perform(runtime,'check');}
   assert.equal(runtime.snapshot().progress,(round+1)/s.rounds);if(round===0){assert.equal(runtime.snapshot().completed,false);assert.equal(complete,Object.keys(G.catalog).filter(id=>id!=='rally').indexOf(id));}
  }
- assert.equal(runtime.snapshot().completed,true);if(['broom','rally'].includes(id)){const done=runtime.snapshot(),markers=arena.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(markers.length,done.rounds);assert(markers.every(m=>m.metadata.completed));assert.equal(done.vehicle.z,done.rounds*24);assert.equal(arena.activeCamera.metadata.firstPerson,true);}runtime.dispose();assert.equal(scene.activeCamera,main);assert.equal(scene.meshes.length,baseline.meshes);assert.equal(scene.materials.length,baseline.materials);assert.equal(scene.textures.length,baseline.textures);assert.equal(scene.cameras.length,baseline.cameras);assert.equal(scene.lights.length,baseline.lights);assert.equal(scene.transformNodes.length,baseline.nodes);
+ assert.equal(runtime.snapshot().completed,true);if(['broom','rally'].includes(id)){const done=runtime.snapshot(),markers=arena.meshes.filter(m=>m.name==='mini-checkpoint'&&m.metadata?.checkpoint===true);assert.equal(markers.length,done.rounds);assert(markers.every(m=>m.metadata.completed));if(id==='broom')assert(done.vehicle.z>=Course.LENGTH-Course.SECTION+38,'last gate completed before free outrun');else assert.equal(done.vehicle.z,done.rounds*24);assert.equal(arena.activeCamera.metadata.firstPerson,true);}runtime.dispose();assert.equal(scene.activeCamera,main);assert.equal(scene.meshes.length,baseline.meshes);assert.equal(scene.materials.length,baseline.materials);assert.equal(scene.textures.length,baseline.textures);assert.equal(scene.cameras.length,baseline.cameras);assert.equal(scene.lights.length,baseline.lights);assert.equal(scene.transformNodes.length,baseline.nodes);
 }
 assert.equal(complete,5);assert(updates>30);
 // Moonrise village art belongs to difficulty one only, uses real 3D assets and
@@ -68,7 +68,7 @@ runtime.start('broom',{level:2,seed:34});assert.equal(runtime.scene.metadata?.mo
 for(const level of [1,2,3]){
  let last=null;
  for(let z=-4;z<=Course.LENGTH+4;z+=.5){const c=Course.center(z,level);assert(Number.isFinite(c.x)&&Number.isFinite(c.rise)&&Number.isFinite(c.heading));if(last){assert(Math.abs(c.x-last.x)<.45,'turn is continuous');assert(Math.abs(c.rise-last.rise)<.25,'slope is gentle');}last=c;}
- for(let stage=0;stage<6;stage++){const g=[0,1,2].map(i=>Course.gate(stage,i,level));assert(g.every(a=>a.diameter>=3.7),'rings remain children-friendly');assert(g.every(a=>a.z>=stage*24+17&&a.z<=stage*24+21),'gate depth leaves recovery distance');assert(g.every(a=>Math.abs(a.x)<11&&a.y>=1.5&&a.y<7),'each gate lies in reachable flight envelope');if(level>1)assert(new Set(g.map(a=>a.z)).size>1,'harder difficulty staggers gate depths');}
+ for(let stage=0;stage<6;stage++){const g=[0,1,2].map(i=>Course.gate(stage,i,level));assert(g.every(a=>a.diameter>=3.7),'rings remain children-friendly');assert(g.every(a=>a.z>=stage*Course.SECTION+36&&a.z<=stage*Course.SECTION+40),'gate depth leaves recovery distance');assert(g.every(a=>Math.abs(a.x)<11&&a.y>=1.5&&a.y<7),'each gate lies in reachable flight envelope');if(level>1)assert(new Set(g.map(a=>a.z)).size>1,'harder difficulty staggers gate depths');}
 }
 // Guided camera-safe passages also work with the staggered, rising gates
 // at both harder settings; the task/scene are rebuilt without losing momentum.
