@@ -572,3 +572,12 @@ body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
  overflow-wrap:normal;
  line-height:1.35!important;
 }
+
+/* Pumpkin Race: instruction above equation, answer numbers remain on the track. */
+body.mini-game-mode.rally-mode #mini-panel .mini-mission #mini-question{
+ white-space:pre-line!important;
+ overflow:visible!important;
+ text-overflow:clip!important;
+ line-height:1.3!important;
+ text-align:center!important;
+}
