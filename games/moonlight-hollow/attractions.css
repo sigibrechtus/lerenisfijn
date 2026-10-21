@@ -563,3 +563,12 @@ body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
  body.mini-game-mode.flight-mode #mini-panel .mini-mission .mini-meta{display:flex!important;min-height:12px!important}
  body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{padding-top:2px!important;margin:1px 0!important}
 }
+
+/* Explicit two-line Broom Flight question: instruction, then equation. */
+body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
+ white-space:pre-line!important;
+ overflow:visible!important;
+ text-overflow:clip!important;
+ overflow-wrap:normal;
+ line-height:1.35!important;
+}
