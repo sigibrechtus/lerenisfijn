@@ -1,5 +1,12 @@
 name: Pumpkin Race regression tests
 on:
+  pull_request:
+    paths:
+      - 'games/moonlight-hollow/**'
+      - 'tests/pumpkin-race*.test.cjs'
+      - 'tests/moonlight-mini-game-world.test.cjs'
+      - 'tests/moonlight-attraction-ui.test.cjs'
+      - '.github/workflows/pumpkin-race-tests.yml'
   push:
     branches: [main]
     paths:
