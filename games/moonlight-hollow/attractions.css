@@ -528,3 +528,38 @@ body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
  text-overflow:clip!important;max-width:100%;font-size:clamp(12px,2.2vw,22px)!important;
  overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch;
 }
+
+/* Broom flight: numeric stage/progress indicators get their own row,
+   with the actual question clearly separated below. */
+body.mini-game-mode.flight-mode #mini-panel .mini-mission{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:stretch!important;
+ gap:5px!important;
+}
+body.mini-game-mode.flight-mode #mini-panel .mini-mission .mini-meta{
+ display:flex!important;
+ order:0!important;
+ width:100%!important;
+ justify-content:center!important;
+ align-items:center!important;
+ min-height:17px!important;
+ margin:0!important;
+ line-height:1.15!important;
+}
+body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
+ order:1!important;
+ display:block!important;
+ clear:both!important;
+ width:100%!important;
+ margin:3px 0!important;
+ padding-top:5px!important;
+ border-top:1px solid rgba(245,225,173,.28);
+ white-space:nowrap!important;
+ text-align:center!important;
+}
+@media(max-height:520px){
+ body.mini-game-mode.flight-mode #mini-panel .mini-mission{gap:2px!important}
+ body.mini-game-mode.flight-mode #mini-panel .mini-mission .mini-meta{display:flex!important;min-height:12px!important}
+ body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{padding-top:2px!important;margin:1px 0!important}
+}
