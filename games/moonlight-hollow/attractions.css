@@ -599,3 +599,80 @@ body.mini-game-mode:is(.flight-mode,.rally-mode) #mini-panel .mini-mission #mini
  font-size:clamp(11px,2.1vw,21px)!important;
  -webkit-overflow-scrolling:touch;
 }
+
+/* Broom Flight: reserve a stable question area and never clip the equation.
+   Narrow viewports move the mission below the help/telemetry corner controls. */
+body.mini-game-mode.flight-mode #mini-panel .mini-mission{
+  box-sizing:border-box!important;
+  height:auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  overflow:visible!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+  padding:8px 10px!important;
+}
+body.mini-game-mode.flight-mode #mini-panel .mini-mission .mini-meta{
+  order:0!important;
+  flex:0 0 auto!important;
+  min-height:0!important;
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+}
+body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-feedback:not(:empty){
+  order:1!important;
+  display:block!important;
+  flex:0 0 auto!important;
+  max-height:none!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  overflow-wrap:break-word!important;
+  line-height:1.25!important;
+  margin:0!important;
+  font-size:clamp(11px,2.8vw,14px)!important;
+}
+body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
+  order:2!important;
+  flex:0 0 auto!important;
+  box-sizing:border-box!important;
+  height:auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  white-space:pre!important;
+  overflow:visible!important;
+  overflow-x:visible!important;
+  overflow-y:visible!important;
+  text-overflow:clip!important;
+  padding:5px 0 0!important;
+  margin:2px 0 0!important;
+  font-size:clamp(12px,2.1vw,21px)!important;
+  line-height:1.36!important;
+}
+@media(max-width:680px){
+  body.mini-game-mode.flight-mode #mini-panel .mini-mission{
+    top:116px!important;
+    left:50%!important;
+    transform:translateX(-50%)!important;
+    width:calc(100vw - 20px)!important;
+    max-width:calc(100vw - 20px)!important;
+  }
+  body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
+    font-size:clamp(12px,3.3vw,17px)!important;
+  }
+}
+@media(max-height:450px) and (orientation:landscape){
+  body.mini-game-mode.flight-mode #mini-panel .mini-mission{
+    top:4px!important;
+    left:50%!important;
+    width:calc(100vw - 320px)!important;
+    max-width:calc(100vw - 320px)!important;
+    padding:3px 7px!important;
+    gap:1px!important;
+  }
+  body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
+    font-size:clamp(11px,1.8vw,16px)!important;
+    padding-top:2px!important;
+  }
+}
