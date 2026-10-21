@@ -52,7 +52,9 @@ for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
   }
   assert(lastZ>entryZ+5,'outro makes forward progress without pressing accelerate');
   // A lateral correction remains controllable and then smoothly recenters.
-  runtime.input(1,-1,0,0);
+  const currentLane=runtime.snapshot().vehicle;
+  const currentOffset=currentLane.localX-Course.center(currentLane.z,3).x;
+  runtime.input(currentOffset<0?-1:1,-1,0,0);
   for(let n=0;n<6;n++)runtime.tick(.1);
   const steered=runtime.snapshot().vehicle,offsetBefore=Math.abs(steered.localX-Course.center(steered.z,3).x);
   assert(offsetBefore>1,'manual outrun steering is not disabled');
