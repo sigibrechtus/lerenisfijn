@@ -29,7 +29,7 @@
     "runtime": "Babylon.js glTF2 with fallback, independent picking, collision, animation and low LOD"
   },
   "counts": {
-    "sourceMeshIdentifiers": 362,
+    "sourceMeshIdentifiers": 365,
     "assetFamilies": 18,
     "publishedProductionAssets": 1,
     "familiesPendingFullQA": 18
@@ -717,7 +717,7 @@
         "moonrise-village.js:moonrise-bridge-finial",
         "moonrise-village.js:moonrise-river"
       ],
-      "sourceCount": 54,
+      "sourceCount": 57,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -5017,6 +5017,39 @@
       "key": "broom-atmosphere.js:broom-tower-roof",
       "file": "broom-atmosphere.js",
       "meshName": "broom-tower-roof",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-floating-ghost",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-floating-ghost",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-ghost-eye",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-ghost-eye",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-wind-streak",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-wind-streak",
       "family": "environments",
       "role": "environment",
       "source": "procedural-js",
