@@ -13,3 +13,12 @@ test('flight mission grows with feedback and question instead of clipping',()=>{
 test('portrait flight HUD reserves full-width mission below corner controls',()=>{
  assert.match(latest,/@media\(max-width:680px\)\s*\{[\s\S]*?\.mini-mission\s*\{[^}]*top:116px!important;[^}]*width:calc\(100vw - 20px\)!important/s);
 });
+
+test('mobile HUD and stylesheet version stay synchronized',()=>{
+ const html=fs.readFileSync(path.join(__dirname,'../games/moonlight-hollow/index.html'),'utf8');
+ const sw=fs.readFileSync(path.join(__dirname,'../games/moonlight-hollow/sw.js'),'utf8');
+ assert(latest.includes('top:210px!important'));
+ assert(latest.includes('writing-mode:horizontal-tb!important'));
+ assert(html.includes('attractions.css?v=67'));
+ assert(sw.includes('attractions.css?v=67'));
+});

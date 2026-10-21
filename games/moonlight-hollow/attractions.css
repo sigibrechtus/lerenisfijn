@@ -676,3 +676,28 @@ body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
     padding-top:2px!important;
   }
 }
+
+/* Mobile Broom Flight HUD: three independent zones; controls never become narrow text columns. */
+@media(max-width:680px) and (orientation:portrait){
+ body.mini-game-mode.flight-mode #mini-panel .mini-mission{
+  top:210px!important;
+  width:calc(100vw - 24px)!important;
+  max-width:calc(100vw - 24px)!important;
+  z-index:10!important;
+ }
+ body.mini-game-mode.flight-mode #mini-panel > .mini-actions{
+  top:52px!important;left:4px!important;right:auto!important;
+  width:91px!important;max-width:91px!important;
+ }
+ body.mini-game-mode.flight-mode #mini-panel > .mini-actions button{
+  width:100%!important;min-width:0!important;
+  writing-mode:horizontal-tb!important;
+  overflow-wrap:normal!important;word-break:normal!important;
+ }
+ body.mini-game-mode.flight-mode #mini-panel > .mini-actions #mini-replay:not([hidden]){
+  font-size:11px!important;white-space:normal!important;
+ }
+ body.mini-game-mode.flight-mode #mini-panel .mini-mission #mini-question{
+  font-size:clamp(12px,3.4vw,16px)!important;
+ }
+}
