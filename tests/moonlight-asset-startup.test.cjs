@@ -22,6 +22,14 @@ test('HTML and service worker publish the same versioned train scripts',()=>{
  }
  assert.match(sw,/moonlight-hollow-3d-v\d+/);
 });
+test('service worker precaches only the HTML campaign version',()=>{
+ const html=fs.readFileSync(path.join(base,'index.html'),'utf8');
+ const sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
+ const version=html.match(/src="campaign\\.js\\?v=(\\d+)"/);
+ assert.ok(version,'HTML must load a versioned campaign');
+ const cached=[...sw.matchAll(/"\\.\\/campaign\\.js\\?v=(\\d+)"/g)].map(m=>m[1]);
+ assert.deepEqual(cached,[version[1]],'cache must not retain an outdated campaign URL');
+});
 test('boarding and moving never hide the production locomotive; ride camera is inside hero cabin',()=>{
  const src=fs.readFileSync(path.join(base,'world.js'),'utf8');
  const board=src.slice(src.indexOf('function boardTrain('),src.indexOf('function tickRide(',src.indexOf('function boardTrain(')));
