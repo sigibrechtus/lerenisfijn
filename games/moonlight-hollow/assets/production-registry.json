@@ -9,7 +9,8 @@
     "interiors.js",
     "creatures.js",
     "destinations.js",
-    "moonrise-village.js"
+    "moonrise-village.js",
+    "broom-atmosphere.js"
   ],
   "requirements": {
     "referenceAnglesDegrees": [
@@ -28,7 +29,7 @@
     "runtime": "Babylon.js glTF2 with fallback, independent picking, collision, animation and low LOD"
   },
   "counts": {
-    "sourceMeshIdentifiers": 347,
+    "sourceMeshIdentifiers": 365,
     "assetFamilies": 18,
     "publishedProductionAssets": 1,
     "familiesPendingFullQA": 18
@@ -716,7 +717,7 @@
         "moonrise-village.js:moonrise-bridge-finial",
         "moonrise-village.js:moonrise-river"
       ],
-      "sourceCount": 39,
+      "sourceCount": 57,
       "deliverables": {
         "referenceAngles": [
           0,
@@ -4855,6 +4856,204 @@
       "role": "environment",
       "source": "procedural-js",
       "productionStatus": "level-one-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-crooked-crown",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-crooked-crown",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-crooked-trunk",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-crooked-trunk",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-finish-aura",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-finish-aura",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-finish-portal",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-finish-portal",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-horizon-panel",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-horizon-panel",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-lantern-cap",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-lantern-cap",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-lantern-orb",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-lantern-orb",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-lantern-stem",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-lantern-stem",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-lit-window",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-lit-window",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-magic-spark",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-magic-spark",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-portal-rune",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-portal-rune",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-pumpkin",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-pumpkin",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-pumpkin-stalk",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-pumpkin-stalk",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-ruined-tower",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-ruined-tower",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-tower-roof",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-tower-roof",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-floating-ghost",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-floating-ghost",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-ghost-eye",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-ghost-eye",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
+      "meshRequirement": "runtime-mesh-and-camera-validation",
+      "inGameStatus": "implemented-unverified-live-browser"
+    },
+    {
+      "key": "broom-atmosphere.js:broom-wind-streak",
+      "file": "broom-atmosphere.js",
+      "meshName": "broom-wind-streak",
+      "family": "environments",
+      "role": "environment",
+      "source": "procedural-js",
+      "productionStatus": "outrun-procedural-geometry",
       "meshRequirement": "runtime-mesh-and-camera-validation",
       "inGameStatus": "implemented-unverified-live-browser"
     }

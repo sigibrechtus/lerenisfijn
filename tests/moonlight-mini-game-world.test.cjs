@@ -9,6 +9,13 @@ for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
  runtime.start(id,{level:3,lang:'fr',seed:8});const arena=runtime.scene;assert.equal(arena.activeCamera.layerMask,W.LAYER);assert.equal(arena.activeCamera.viewport.width,id==='broom'?1:.7);assert(arena.meshes.length>10);assert(arena.meshes.every(m=>m.layerMask===W.LAYER));
  if(id==='broom'){
   assert.equal(arena.fogMode,B.Scene.FOGMODE_NONE,'flight uses a fog-free isolated scene');
+   const atmosphere=arena.metadata?.broomAtmosphere;
+   assert(atmosphere&&atmosphere.trees>=8&&atmosphere.lanterns>=4,'outrun scenery is real scene geometry');
+   assert(atmosphere.ghosts>=2&&atmosphere.windStreaks>=5,'outro contains spirits and bounded motion cues');
+   assert.equal(atmosphere.skyImages,0,'NullEngine does not require browser image decoders');
+   assert(atmosphere.portalZ>Course.LENGTH+Course.OUTRUN-15,'finish portal marks the end of free flight');
+   assert(arena.meshes.some(m=>m.name==='mini-broom-finish-portal'),'finish portal is part of the flight scene');
+   assert(arena.meshes.every(m=>m.layerMask===W.LAYER),'outrun art uses the isolated mini-game layer');
   assert(!arena.meshes.some(m=>m.name==='mini-clear-backdrop'),'no opaque wall beyond flight gate');
   const floors=arena.meshes.filter(m=>m.name==='mini-floor');assert.equal(floors.length,1,'one seamless flight runway replaces overlapping floor sections');floors[0].computeWorldMatrix(true);
   const box=floors[0].getBoundingInfo().boundingBox;assert(box.maximumWorld.z-box.minimumWorld.z>=Course.LENGTH+Course.OUTRUN+20,'runway spans all gate positions without an end wall');

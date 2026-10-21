@@ -41,6 +41,7 @@ jobs:
       - name: Rendering profile and PBR integration regressions
         run: |
           node --test tests/moonlight-sharp-quality.test.cjs tests/moonlight-pbr.test.cjs tests/moonlight-graphics.test.cjs tests/moonlight-materials.test.cjs
+          node --test tests/moonlight-broom-extended.test.cjs
           node tests/moonlight-mini-game-world.test.cjs
           node tests/moonlight-asset-startup.test.cjs
           MOONLIGHT_SIMULATE_IPHONE=1 node tests/moonlight-pbr-world-smoke.cjs

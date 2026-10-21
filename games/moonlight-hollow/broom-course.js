@@ -1,6 +1,6 @@
 /* Broom Flight continuous-course contract. Pure geometry shared by meshes, input and gate checks. */
 (function(root){'use strict';
- const SECTION=48,SECTIONS=6,LENGTH=SECTION*SECTIONS,OUTRUN=42;
+ const SECTION=48,SECTIONS=6,LENGTH=SECTION*SECTIONS,OUTRUN=82;
  const levelOf=level=>Math.max(1,Math.min(3,Number(level)||1));
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  // The longitudinal distance is always increasing: a child-friendly Halloween
@@ -8,9 +8,12 @@
  function center(z,level=1){
   const d=clamp(Number(z)||0,-8,LENGTH+OUTRUN+10),tier=levelOf(level);
   const bend=[0,.95,2.8,4.1][tier],h=[0,.2,.55,1.05][tier];
-  const x=bend*(.70*Math.sin(d/27)+.30*Math.sin(d/13));
-  const dx=bend*(.70*Math.cos(d/27)/27+.30*Math.cos(d/13)/13);
-  const rise=.28+h*(.5+.45*Math.sin(d/25)+.05*Math.sin(d/11));
+  const t=clamp((d-LENGTH)/OUTRUN,0,1),wave=Math.sin(Math.PI*t),envelope=wave*wave;
+  // The free outrun opens into a gentle sweeping curve and moonlit climb.
+  // The squared envelope keeps the last quiz gate and finish endpoints smooth.
+  const x=bend*(.70*Math.sin(d/27)+.30*Math.sin(d/13))+2.6*envelope*Math.sin(t*5);
+  const dx=bend*(.70*Math.cos(d/27)/27+.30*Math.cos(d/13)/13)+2.6/OUTRUN*(2*Math.PI*wave*Math.cos(Math.PI*t)*Math.sin(t*5)+5*envelope*Math.cos(t*5));
+  const rise=.28+h*(.5+.45*Math.sin(d/25)+.05*Math.sin(d/11))+.85*envelope*(.5+.5*Math.sin(t*2*Math.PI));
   return {x,rise,heading:Math.atan2(dx,1)};
  }
  function gate(stage,lane,level=1){
