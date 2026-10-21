@@ -11,6 +11,7 @@ for(const id of Object.keys(G.catalog).filter(id=>id!=='rally')){
   assert.equal(arena.fogMode,B.Scene.FOGMODE_NONE,'flight uses a fog-free isolated scene');
    const atmosphere=arena.metadata?.broomAtmosphere;
    assert(atmosphere&&atmosphere.trees>=8&&atmosphere.lanterns>=4,'outrun scenery is real scene geometry');
+   assert(atmosphere.ghosts>=2&&atmosphere.windStreaks>=5,'outro contains spirits and bounded motion cues');
    assert.equal(atmosphere.skyImages,0,'NullEngine does not require browser image decoders');
    assert(atmosphere.portalZ>Course.LENGTH+Course.OUTRUN-15,'finish portal marks the end of free flight');
    assert(arena.meshes.some(m=>m.name==='mini-broom-finish-portal'),'finish portal is part of the flight scene');
