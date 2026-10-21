@@ -25,7 +25,7 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
   m.isPickable=false;m.metadata={...m.metadata,broomAtmosphere:true,decorative:true};
   decorations.push(m);return m;
  }
- const end=course.LENGTH+course.OUTRUN,portalZ=end-7,finish=course.center(portalZ,1);
+ const end=course.LENGTH+course.OUTRUN,portalZ=end-7;
  function imageMaterial(name,url,alpha=false){
   const m=own(new B.StandardMaterial('mini-broom-backdrop-'+name,scene));
   m.disableLighting=true;m.backFaceCulling=false;m.fogEnabled=false;m.disableDepthWrite=true;
@@ -45,8 +45,8 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
   const horizon=[['forest','assets/broom/forest-horizon.svg'],['castle','assets/broom/castle-horizon.svg']];
   for(const [i,item] of horizon.entries()){
    const mat=imageMaterial(item[0],item[1],true);
-   const depth=i?end+42:course.LENGTH+12,half=i?1:2;
-   for(let side=-half;side<=half;side+=2){
+   const depth=i?end+42:course.LENGTH+12;
+   for(const side of [-1,1]){
     const x=(side<0?-1:1)*(i?56:61);
     const panel=part('CreatePlane','broom-horizon-panel',{width:i?96:110,height:i?26:20},x,i?14:10,depth,mat);
     panel.billboardMode=B.Mesh.BILLBOARDMODE_Y;
