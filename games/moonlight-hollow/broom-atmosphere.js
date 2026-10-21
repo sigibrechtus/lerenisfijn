@@ -26,6 +26,9 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
   decorations.push(m);return m;
  }
  const end=course.LENGTH+course.OUTRUN,portalZ=end-7;
+ // Keep the sky inside the isolated flight camera's 220-unit far plane.
+ const SKY_DIAMETER=300;
+ let sky=null;
  function imageMaterial(name,url,alpha=false){
   const m=own(new B.StandardMaterial('mini-broom-backdrop-'+name,scene));
   m.disableLighting=true;m.backFaceCulling=false;m.fogEnabled=false;m.disableDepthWrite=true;
@@ -39,8 +42,8 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
  const imageCapable=!(B.NullEngine&&scene.getEngine() instanceof B.NullEngine);
  if(imageCapable){
   const skyMat=imageMaterial('moonlit','assets/broom/sky-moonlit.svg');
-  const sky=own(B.MeshBuilder.CreateSphere('mini-broom-moonlit-sky',{diameter:950,segments:16,sideOrientation:B.Mesh.BACKSIDE},scene));
-  sky.position.set(0,origin,0);sky.infiniteDistance=true;sky.layerMask=layer;
+  sky=own(B.MeshBuilder.CreateSphere('mini-broom-moonlit-sky',{diameter:SKY_DIAMETER,segments:16,sideOrientation:B.Mesh.BACKSIDE},scene));
+  sky.position.set(0,origin+3,0);sky.layerMask=layer;
   sky.isPickable=false;sky.material=skyMat;stats.skyImages++;
   const horizon=[['forest','assets/broom/forest-horizon.svg'],['castle','assets/broom/castle-horizon.svg']];
   for(const [i,item] of horizon.entries()){
@@ -127,6 +130,8 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
  function update(dt,viewer,speed=0){
   if(!Number.isFinite(dt)||dt<=0)return;
   clock+=Math.min(.1,dt);if(celebration>0)celebration=Math.max(0,celebration-dt);
+  // Camera-facing infinite background: follow the flyer without pushing it beyond farZ.
+  if(sky&&viewer)sky.position.copyFrom(viewer);
   if(reducedMotion)return;
   const windActive=!!viewer&&viewer.z>=course.LENGTH&&viewer.z<end&&speed>5;
   for(let i=0;i<wind.length;i++){
