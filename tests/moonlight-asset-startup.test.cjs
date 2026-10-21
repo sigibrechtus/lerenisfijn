@@ -59,3 +59,13 @@ test('Broom panorama imagery, scene module and cache versions ship together',()=
   assert(sw.includes('./assets/broom/'+name),'precache must include background '+name);
  }
 });
+
+test('Broom Flight sky dome follows the flyer inside the far clipping plane',()=>{
+ const atmosphere=fs.readFileSync(path.join(base,'broom-atmosphere.js'),'utf8');
+ const runtime=fs.readFileSync(path.join(base,'mini-game-world.js'),'utf8');
+ const sky=atmosphere.match(/const SKY_DIAMETER=(\d+);/);
+ assert(sky,'sky dome must have an explicit bounded diameter');
+ assert(Number(sky[1])/2<220,'sky dome radius must fit the flight camera far clipping distance');
+ assert(atmosphere.includes('if(sky&&viewer)sky.position.copyFrom(viewer)'),'dome must follow the flying camera');
+ assert(runtime.includes('camera.maxZ=220'),'test must track the flight camera far-plane contract');
+});
