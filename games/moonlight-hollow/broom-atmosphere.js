@@ -3,6 +3,16 @@
  * Physics, gates and scoring stay authoritative in broom-course.js.
  */
 (function(root){'use strict';
+// Exportable, deterministic panorama geometry for head-look coverage regression.
+function panoramaLayout(count=10,radius=96){
+ if(!Number.isInteger(count)||count<6||!Number.isFinite(radius)||radius<=0)return [];
+ const span=2*radius*Math.sin(Math.PI/count)*1.44;
+ return Array.from({length:count},(_,i)=>{
+  const angle=i*2*Math.PI/count;
+  return{angle,x:radius*Math.cos(angle),z:radius*Math.sin(angle),width:span,
+   kind:i%4===1?'castle':'forest'};
+ });
+}
 function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='balanced',reducedMotion=false}={}){
  if(!B||!scene||!course||!mesh||!material||!own)throw Error('Broom atmosphere requires tracked scene factories');
  const mobile=quality==='low',rich=quality==='high';
@@ -58,12 +68,10 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
   // including behind the broom and while looking vertically away from the track.
   // All panels share the original two textures; no extra texture allocations.
   const ringCount=mobile?8:rich?12:10;
-  for(let i=0;i<ringCount;i++){
-   const angle=i*2*Math.PI/ringCount,kind=i%4===1?'castle':'forest';
+  for(const {angle,x,z,width,kind} of panoramaLayout(ringCount,RING_RADIUS)){
    const panel=part('CreatePlane','broom-horizon-ring',{
-    width:2*RING_RADIUS*Math.sin(Math.PI/ringCount)*1.44,
-    height:kind==='castle'?33:29
-   },RING_RADIUS*Math.cos(angle),kind==='castle'?15:13,RING_RADIUS*Math.sin(angle),horizons[kind]);
+    width,height:kind==='castle'?33:29
+   },x,kind==='castle'?15:13,z,horizons[kind]);
    panel.billboardMode=B.Mesh.BILLBOARDMODE_Y;
    panel.metadata={...panel.metadata,panoramaRing:true,panoramaSide:Math.sin(angle)>=0?1:-1,
     panoramaUpright:true,panoramaAngle:angle,panoramaZone:'360-horizon'};
@@ -201,5 +209,5 @@ function decorate({B,scene,course,mesh,material,own,layer,origin=120,quality='ba
  function celebrate(){celebration=1.5;for(const p of sparks)p.setEnabled(!reducedMotion);}
  return{update,celebrate,stats,portalZ};
 }
-const api={decorate};root.MoonBroomAtmosphere=api;if(typeof module!=='undefined')module.exports=api;
+const api={decorate,panoramaLayout};root.MoonBroomAtmosphere=api;if(typeof module!=='undefined')module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
