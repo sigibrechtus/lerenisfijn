@@ -48,7 +48,7 @@ test('boarding and moving never hide the production locomotive; ride camera is i
 test('Broom panorama imagery, scene module and cache versions ship together',()=>{
  const html=fs.readFileSync(path.join(base,'index.html'),'utf8');
  const sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
- for(const name of ['broom-course.js?v=3','broom-atmosphere.js?v=2','mini-game-world.js?v=79']){
+ for(const name of ['broom-course.js?v=3','broom-atmosphere.js?v=3','mini-game-world.js?v=80']){
   assert(html.includes(name),'HTML missing '+name);assert(sw.includes(name),'service worker missing '+name);
  }
  const module=fs.readFileSync(path.join(base,'broom-atmosphere.js'),'utf8');
@@ -68,4 +68,17 @@ test('Broom Flight sky dome follows the flyer inside the far clipping plane',()=
  assert(Number(sky[1])/2<220,'sky dome radius must fit the flight camera far clipping distance');
  assert(atmosphere.includes('if(sky&&viewer)sky.position.copyFrom(viewer)'),'dome must follow the flying camera');
  assert(runtime.includes('camera.maxZ=220'),'test must track the flight camera far-plane contract');
+});
+
+test('Broom Flight horizon planes have upright texture UVs and flank both sides',()=>{
+ const source=fs.readFileSync(path.join(base,'broom-atmosphere.js'),'utf8');
+ const sky=fs.readFileSync(path.join(base,'assets/broom/sky-moonlit.svg'),'utf8');
+ const sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
+ assert(source.includes('new B.Texture(url,scene,false,alpha,'),'transparent horizon texture must flip its SVG Y axis');
+ assert(source.includes('for(const side of [-1,1])'),'both sides of the flight path must have panorama layers');
+ assert(source.includes('panoramaSide:side,panoramaUpright:true'),'side-facing art must carry orientation metadata');
+ assert(source.includes('panel.rotation.y=side>0?-.55:.55'),'flanking billboards must face the flight corridor');
+ assert(source.includes('const sideLayers=mobile?2:rich?4:3'),'panorama count must obey mobile-quality budget');
+ assert(sky.includes('cx="760" cy="126" r="26"'),'moon must not dominate the iPhone sky');
+ assert(sw.includes('sky-moonlit.svg?v=2'),'changed moon image must have a fresh URL in precache');
 });
