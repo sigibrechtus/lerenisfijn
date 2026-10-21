@@ -25,9 +25,9 @@ test('HTML and service worker publish the same versioned train scripts',()=>{
 test('service worker precaches only the HTML campaign version',()=>{
  const html=fs.readFileSync(path.join(base,'index.html'),'utf8');
  const sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
- const version=html.match(/src="campaign\\.js\\?v=(\\d+)"/);
+ const version=html.match(/src="campaign[.]js[?]v=([0-9]+)"/);
  assert.ok(version,'HTML must load a versioned campaign');
- const cached=[...sw.matchAll(/"\\.\\/campaign\\.js\\?v=(\\d+)"/g)].map(m=>m[1]);
+ const cached=sw.split('"./campaign.js?v=').slice(1).map(fragment=>fragment.split('"')[0]);
  assert.deepEqual(cached,[version[1]],'cache must not retain an outdated campaign URL');
 });
 test('boarding and moving never hide the production locomotive; ride camera is inside hero cabin',()=>{
