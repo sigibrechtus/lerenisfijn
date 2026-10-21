@@ -48,7 +48,7 @@ test('boarding and moving never hide the production locomotive; ride camera is i
 test('Broom panorama imagery, scene module and cache versions ship together',()=>{
  const html=fs.readFileSync(path.join(base,'index.html'),'utf8');
  const sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
- for(const name of ['broom-course.js?v=3','broom-atmosphere.js?v=1','mini-game-world.js?v=79']){
+ for(const name of ['broom-course.js?v=3','broom-atmosphere.js?v=2','mini-game-world.js?v=79']){
   assert(html.includes(name),'HTML missing '+name);assert(sw.includes(name),'service worker missing '+name);
  }
  const module=fs.readFileSync(path.join(base,'broom-atmosphere.js'),'utf8');
@@ -58,4 +58,14 @@ test('Broom panorama imagery, scene module and cache versions ship together',()=
   assert(module.includes('assets/broom/'+name),'texture must be mapped into Babylon scene');
   assert(sw.includes('./assets/broom/'+name),'precache must include background '+name);
  }
+});
+
+test('Broom Flight sky dome follows the flyer inside the far clipping plane',()=>{
+ const atmosphere=fs.readFileSync(path.join(base,'broom-atmosphere.js'),'utf8');
+ const runtime=fs.readFileSync(path.join(base,'mini-game-world.js'),'utf8');
+ const sky=atmosphere.match(/const SKY_DIAMETER=(\d+);/);
+ assert(sky,'sky dome must have an explicit bounded diameter');
+ assert(Number(sky[1])/2<220,'sky dome radius must fit the flight camera far clipping distance');
+ assert(atmosphere.includes('if(sky&&viewer)sky.position.copyFrom(viewer)'),'dome must follow the flying camera');
+ assert(runtime.includes('camera.maxZ=220'),'test must track the flight camera far-plane contract');
 });
