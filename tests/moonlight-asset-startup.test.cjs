@@ -48,7 +48,7 @@ test('boarding and moving never hide the production locomotive; ride camera is i
 test('Broom panorama imagery, scene module and cache versions ship together',()=>{
  const html=fs.readFileSync(path.join(base,'index.html'),'utf8');
  const sw=fs.readFileSync(path.join(base,'sw.js'),'utf8');
- for(const name of ['broom-course.js?v=3','broom-atmosphere.js?v=3','mini-game-world.js?v=81']){
+ for(const name of ['broom-course.js?v=3','broom-atmosphere.js?v=4','mini-game-world.js?v=81']){
   assert(html.includes(name),'HTML missing '+name);assert(sw.includes(name),'service worker missing '+name);
  }
  const module=fs.readFileSync(path.join(base,'broom-atmosphere.js'),'utf8');
