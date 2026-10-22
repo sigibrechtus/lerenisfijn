@@ -9,7 +9,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script defer src="../../supabase-client.js"></script>
 <script defer src="../../app-effects.js?v=4"></script>
-<script defer src="script.js?v=22"></script>
+<script defer src="script.js?v=23"></script>
 </head>
 <body>
 <div class="app">
@@ -43,6 +43,13 @@
         <span class="mode-icon">🔢</span>
         <span class="mode-label">Nederlandse tijd → digitaal</span>
       </button>
+    </div>
+    <div id="textDigitalDifficulty" class="text-digital-difficulty" hidden>
+      <label for="textDigitalStep">Moeilijkheidsgraad: </label>
+      <select id="textDigitalStep">
+        <option value="15" selected>Niveau 1 · kwartieren (15 minuten)</option>
+        <option value="5">Niveau 2 · per 5 minuten</option>
+      </select>
     </div>
   </section>
 

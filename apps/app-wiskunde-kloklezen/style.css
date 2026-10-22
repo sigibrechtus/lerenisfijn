@@ -317,3 +317,6 @@ body {
 
 .daypart-display { margin: 0; padding: .45rem .9rem; border-radius: 999px; background: #e8f1ff; color: #1e3799; font-size: 1.1rem; font-weight: 700; text-align: center; }
 .phrase-display { max-width: 100%; overflow-wrap: break-word; font-size: clamp(1.15rem, 4vw, 1.6rem); }
+
+.text-digital-difficulty { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; font-weight: 700; }
+.text-digital-difficulty select { max-width: 100%; padding: .55rem; border: 1px solid #b8c5df; border-radius: 10px; font: inherit; background: white; color: var(--text); }
