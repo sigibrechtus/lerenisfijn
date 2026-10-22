@@ -31,6 +31,7 @@
     rightLabel: document.getElementById('rightLabel'),
     leftClockWrap: document.getElementById('leftClockWrap'),
     phraseDisplay: document.getElementById('phraseDisplay'),
+    daypartDisplay: document.getElementById('daypartDisplay'),
     deltaCard: document.getElementById('deltaCard'),
     deltaIcon: document.getElementById('deltaIcon'),
     deltaSentence: document.getElementById('deltaSentence'),
@@ -123,16 +124,26 @@
      Tijd-hulpfuncties
      ========================================================= */
   function randomTime(step = 15) {
-    return { hour: 1 + Math.floor(Math.random() * 12), minute: Math.floor(Math.random() * (60 / step)) * step };
+    return { hour: Math.floor(Math.random() * 24), minute: Math.floor(Math.random() * (60 / step)) * step };
+  }
+  const clockHour = hour => hour % 12 || 12;
+  const formatTime = (hour, minute) => `${pad2(hour)}:${pad2(minute)}`;
+  function daypart(hour) {
+    if (hour < 6 || hour >= 22) return '’s nachts';
+    if (hour < 12) return '’s ochtends';
+    if (hour < 18) return '’s namiddags';
+    return '’s avonds';
+  }
+  function timePhrase(hour, minute) {
+    if (hour === 0 && minute === 0) return 'twaalf uur ’s nachts (middernacht)';
+    if (hour === 12 && minute === 0) return 'twaalf uur ’s middags';
+    return `${toDutchPhrase(clockHour(hour), minute)} ${daypart(hour)}`;
   }
 
   function addMinutes(hour, minute, delta) {
-    const h0 = hour % 12; // 0-11
-    let total = (h0 * 60 + minute + delta) % (12 * 60);
-    if (total < 0) total += 12 * 60;
-    const resultHour0 = Math.floor(total / 60) % 12;
-    const resultMinute = total % 60;
-    return { hour: resultHour0 === 0 ? 12 : resultHour0, minute: resultMinute };
+    let total = (hour * 60 + minute + delta) % (24 * 60);
+    if (total < 0) total += 24 * 60;
+    return { hour: Math.floor(total / 60), minute: total % 60 };
   }
 
   // Nederlandse tijdsaanduiding, ook voor intervallen van vijf minuten.
@@ -163,19 +174,22 @@
     questionStartedAt = Date.now();
     locked = false;
     els.checkBtn.disabled = false;
+    els.daypartDisplay.hidden = false;
 
     if (mode === 'read') {
       const t = randomTime();
       current = t;
-      drawClock(els.clockLeft, t.hour, t.minute, { interactive: false });
-      answerHour = 12;
+      drawClock(els.clockLeft, clockHour(t.hour), t.minute, { interactive: false });
+      els.daypartDisplay.textContent = daypart(t.hour);
+      answerHour = 0;
       answerMinute = 0;
       updateSpinnerDisplay();
 
     } else if (mode === 'set') {
       const t = randomTime();
       current = t;
-      els.phraseDisplay.textContent = toDutchPhrase(t.hour, t.minute);
+      els.phraseDisplay.textContent = timePhrase(t.hour, t.minute);
+      els.daypartDisplay.hidden = true;
       dragHour = 12;
       dragMinute = 0;
       drawClock(els.clockRight, dragHour, dragMinute, { interactive: true, onChange: onDragChange });
@@ -183,13 +197,14 @@
     } else if (mode === 'set5' || mode === 'textDigital') {
       const t = randomTime(5);
       current = t;
-      els.phraseDisplay.textContent = toDutchPhrase(t.hour, t.minute);
+      els.phraseDisplay.textContent = timePhrase(t.hour, t.minute);
+      els.daypartDisplay.hidden = true;
       if (mode === 'set5') {
         dragHour = 12;
         dragMinute = 0;
         drawClock(els.clockRight, dragHour, dragMinute, { interactive: true, minuteStep: 5, onChange: onDragChange });
       } else {
-        answerHour = 12;
+        answerHour = 0;
         answerMinute = 0;
         updateSpinnerDisplay();
       }
@@ -207,7 +222,8 @@
         hour: result.hour, minute: result.minute
       };
 
-      drawClock(els.clockLeft, start.hour, start.minute, { interactive: false });
+      els.daypartDisplay.textContent = daypart(start.hour);
+      drawClock(els.clockLeft, clockHour(start.hour), start.minute, { interactive: false });
 
       els.deltaIcon.textContent = event.icon;
       els.deltaSentence.textContent = sign > 0
@@ -229,7 +245,7 @@
      Digitale spinner (enkel modus 'read')
      ========================================================= */
   function updateSpinnerDisplay() {
-    els.hourValue.textContent = answerHour;
+    els.hourValue.textContent = pad2(answerHour);
     els.minuteValue.textContent = pad2(answerMinute);
   }
 
@@ -239,7 +255,7 @@
       const target = btn.dataset.target;
       const dir = Number(btn.dataset.dir);
       if (target === 'hour') {
-        answerHour = ((answerHour - 1 + dir + 12) % 12) + 1;
+        answerHour = (answerHour + dir + 24) % 24;
       } else {
         const step = mode === 'textDigital' ? 5 : 15;
         answerMinute = (answerMinute + dir * step + 60) % 60;
@@ -414,7 +430,7 @@
 
   function showHint() {
     if (mode === 'read' || mode === 'textDigital') {
-      els.hint.textContent = 'Tip: de grote wijzer wijst de minuten aan, de kleine het uur.';
+      els.hint.textContent = mode === 'read' ? `Tip: de grote wijzer toont de minuten. Let op het dagdeel: ${daypart(current.hour)}.` : `Tip: ${timePhrase(current.hour, current.minute)} = ${formatTime(current.hour, current.minute)}.`;
 
     } else if (mode === 'set') {
       if (current.minute === 30) {
@@ -428,10 +444,10 @@
       }
 
     } else if (mode === 'set5') {
-      els.hint.textContent = `Tip: ${toDutchPhrase(current.hour, current.minute)} is ${current.hour}:${pad2(current.minute)}.`;
+      els.hint.textContent = `Tip: ${timePhrase(current.hour, current.minute)} is ${formatTime(current.hour, current.minute)}.`;
     } else { // calc
-      const startText = `${current.startHour}:${pad2(current.startMinute)}`;
-      const endText = `${current.hour}:${pad2(current.minute)}`;
+      const startText = formatTime(current.startHour, current.startMinute);
+      const endText = formatTime(current.hour, current.minute);
       els.hint.textContent = current.sign > 0
         ? `Tip: ${startText} + ${current.event.duration} = ${endText}`
         : `Tip: ${endText} + ${current.event.duration} = ${startText}, reken dus terug.`;
@@ -451,14 +467,15 @@
     const digitalMode = mode === 'read' || mode === 'textDigital';
     const readHour = digitalMode ? answerHour : dragHour;
     const readMinute = digitalMode ? answerMinute : dragMinute;
-    const correct = (readHour === current.hour) && (readMinute === current.minute);
+    const expectedHour = digitalMode ? current.hour : clockHour(current.hour);
+    const correct = (readHour === expectedHour) && (readMinute === current.minute);
 
     if (correct) {
       if (questionId && window.lerenProgress) window.lerenProgress.recordQuestion({ exercise_key: "app-wiskunde-kloklezen", mode, question_id: questionId, attempt_count: attempts + 1, first_try_correct: attempts === 0, assisted: false, duration_ms: Math.max(0, Date.now() - questionStartedAt) });
       locked = true;
       score++;
       els.score.textContent = score;
-      setFeedback(`${pick(PRAISE)} Het is ${current.hour}:${pad2(current.minute)}`, 'good');
+      setFeedback(`${pick(PRAISE)} Het is ${formatTime(current.hour, current.minute)} (${timePhrase(current.hour, current.minute)}).`, 'good');
       hideHint();
       animate('pop');
       window.lerenEffects?.correct(els.feedback);
@@ -469,7 +486,7 @@
     } else {
       attempts++;
       locked = true;
-      setFeedback(`Je antwoord is ${readHour}:${pad2(readMinute)}. Dat is niet juist. Probeer opnieuw!`, 'bad');
+      setFeedback(`Je antwoord is ${formatTime(readHour, readMinute)}. Dat is niet juist. Probeer opnieuw!`, 'bad');
       animate('shake');
       window.lerenEffects?.incorrect(els.feedback);
       if (attempts >= 2) showHint();
