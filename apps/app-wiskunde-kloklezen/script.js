@@ -27,6 +27,8 @@
   const els = {
     score: document.getElementById('score'),
     modeCards: document.getElementById('modeCards'),
+    textDigitalDifficulty: document.getElementById('textDigitalDifficulty'),
+    textDigitalStep: document.getElementById('textDigitalStep'),
     leftLabel: document.getElementById('leftLabel'),
     rightLabel: document.getElementById('rightLabel'),
     leftClockWrap: document.getElementById('leftClockWrap'),
@@ -50,6 +52,7 @@
   /* =========================================================
      Status
      ========================================================= */
+  let textDigitalStep = 15;
   let mode = 'read';          // 'read' | 'set' | 'calc' | 'set5' | 'textDigital'
   let current = null;         // oefening-gegevens
   let score = 0;
@@ -76,9 +79,15 @@
     btn.addEventListener('click', () => setMode(btn.dataset.mode));
   });
 
+  els.textDigitalStep.addEventListener('change', () => {
+    textDigitalStep = Number(els.textDigitalStep.value);
+    if (mode === 'textDigital' && !locked) newExercise();
+  });
+
   function setMode(newMode) {
     if (locked) return;
     mode = newMode;
+    els.textDigitalDifficulty.hidden = mode !== 'textDigital';
 
     els.modeCards.querySelectorAll('.mode-card').forEach(btn => {
       btn.setAttribute('aria-pressed', btn.dataset.mode === mode ? 'true' : 'false');
@@ -195,7 +204,7 @@
       drawClock(els.clockRight, dragHour, dragMinute, { interactive: true, onChange: onDragChange });
 
     } else if (mode === 'set5' || mode === 'textDigital') {
-      const t = randomTime(5);
+      const t = randomTime(mode === 'textDigital' ? textDigitalStep : 5);
       current = t;
       els.phraseDisplay.textContent = timePhrase(t.hour, t.minute);
       els.daypartDisplay.hidden = true;
@@ -257,7 +266,7 @@
       if (target === 'hour') {
         answerHour = (answerHour + dir + 24) % 24;
       } else {
-        const step = mode === 'textDigital' ? 5 : 15;
+        const step = mode === 'textDigital' ? textDigitalStep : 15;
         answerMinute = (answerMinute + dir * step + 60) % 60;
       }
       updateSpinnerDisplay();
