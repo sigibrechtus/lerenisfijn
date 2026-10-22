@@ -314,3 +314,6 @@ body {
 .exercise.pop { animation: pop .35s ease; }
 .exercise.shake { animation: shake .35s ease; }
 
+
+.daypart-display { margin: 0; padding: .45rem .9rem; border-radius: 999px; background: #e8f1ff; color: #1e3799; font-size: 1.1rem; font-weight: 700; text-align: center; }
+.phrase-display { max-width: 100%; overflow-wrap: break-word; font-size: clamp(1.15rem, 4vw, 1.6rem); }

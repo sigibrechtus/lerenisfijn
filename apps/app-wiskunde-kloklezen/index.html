@@ -9,7 +9,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
 <script defer src="../../supabase-client.js"></script>
 <script defer src="../../app-effects.js?v=4"></script>
-<script defer src="script.js?v=21"></script>
+<script defer src="script.js?v=22"></script>
 </head>
 <body>
 <div class="app">
@@ -54,6 +54,7 @@
     <div class="clock-wrap" id="leftClockWrap">
       <svg id="clockLeft" class="clock" viewBox="0 0 200 200" width="180" height="180" aria-label="gegeven klok"></svg>
     </div>
+      <p class="daypart-display" id="daypartDisplay"></p>
 
       <p class="phrase-display" id="phraseDisplay" hidden></p>
 
@@ -69,7 +70,7 @@
       <div class="digital-input" id="digitalInput">
         <div class="spinner">
           <button type="button" class="spin-btn" data-target="hour" data-dir="1">▲</button>
-          <div class="spin-value" id="hourValue">12</div>
+          <div class="spin-value" id="hourValue">00</div>
           <button type="button" class="spin-btn" data-target="hour" data-dir="-1">▼</button>
         </div>
         <div class="colon">:</div>
